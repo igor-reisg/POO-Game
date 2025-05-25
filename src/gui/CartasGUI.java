@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 public class CartasGUI extends JFrame implements ActionListener {
     private final Carta carta;
@@ -16,7 +17,7 @@ public class CartasGUI extends JFrame implements ActionListener {
         this.carta = carta;
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 800);
+        setSize(550, 600);
         setLocationRelativeTo(null);
 
         setLayout(new BorderLayout());
@@ -39,9 +40,12 @@ public class CartasGUI extends JFrame implements ActionListener {
     private void carregarImagem() {
         try {
             String caminhoImagem = carta.getImagemCaminho();
-            System.out.println("Carregando imagem: " + caminhoImagem);
-            ImageIcon imagem = new ImageIcon(caminhoImagem);
-            labelCarta.setIcon(imagem);
+            URL urlImagem = getClass().getResource(caminhoImagem);
+
+            if(urlImagem != null) {
+                ImageIcon imagem = new ImageIcon(urlImagem);
+                labelCarta.setIcon(imagem);
+            }
         } catch (Exception e) {
             System.out.println("Erro ao carregar imagem");
         }
