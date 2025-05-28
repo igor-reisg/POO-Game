@@ -22,9 +22,9 @@ public class MenuGUI extends JFrame implements ActionListener {
         Dimension tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(tamanhoTela.width, tamanhoTela.height);
 
-        Dimension tamanhoBotoesInferiores = new Dimension(200, 60);
+        Dimension tamanhoBotoesInferiores = new Dimension(252, 126);
 
-        botaoJogar = new JButton("Jogar");
+        botaoJogar = new JButton();
         botaoOpcoes = new JButton("Opções");
         botaoCreditos = new JButton("Créditos");
         botaoSair = new JButton();
@@ -33,6 +33,24 @@ public class MenuGUI extends JFrame implements ActionListener {
         botaoJogar.setPreferredSize(tamanhoBotoesInferiores);
         botaoOpcoes.setPreferredSize(tamanhoBotoesInferiores);
         botaoCreditos.setPreferredSize(tamanhoBotoesInferiores);
+
+
+        //PARTE DO BOTAO JOGAR
+        String caminhoJogarOff = "/assets/images/botoesMenu/botaojogar_off.png";
+        String caminhoJogarWhite = "/assets/images/botoesMenu/botaojogar_off_white.png";
+        botaoJogar = atualizaBotaoImagem(caminhoJogarOff, 252, 126);
+
+
+        //PARTE DO BOTAO SAIR
+        String caminhoSairOff = "/assets/images/botoesMenu/botaoexit_off.png";
+        String caminhoSairWhite = "/assets/images/botoesMenu/botaoexit_off_white.png";
+        String caminhoSairOn = "/assets/images/botoesMenu/botaoexit_on.png";
+        botaoSair = atualizaBotaoImagem(caminhoSairOff, 70, 70);
+
+
+        //PARTE DO BOTAO AJUDA
+        String caminhoAjuda = "/assets/images/botoesMenu/botaohelp_off.png";
+        botaoAjuda = atualizaBotaoImagem(caminhoAjuda, 70, 70);
 
         JPanel menuPainel = new JPanel(new BorderLayout());
 
@@ -45,13 +63,6 @@ public class MenuGUI extends JFrame implements ActionListener {
         botaoOpcoes.addActionListener(this);
         botaoCreditos.addActionListener(this);
 
-        //PARTE DO BOTAO SAIR
-        String caminhoSair = "/assets/images/botoesMenu/sair.png";
-        botaoSair = criarBotaoImagem(caminhoSair, 45, 45);
-
-        //PARTE DO BOTAO AJUDA
-        String caminhoAjuda = "/assets/images/botoesMenu/ajuda.png";
-        botaoAjuda = criarBotaoImagem(caminhoAjuda, 40, 40);
 
         JPanel botoesSuperiores = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 20));
         botoesSuperiores.add(botaoAjuda);
@@ -86,7 +97,7 @@ public class MenuGUI extends JFrame implements ActionListener {
         }
     }
 
-    private JButton criarBotaoImagem(String caminhoImagem, int largura, int altura) {
+    private JButton atualizaBotaoImagem(String caminhoImagem, int largura, int altura) {
         JButton botao = new JButton();
 
         URL urlImagem = getClass().getResource(caminhoImagem);
@@ -104,3 +115,4 @@ public class MenuGUI extends JFrame implements ActionListener {
         return botao;
     }
 }
+
