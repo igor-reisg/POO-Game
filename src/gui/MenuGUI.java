@@ -6,22 +6,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 
-public class MenuGUI extends JFrame implements ActionListener {
+public class MenuGUI extends JPanel implements ActionListener {
     JButton botaoJogar;
     JButton botaoCreditos;
     JButton botaoSair;
     JButton botaoOpcoes;
     JButton botaoAjuda;
+    JanelaGUI app;
 
-    public MenuGUI() {
-        super("Menu");
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-
-        Dimension tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize(tamanhoTela.width, tamanhoTela.height);
-
+    public MenuGUI(JanelaGUI app) {
+        this.app = app;
         Dimension tamanhoBotoesInferiores = new Dimension(200, 60);
 
         botaoJogar = new JButton("Jogar");
@@ -70,7 +64,7 @@ public class MenuGUI extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == botaoJogar) {
-            System.out.println("Jogar");
+            app.trocarTela(new JogoGUI(app));
         }
         else if (e.getSource() == botaoOpcoes) {
             System.out.println("opcoes");
@@ -103,4 +97,5 @@ public class MenuGUI extends JFrame implements ActionListener {
 
         return botao;
     }
+
 }

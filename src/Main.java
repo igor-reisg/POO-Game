@@ -1,6 +1,7 @@
 import gui.MenuGUI;
 import modelos.Carta;
 import gui.CartasGUI;
+import gui.JanelaGUI;
 
 public class Main {
     public static void main(String[] args) {
@@ -8,7 +9,7 @@ public class Main {
         //CartasGUI gui = new CartasGUI(carta);
         //gui.setVisible(true);
 
-        MenuGUI menu = new MenuGUI();
-        menu.setVisible(true);
+        JanelaGUI janela = new JanelaGUI();
+        janela.setVisible(true);
     }
 }
