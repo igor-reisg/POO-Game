@@ -14,11 +14,24 @@ public class MenuGUI extends JPanel implements ActionListener {
     JButton botaoAjuda;
     JanelaGUI app;
 
+<<<<<<< HEAD
     public MenuGUI(JanelaGUI app) {
         this.app = app;
         Dimension tamanhoBotoesInferiores = new Dimension(200, 60);
+=======
+    public MenuGUI() {
+        super("Menu");
 
-        botaoJogar = new JButton("Jogar");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        Dimension tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
+        setSize(tamanhoTela.width, tamanhoTela.height);
+
+        Dimension tamanhoBotoesInferiores = new Dimension(252, 126);
+>>>>>>> 5ad5e33b483f6ca3530077dc52903f67037dd7ab
+
+        botaoJogar = new JButton();
         botaoOpcoes = new JButton("Opções");
         botaoCreditos = new JButton("Créditos");
         botaoSair = new JButton();
@@ -27,6 +40,24 @@ public class MenuGUI extends JPanel implements ActionListener {
         botaoJogar.setPreferredSize(tamanhoBotoesInferiores);
         botaoOpcoes.setPreferredSize(tamanhoBotoesInferiores);
         botaoCreditos.setPreferredSize(tamanhoBotoesInferiores);
+
+
+        //PARTE DO BOTAO JOGAR
+        String caminhoJogarOff = "/assets/images/botoesMenu/botaojogar_off.png";
+        String caminhoJogarWhite = "/assets/images/botoesMenu/botaojogar_off_white.png";
+        botaoJogar = atualizaBotaoImagem(caminhoJogarOff, 252, 126);
+
+
+        //PARTE DO BOTAO SAIR
+        String caminhoSairOff = "/assets/images/botoesMenu/botaoexit_off.png";
+        String caminhoSairWhite = "/assets/images/botoesMenu/botaoexit_off_white.png";
+        String caminhoSairOn = "/assets/images/botoesMenu/botaoexit_on.png";
+        botaoSair = atualizaBotaoImagem(caminhoSairOff, 70, 70);
+
+
+        //PARTE DO BOTAO AJUDA
+        String caminhoAjuda = "/assets/images/botoesMenu/botaohelp_off.png";
+        botaoAjuda = atualizaBotaoImagem(caminhoAjuda, 70, 70);
 
         JPanel menuPainel = new JPanel(new BorderLayout());
 
@@ -39,13 +70,6 @@ public class MenuGUI extends JPanel implements ActionListener {
         botaoOpcoes.addActionListener(this);
         botaoCreditos.addActionListener(this);
 
-        //PARTE DO BOTAO SAIR
-        String caminhoSair = "/assets/images/botoesMenu/sair.png";
-        botaoSair = criarBotaoImagem(caminhoSair, 45, 45);
-
-        //PARTE DO BOTAO AJUDA
-        String caminhoAjuda = "/assets/images/botoesMenu/ajuda.png";
-        botaoAjuda = criarBotaoImagem(caminhoAjuda, 40, 40);
 
         JPanel botoesSuperiores = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 20));
         botoesSuperiores.add(botaoAjuda);
@@ -80,7 +104,7 @@ public class MenuGUI extends JPanel implements ActionListener {
         }
     }
 
-    private JButton criarBotaoImagem(String caminhoImagem, int largura, int altura) {
+    private JButton atualizaBotaoImagem(String caminhoImagem, int largura, int altura) {
         JButton botao = new JButton();
 
         URL urlImagem = getClass().getResource(caminhoImagem);
@@ -99,3 +123,4 @@ public class MenuGUI extends JPanel implements ActionListener {
     }
 
 }
+
