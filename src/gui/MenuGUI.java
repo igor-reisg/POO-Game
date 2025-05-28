@@ -14,11 +14,6 @@ public class MenuGUI extends JPanel implements ActionListener {
     JButton botaoAjuda;
     JanelaGUI app;
 
-<<<<<<< HEAD
-    public MenuGUI(JanelaGUI app) {
-        this.app = app;
-        Dimension tamanhoBotoesInferiores = new Dimension(200, 60);
-=======
     public MenuGUI() {
         super("Menu");
 
@@ -29,7 +24,6 @@ public class MenuGUI extends JPanel implements ActionListener {
         setSize(tamanhoTela.width, tamanhoTela.height);
 
         Dimension tamanhoBotoesInferiores = new Dimension(252, 126);
->>>>>>> 5ad5e33b483f6ca3530077dc52903f67037dd7ab
 
         botaoJogar = new JButton();
         botaoOpcoes = new JButton("Opções");
