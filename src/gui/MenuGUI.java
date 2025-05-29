@@ -79,8 +79,21 @@ public class MenuGUI extends JPanel implements ActionListener {
         painelCartas.add(cartaPainel);
         menuPainel.add(painelCartas, BorderLayout.CENTER);
 
+        //Deixa tudo invisivel alem dos botoes/carta teste, pra mostrar o background
+        menuPainel.setOpaque(false);
+        botoesInferiores.setOpaque(false);
+        botoesSuperiores.setOpaque(false);
+        painelCartas.setOpaque(false);
 
-        this.add(menuPainel);
+
+        //Tem que adicionar
+        BackgroundPanel background = new BackgroundPanel("/assets/images/background/pattern1.png");
+        setLayout(new BorderLayout());
+        background.add(menuPainel, BorderLayout.CENTER);
+
+        setLayout(new BorderLayout());
+        add(background, BorderLayout.CENTER);
+
         setVisible(true);
     }
 
