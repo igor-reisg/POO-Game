@@ -1,5 +1,7 @@
 package gui;
 
+import modelos.Carta;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,6 +15,7 @@ public class MenuGUI extends JPanel implements ActionListener {
     JButton botaoOpcoes;
     JButton botaoAjuda;
     JanelaGUI app;
+    String caminhoBotoes = "/assets/images/botoes/";
 
     public MenuGUI(JanelaGUI app) {
         this.app = app;
@@ -30,20 +33,20 @@ public class MenuGUI extends JPanel implements ActionListener {
 
 
         //PARTE DO BOTAO JOGAR
-        String caminhoJogarOff = "/assets/images/botoesMenu/botaojogar_off.png";
-        String caminhoJogarWhite = "/assets/images/botoesMenu/botaojogar_off_white.png";
+        String caminhoJogarOff = "/assets/images/botoes/botaojogar_off.png";
+        String caminhoJogarWhite = "/assets/images/botoes/botaojogar_off_white.png";
         botaoJogar = atualizaBotaoImagem(caminhoJogarOff, 252, 126);
 
 
         //PARTE DO BOTAO SAIR
-        String caminhoSairOff = "/assets/images/botoesMenu/botaoexit_off.png";
-        String caminhoSairWhite = "/assets/images/botoesMenu/botaoexit_off_white.png";
-        String caminhoSairOn = "/assets/images/botoesMenu/botaoexit_on.png";
+        String caminhoSairOff = "/assets/images/botoes/botaoexit_off.png";
+        String caminhoSairWhite = "/assets/images/botoes/botaoexit_off_white.png";
+        String caminhoSairOn = "/assets/images/botoes/botaoexit_on.png";
         botaoSair = atualizaBotaoImagem(caminhoSairOff, 70, 70);
 
 
         //PARTE DO BOTAO AJUDA
-        String caminhoAjuda = "/assets/images/botoesMenu/botaohelp_off.png";
+        String caminhoAjuda = "/assets/images/botoes/botaohelp_off.png";
         botaoAjuda = atualizaBotaoImagem(caminhoAjuda, 70, 70);
 
         JPanel menuPainel = new JPanel(new BorderLayout());
@@ -67,6 +70,15 @@ public class MenuGUI extends JPanel implements ActionListener {
 
         menuPainel.add(botoesInferiores, BorderLayout.SOUTH);
         menuPainel.add(botoesSuperiores, BorderLayout.NORTH);
+
+        //PARTE DAS CARTAS PARA TESTAR NO MENU
+        JPanel painelCartas = new JPanel();
+        painelCartas.setLayout(new FlowLayout());
+        Carta carta = new Carta(Carta.Naipe.COPAS, Carta.Valor.DOIS);
+        CartasPanel cartaPainel = new CartasPanel(carta);
+        painelCartas.add(cartaPainel);
+        menuPainel.add(painelCartas, BorderLayout.CENTER);
+
 
         this.add(menuPainel);
         setVisible(true);
