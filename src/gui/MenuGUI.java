@@ -72,8 +72,7 @@ public class MenuGUI extends JPanel implements ActionListener {
         setLayout(new BorderLayout());
         add(background, BorderLayout.CENTER);
         setVisible(true);
-    }
-
+    } 
     private JButton criarBotao(String caminhoBase, int i, int largura, int altura, ImageIcon[][] matrizImagens) {
         for (int j = 0; j < 3; j++) {
             Image img = new ImageIcon(Objects.requireNonNull(getClass().getResource(caminhoBase + i + "_" + j + ".png"))).getImage();
