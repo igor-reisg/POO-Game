@@ -51,18 +51,9 @@ public class MenuGUI extends JPanel implements ActionListener {
         menuPainel.add(panelInferior, BorderLayout.SOUTH);
         menuPainel.add(panelSuperior, BorderLayout.NORTH);
 
-        //PARTE DAS CARTAS PARA TESTAR NO MENU
-        JPanel painelCartas = new JPanel();
-        painelCartas.setLayout(new FlowLayout());
-        Carta carta = new Carta(Carta.Naipe.COPAS, Carta.Valor.DOIS);
-        CartasPanel cartaPainel = new CartasPanel(carta);
-        painelCartas.add(cartaPainel);
-        menuPainel.add(painelCartas, BorderLayout.CENTER);
-
         //Deixa tudo invisivel alem dos botoes/carta teste, pra mostrar o background
         panelInferior.setOpaque(false);
         panelSuperior.setOpaque(false);
-        painelCartas.setOpaque(false);
         menuPainel.setOpaque(false);
 
         //Tem que adicionar
