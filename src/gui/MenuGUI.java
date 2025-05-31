@@ -1,7 +1,5 @@
 package gui;
 
-import modelos.Carta;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -63,7 +61,8 @@ public class MenuGUI extends JPanel implements ActionListener {
         setLayout(new BorderLayout());
         add(background, BorderLayout.CENTER);
         setVisible(true);
-    } 
+    }
+
     private JButton criarBotao(String caminhoBase, int i, int largura, int altura, ImageIcon[][] matrizImagens) {
         for (int j = 0; j < 3; j++) {
             Image img = new ImageIcon(Objects.requireNonNull(getClass().getResource(caminhoBase + i + "_" + j + ".png"))).getImage();
@@ -83,13 +82,28 @@ public class MenuGUI extends JPanel implements ActionListener {
         return botao;
     }
 
+    private void mostrarPainelOpcoes() {
+        StaticBackgroundPanel painelOpcoes = new StaticBackgroundPanel(caminhoBackground, 1280, 720);
+        painelOpcoes.setLayout(new BorderLayout());
+
+        JButton botaoVoltar = new JButton("Voltar");
+        painelOpcoes.add(botaoVoltar, BorderLayout.SOUTH);
+        botaoVoltar.addActionListener(e -> {
+            app.getGlassPane().setVisible(false);
+        });
+
+        TransparenteGUI transparente = new TransparenteGUI(painelOpcoes);
+        app.setGlassPane(transparente);
+        transparente.setVisible(true);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == BotoesInferiores[0]) {
             app.trocarTela(new JogoGUI(app));
         }
         else if (e.getSource() == BotoesInferiores[1]) {
-            System.out.println("opcoes");
+            mostrarPainelOpcoes();
         }
         else if (e.getSource() == BotoesInferiores[2]) {
             System.out.println("Creditos");
