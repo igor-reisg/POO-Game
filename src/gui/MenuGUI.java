@@ -40,7 +40,7 @@ public class MenuGUI extends JPanel implements ActionListener {
         String caminhoSairWhite = "/assets/images/botoesMenu/botaoexit_off_white.png";
         String caminhoSairOn = "/assets/images/botoesMenu/botaoexit_on.png";
         botaoSair = atualizaBotaoImagem(caminhoSairOff, 70, 70);
-
+        
 
         //PARTE DO BOTAO AJUDA
         String caminhoAjuda = "/assets/images/botoesMenu/botaohelp_off.png";
