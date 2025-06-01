@@ -40,22 +40,9 @@ public class MenuGUI extends JPanel implements ActionListener {
             BotoesSuperiores[i] = criarBotao(caminhoBotoes + "superior", i, 70, 70, ImagensSuperiores);
         }
 
-<<<<<<< HEAD
-        //PARTE DO BOTAO SAIR
-        String caminhoSairOff = "/assets/images/botoesMenu/botaoexit_off.png";
-        String caminhoSairWhite = "/assets/images/botoesMenu/botaoexit_off_white.png";
-        String caminhoSairOn = "/assets/images/botoesMenu/botaoexit_on.png";
-        botaoSair = atualizaBotaoImagem(caminhoSairOff, 70, 70);
-        
-
-        //PARTE DO BOTAO AJUDA
-        String caminhoAjuda = "/assets/images/botoesMenu/botaohelp_off.png";
-        botaoAjuda = atualizaBotaoImagem(caminhoAjuda, 70, 70);
-=======
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 20));
         panelSuperior.add(BotoesSuperiores[0]);
         panelSuperior.add(BotoesSuperiores[1]);
->>>>>>> 0a9fe55ed037d987987e0b29b3e2770d01996bda
 
         //Panel menu
         JPanel menuPainel = new JPanel(new BorderLayout());
@@ -129,4 +116,3 @@ public class MenuGUI extends JPanel implements ActionListener {
         }
     }
 }
-
