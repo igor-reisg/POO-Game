@@ -8,6 +8,9 @@ import javax.swing.*;
 import modelos.Carta;
 
 public class JogoGUI extends JPanel {
+    Dimension tamanhoTela;
+    Double x_gap = 0.33;
+
     JanelaGUI app;
     MesaGUI mesa;
     CartasPanel cartasJogador[], cartasInimigo[];
@@ -17,12 +20,13 @@ public class JogoGUI extends JPanel {
     JButton fold, check;
     JLabel pote;
     String caminhoBase = "/assets/images/botoes/jogo/";
-    ImageIcon[] checkIcons, foldIcons;
+    ImageIcon[] checkIcons, foldIcons, pauseIcons, inicioIcons;
 
     
     public JogoGUI(JanelaGUI app) {
         this.app = app;
-
+        Dimension tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
+        this.tamanhoTela = tamanhoTela;
         setLayout(new BorderLayout()); 
 
         //Background
@@ -51,8 +55,8 @@ public class JogoGUI extends JPanel {
         cartasPanel.add(cartasJogador[1]);
         cartasPanel.setOpaque(true);
         hubJogador.add(cartasPanel);
-        hubJogador.add(Box.createHorizontalStrut(700));
-
+        hubJogador.add(Box.createHorizontalStrut((int) (tamanhoTela.getWidth() * x_gap)));
+ 
         // Painel dos botões Check e Fold
         JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0)); 
         check = new JButton();
@@ -70,25 +74,24 @@ public class JogoGUI extends JPanel {
         painelBotoesVida.setLayout(new BoxLayout(painelBotoesVida, BoxLayout.Y_AXIS));
 
         jogadorHP = new VidaGUI();
-        jogadorHP.setPreferredSize(new Dimension(1000, 50));
-        jogadorHP.setMaximumSize(new Dimension(200, 50));
         jogadorHP.setAlignmentX(Component.CENTER_ALIGNMENT);
         jogadorHP.setOpaque(true);
         jogadorHP.setBackground(Color.GREEN);
 
         painelBotoesVida.add(jogadorHP);
-        painelBotoesVida.add(Box.createVerticalStrut(10));  
         painelBotoesVida.add(painelBotoes);
 
         hubJogador.add(painelBotoesVida);
 
-                
         painelBotoesVida.setOpaque(false);
         painelBotoes.setOpaque(false);
         
+        JPanel potePanel = new JPanel();
+        potePanel.setLayout(new FlowLayout());
         pote = new JLabel();
-        pote.setPreferredSize(new Dimension(20, 100));
+        //pote.setPreferredSize(new Dimension(20, 30));
         pote.setBackground(Color.RED);
+        potePanel.add(pote);
         pote.setOpaque(true);
         
         //Criação do Hub do Adversário
@@ -96,14 +99,16 @@ public class JogoGUI extends JPanel {
         hubAdversario.setLayout(new BoxLayout(hubAdversario, BoxLayout.X_AXIS));
         
         //Vida do inimigo
+
         adversarioHP = new VidaGUI();
-        adversarioHP.setPreferredSize(new Dimension(1000, 50));
-        adversarioHP.setMaximumSize(new Dimension(200, 150));
+        adversarioHP.setLayout(new BorderLayout(20, 20));
+        adversarioHP.setPreferredSize(new Dimension(1000, 10));
         adversarioHP.setAlignmentX(Component.CENTER_ALIGNMENT);
         adversarioHP.setOpaque(true);
         adversarioHP.setBackground(Color.RED);
         hubAdversario.add(adversarioHP);
         hubAdversario.add(Box.createHorizontalStrut(700));
+    
         //Cartas do adversário
         JPanel cartasAdversarioPanel = new JPanel();
         cartasInimigo = new CartasPanel[2];
@@ -115,13 +120,20 @@ public class JogoGUI extends JPanel {
         hubAdversario.add(cartasAdversarioPanel);
         //Icone do adversario
         adversarioIcon = new IconeGUI();
-        adversarioIcon.setPreferredSize(new Dimension(200, 200));
+        //adversarioIcon.setPreferredSize(new Dimension(200, 200));
         hubAdversario.add(adversarioIcon);
 
         //Controle do Jogo(pause e home)
+        pauseIcons = new ImageIcon[3];
         JPanel controleJogo = new JPanel();
         controleJogo.setLayout(new BoxLayout(controleJogo, BoxLayout.Y_AXIS));
-        
+        pause = new JButton();
+        inicio = new JButton();
+        pause = criarBotao(caminhoBase + "botaopause", 50, 50, pauseIcons);
+        controleJogo.add(pause);
+        controleJogo.add(inicio);
+        controleJogo.setOpaque(true);
+
         //Set de todos os containers para falso para o background
         controleJogo.setOpaque(false);
         hubAdversario.setOpaque(false);
@@ -132,7 +144,7 @@ public class JogoGUI extends JPanel {
         
         background.add(controleJogo, BorderLayout.EAST);
         background.add(hubAdversario, BorderLayout.NORTH);
-        background.add(pote, BorderLayout.WEST);
+        background.add(potePanel, BorderLayout.WEST);
         background.add(mesa, BorderLayout.CENTER);
         background.add(hubJogador, BorderLayout.SOUTH);
     }

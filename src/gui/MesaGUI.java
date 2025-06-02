@@ -8,7 +8,9 @@ public class MesaGUI extends JPanel{
     private final JLabel labelMesa;
 
     public MesaGUI(){
+        
         labelMesa = new JLabel();
+        setMinimumSize(new Dimension(1271, 720));
         carregarImagem();
         add(labelMesa);
     }

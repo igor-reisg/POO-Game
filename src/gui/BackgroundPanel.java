@@ -21,6 +21,7 @@ public class BackgroundPanel extends JPanel implements Runnable {
         }
 
         setLayout(new BorderLayout());
+        setIgnoreRepaint(true);
 
         Thread thread = new Thread(this);
         thread.start();
