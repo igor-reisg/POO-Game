@@ -4,7 +4,7 @@ public class Carta {
     private final Naipe naipe;
     private final Valor valor;
     private boolean verso = true;
-    private final static String imagemCaminho = "/assets/images/cartas/";
+    private final static String imagemCaminho = "/assets/images/cartas/baralho/";
 
     public enum Naipe {
         COPAS, ESPADAS, OUROS, PAUS;
@@ -55,9 +55,9 @@ public class Carta {
 
     public String getImagemCaminho() {
         if(verso) {
-            return imagemCaminho + "versos/" + "verso.png";
+            return imagemCaminho + "versos/" + "cartafundo.png";
         }
         else
-            return imagemCaminho + naipe.toString() + "/" + valor.toString() + ".png";
+            return imagemCaminho + "faces/" + naipe.toString() + "_" + valor.toString() + ".png";
     }
 }
