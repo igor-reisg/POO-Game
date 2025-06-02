@@ -38,7 +38,7 @@ public class BackgroundPanel extends JPanel implements Runnable {
                     y = 0;
                 }
                 repaint();
-                Thread.sleep(35);
+                Thread.sleep(32);
             }
         } catch (Exception e) {
             System.out.println("Erro ao carregar imagem de fundo: " + e);

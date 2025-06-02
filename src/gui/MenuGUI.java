@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class MenuGUI extends JPanel implements ActionListener {
     JanelaGUI app;
-    String caminhoBackground = "/assets/images/background/pattern1.png";
+    String caminhoBackground = "/assets/images/background/pattern2.png";
     String caminhoBotoes = "/assets/images/botoes/menu/";
     JButton[] BotoesInferiores;
     ImageIcon[][] ImagensInferiores;
