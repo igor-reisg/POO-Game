@@ -2,8 +2,11 @@ package modelos;
 
 public class Jogo {
     Baralho baralho;
-    //Pote pote;
+    Pote pote;
     Player jogador;
     Enemy inimigo;
+
+
+
 
 }

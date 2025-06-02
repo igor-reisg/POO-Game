@@ -1,9 +1,12 @@
 package gui;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Objects;
 
 import javax.swing.*;
+import javax.swing.text.StyledEditorKit.BoldAction;
 
 import modelos.Carta;
 
@@ -16,10 +19,9 @@ public class JogoGUI extends JPanel {
     CartasPanel cartasJogador[], cartasInimigo[];
     IconeGUI jogadorIcon, adversarioIcon;
     VidaGUI jogadorHP, adversarioHP;
-    JButton pause, inicio;
-    JButton fold, check;
+    BotoesGUI pause, inicio;
+    BotoesGUI fold, check;
     JLabel pote;
-    String caminhoBase = "/assets/images/botoes/jogo/";
     ImageIcon[] checkIcons, foldIcons, pauseIcons, inicioIcons;
 
     
@@ -59,15 +61,17 @@ public class JogoGUI extends JPanel {
  
         // Painel dos botões Check e Fold
         JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0)); 
-        check = new JButton();
-        fold = new JButton();
+        
+        check = new BotoesGUI("jogo/check", 63, 128, 0);
+        fold = new BotoesGUI("jogo/fold", 63, 128, 0);
+
+
         checkIcons = new ImageIcon[3];
         foldIcons = new ImageIcon[3];
         
-        check = criarBotao(caminhoBase + "botaocheck",  200, 80, checkIcons);
-        fold = criarBotao(caminhoBase + "botaofold", 200, 80, foldIcons);
-        painelBotoes.add(check);
-        painelBotoes.add(fold);
+
+        painelBotoes.add(check.getBotao());
+        painelBotoes.add(fold.getBotao());
 
         // Painel com informações de vida e botões
         JPanel painelBotoesVida = new JPanel();
@@ -127,11 +131,17 @@ public class JogoGUI extends JPanel {
         pauseIcons = new ImageIcon[3];
         JPanel controleJogo = new JPanel();
         controleJogo.setLayout(new BoxLayout(controleJogo, BoxLayout.Y_AXIS));
-        pause = new JButton();
-        inicio = new JButton();
-        pause = criarBotao(caminhoBase + "botaopause", 50, 50, pauseIcons);
-        controleJogo.add(pause);
-        controleJogo.add(inicio);
+        pause = new BotoesGUI("jogo/pause", 84, 42, 0);
+        inicio = new BotoesGUI("jogo/pause", 84, 42, 0);
+
+        inicio.getBotao().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt){
+                app.trocarTela(new MenuGUI(app));
+            }
+        });
+
+        controleJogo.add(pause.getBotao());
+        controleJogo.add(inicio.getBotao());
         controleJogo.setOpaque(true);
 
         //Set de todos os containers para falso para o background
@@ -148,26 +158,5 @@ public class JogoGUI extends JPanel {
         background.add(mesa, BorderLayout.CENTER);
         background.add(hubJogador, BorderLayout.SOUTH);
     }
-
-    private JButton criarBotao(String caminhoBase, int largura, int altura, ImageIcon[] matrizImagens) {
-        for (int i = 0; i < 3; i++) {
-            Image img = new ImageIcon(Objects.requireNonNull(getClass().getResource(caminhoBase + i + ".png"))).getImage();
-            img = img.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
-            matrizImagens[i] = new ImageIcon(img);
-        }
-
-        JButton botao = new JButton(matrizImagens[0]);
-        botao.setPreferredSize(new Dimension(largura, altura));
-        botao.setRolloverIcon(matrizImagens[1]);
-        botao.setPressedIcon(matrizImagens[2]);
-        botao.setBorderPainted(false);
-        botao.setContentAreaFilled(false);
-        botao.setOpaque(false);
-        //botao.addActionListener(this);
-
-        return botao;
-    }
-
-
 
 }

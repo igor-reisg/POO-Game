@@ -1,9 +1,7 @@
 package gui;
 
-import modelos.Carta;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.net.*;
 
 public class BackgroundPanel extends JPanel implements Runnable {
