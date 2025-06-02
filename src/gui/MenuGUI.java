@@ -3,46 +3,42 @@ package gui;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.event.*;
 import java.net.*;
 import java.util.Objects;
 
 public class MenuGUI extends JPanel implements ActionListener {
     JanelaGUI app;
     String caminhoBackground = "/assets/images/background/pattern2.png";
-    String caminhoBotoes = "/assets/images/botoes/menu/";
-    JButton[] BotoesInferiores;
-    ImageIcon[][] ImagensInferiores;
-    JButton[] BotoesSuperiores;
-    ImageIcon[][] ImagensSuperiores;
+    BotoesGUI[] BotoesMenu;
 
     public MenuGUI(JanelaGUI app) {
         this.app = app;
 
-        //CRIAÇÃO BOTÕES INFERIORES
-        BotoesInferiores = new JButton[3];
-        ImagensInferiores = new ImageIcon[3][3];
-
-        for (int i = 0; i < 3; i++) {
-            BotoesInferiores[i] = criarBotao(caminhoBotoes + "inferior", i, 200, 80, ImagensInferiores);
+        //CRIAÇÃO DOS BOTÕES DO MENU
+        BotoesMenu = new BotoesGUI[5];
+        for (int i = 0; i < BotoesMenu.length; i++) {
+            if (i < 3)
+                BotoesMenu[i] = new BotoesGUI("menu/", 126, 252, i);
+            else
+                BotoesMenu[i] = new BotoesGUI("menu/", 88, 88, i);
         }
 
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 50));
-        panelInferior.add(BotoesInferiores[0]);
-        panelInferior.add(BotoesInferiores[1]);
-        panelInferior.add(BotoesInferiores[2]);
+        panelInferior.add(BotoesMenu[0].getBotao());
+        BotoesMenu[0].getBotao().addActionListener(this);
 
-        //CRIAÇÃO BOTÕES SUPERIORES
-        BotoesSuperiores = new JButton[3];
-        ImagensSuperiores = new ImageIcon[2][3];
+        panelInferior.add(BotoesMenu[1].getBotao());
+        BotoesMenu[1].getBotao().addActionListener(this);
 
-        for (int i = 0; i < 2; i++) {
-            BotoesSuperiores[i] = criarBotao(caminhoBotoes + "superior", i, 70, 70, ImagensSuperiores);
-        }
+        panelInferior.add(BotoesMenu[2].getBotao());
+        BotoesMenu[2].getBotao().addActionListener(this);
 
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 20));
-        panelSuperior.add(BotoesSuperiores[0]);
-        panelSuperior.add(BotoesSuperiores[1]);
+        panelSuperior.add(BotoesMenu[3].getBotao());
+        BotoesMenu[3].getBotao().addActionListener(this);
+
+        panelSuperior.add(BotoesMenu[4].getBotao());
+        BotoesMenu[4].getBotao().addActionListener(this);
 
         //Panel menu
         JPanel menuPainel = new JPanel(new BorderLayout());
@@ -63,25 +59,6 @@ public class MenuGUI extends JPanel implements ActionListener {
         setVisible(true);
     }
 
-    private JButton criarBotao(String caminhoBase, int i, int largura, int altura, ImageIcon[][] matrizImagens) {
-        for (int j = 0; j < 3; j++) {
-            Image img = new ImageIcon(Objects.requireNonNull(getClass().getResource(caminhoBase + i + "_" + j + ".png"))).getImage();
-            img = img.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
-            matrizImagens[i][j] = new ImageIcon(img);
-        }
-
-        JButton botao = new JButton(matrizImagens[i][0]);
-        botao.setPreferredSize(new Dimension(largura, altura));
-        botao.setRolloverIcon(matrizImagens[i][1]);
-        botao.setPressedIcon(matrizImagens[i][2]);
-        botao.setBorderPainted(false);
-        botao.setContentAreaFilled(false);
-        botao.setOpaque(false);
-        botao.addActionListener(this);
-
-        return botao;
-    }
-
     private void mostrarPainelOpcoes() {
         StaticBackgroundPanel painelOpcoes = new StaticBackgroundPanel(caminhoBackground, 1280, 720);
         painelOpcoes.setLayout(new BorderLayout());
@@ -99,19 +76,19 @@ public class MenuGUI extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == BotoesInferiores[0]) {
+        if (e.getSource() == BotoesMenu[0].getBotao()) {
             app.trocarTela(new JogoGUI(app));
         }
-        else if (e.getSource() == BotoesInferiores[1]) {
+        else if (e.getSource() == BotoesMenu[1].getBotao()) {
             mostrarPainelOpcoes();
         }
-        else if (e.getSource() == BotoesInferiores[2]) {
+        else if (e.getSource() == BotoesMenu[2].getBotao()) {
             System.out.println("Creditos");
         }
-        else if (e.getSource() == BotoesSuperiores[0]) {
+        else if (e.getSource() == BotoesMenu[3].getBotao()) {
             System.out.println("Ajuda");
         }
-        else if (e.getSource() == BotoesSuperiores[1]) {
+        else if (e.getSource() == BotoesMenu[4].getBotao()) {
             System.exit(0);
         }
     }
