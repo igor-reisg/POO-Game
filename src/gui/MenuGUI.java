@@ -1,5 +1,7 @@
 package gui;
 
+import gui.Jogo.JogoGUI;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

@@ -6,14 +6,23 @@ import gui.Jogo.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Objects;
 
 public class MenuGUI extends JPanel implements ActionListener {
     JanelaGUI app;
-    String caminhoBackground = "/assets/images/background/pattern2.png";
+    private final String caminhoBackground = "/assets/images/background/pattern2.png";
+    private final String caminhoLogo = "/assets/images/logo/logo01.png";
     BotoesGUI[] BotoesMenu;
 
     public MenuGUI(JanelaGUI app) {
         this.app = app;
+
+        //CRIAÇÃO DO LOGO DO MENU
+        ImageIcon logoIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource(caminhoLogo)));
+        Image logoRedimensionada = logoIcon.getImage().getScaledInstance(1600, 900, Image.SCALE_SMOOTH);
+        ImageIcon logoIconRedimensionado = new ImageIcon(logoRedimensionada);
+        JLabel logoLabel = new JLabel(logoIconRedimensionado);
+        logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         //CRIAÇÃO DOS BOTÕES DO MENU
         BotoesMenu = new BotoesGUI[5];
@@ -40,6 +49,7 @@ public class MenuGUI extends JPanel implements ActionListener {
         JPanel menuPainel = new JPanel(new BorderLayout());
         menuPainel.add(panelInferior, BorderLayout.SOUTH);
         menuPainel.add(panelSuperior, BorderLayout.NORTH);
+        menuPainel.add(logoLabel, BorderLayout.CENTER);
 
         //Deixa tudo invisivel alem dos botoes/carta teste, pra mostrar o background
         panelInferior.setOpaque(false);
@@ -79,7 +89,7 @@ public class MenuGUI extends JPanel implements ActionListener {
             mostrarPainelOpcoes();
         }
         else if (e.getSource() == BotoesMenu[2].getBotao()) {
-            System.out.println("Creditos");
+            app.trocarTela(new CreditosGUI(app));
         }
         else if (e.getSource() == BotoesMenu[3].getBotao()) {
             System.out.println("Ajuda");
