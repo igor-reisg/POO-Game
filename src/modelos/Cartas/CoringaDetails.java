@@ -1,22 +1,20 @@
 package modelos.Cartas;
 
-import gui.Jogo.CoringasGUI;
-
-import java.util.*;
+import java.util.List;
 
 public class CoringaDetails {
-    private List<CoringasGUI> coringas;
+    private List<Coringa> coringas;
 
-    public List<CoringasGUI> getCoringas() {
+    public List<Coringa> getCoringas() {
         return coringas;
     }
 
-    public void setCoringas(List<CoringasGUI> coringas) {
+    public void setCoringas(List<Coringa> coringas) {
         this.coringas = coringas;
     }
 
     @Override
     public String toString() {
-        return "Coringa: " + coringas;
+        return "CoringaDetails{" + "coringas=" + coringas + '}';
     }
 }

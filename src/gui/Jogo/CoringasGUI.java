@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 
-public class CoringasGUI extends JFrame {
+public class CoringasGUI extends JPanel {
     private final Coringa coringa;
     private final JLabel labelCoringa;
 

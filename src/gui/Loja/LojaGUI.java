@@ -36,10 +36,11 @@ public class LojaGUI extends JPanel {
         JPanel painelDireita = new JPanel();
         painelDireita.setLayout(new FlowLayout());
 
-        coringas = CoringaReader.CoringaRead(caminhoCoringas).getCoringas();
         JPanel panelCoringas = new JPanel(new FlowLayout());
-        for (CoringasGUI coringa : coringas) {
-            panelCoringas.add(coringa);
+        List<Coringa> coringasData = CoringaReader.CoringaRead(caminhoCoringas).getCoringas();
+        for (Coringa coringaData : coringasData) {
+            CoringasGUI coringaGUI = new CoringasGUI(coringaData);
+            panelCoringas.add(coringaGUI);
         }
 
         JPanel painelInferiorDireito = new JPanel();
