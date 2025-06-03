@@ -19,27 +19,22 @@ public class MenuGUI extends JPanel implements ActionListener {
         BotoesMenu = new BotoesGUI[5];
         for (int i = 0; i < BotoesMenu.length; i++) {
             if (i < 3)
-                BotoesMenu[i] = new BotoesGUI("menu/", 126, 252, i);
+                BotoesMenu[i] = new BotoesGUI("menu/", 95, 189, i);
             else
-                BotoesMenu[i] = new BotoesGUI("menu/", 88, 88, i);
+                BotoesMenu[i] = new BotoesGUI("menu/", 66, 66, i);
         }
 
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 50));
-        panelInferior.add(BotoesMenu[0].getBotao());
-        BotoesMenu[0].getBotao().addActionListener(this);
-
-        panelInferior.add(BotoesMenu[1].getBotao());
-        BotoesMenu[1].getBotao().addActionListener(this);
-
-        panelInferior.add(BotoesMenu[2].getBotao());
-        BotoesMenu[2].getBotao().addActionListener(this);
+        for (int i = 0; i < 3; i++) {
+            panelInferior.add(BotoesMenu[i].getBotao());
+            BotoesMenu[i].getBotao().addActionListener(this);
+        }
 
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 20));
-        panelSuperior.add(BotoesMenu[3].getBotao());
-        BotoesMenu[3].getBotao().addActionListener(this);
-
-        panelSuperior.add(BotoesMenu[4].getBotao());
-        BotoesMenu[4].getBotao().addActionListener(this);
+        for (int i = 3; i < 5; i++) {
+            panelSuperior.add(BotoesMenu[i].getBotao());
+            BotoesMenu[i].getBotao().addActionListener(this);
+        }
 
         //Panel menu
         JPanel menuPainel = new JPanel(new BorderLayout());
