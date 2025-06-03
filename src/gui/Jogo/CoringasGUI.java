@@ -9,8 +9,8 @@ import java.awt.event.*;
 import java.net.*;
 
 public class CoringasGUI extends JFrame {
-    private Coringa coringa;
-    private JLabel labelCoringa;
+    private final Coringa coringa;
+    private final JLabel labelCoringa;
 
     public CoringasGUI(Coringa coringa){
         this.coringa = coringa;

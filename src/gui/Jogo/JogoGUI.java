@@ -3,10 +3,12 @@ package gui.Jogo;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import javax.swing.*;
 
 import gui.*;
 import gui.Jogo.*;
+import gui.Loja.LojaGUI;
 import gui.Menu.MenuGUI;
 import modelos.Cartas.Carta;
 
@@ -138,6 +140,14 @@ public class JogoGUI extends JPanel {
         inicio.getBotao().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
                 app.trocarTela(new MenuGUI(app));
+            }
+        });
+
+        pause.getBotao().addActionListener(e -> {
+            try {
+                app.trocarTela(new LojaGUI(app));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         });
 
