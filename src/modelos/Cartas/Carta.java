@@ -1,4 +1,4 @@
-package modelos;
+package modelos.Cartas;
 
 public class Carta {
     private final Naipe naipe;
@@ -58,6 +58,6 @@ public class Carta {
             return imagemCaminho + "versos/" + "cartafundo.png";
         }
         else
-            return imagemCaminho + "faces/" + naipe.toString() + "_" + valor.toString() + ".png";
+            return imagemCaminho + naipe.toString() + "/" + valor.toString() + ".png";
     }
 }

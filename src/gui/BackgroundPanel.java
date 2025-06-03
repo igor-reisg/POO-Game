@@ -1,9 +1,7 @@
 package gui;
 
-import modelos.Carta;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.net.*;
 
 public class BackgroundPanel extends JPanel implements Runnable {
@@ -21,6 +19,7 @@ public class BackgroundPanel extends JPanel implements Runnable {
         }
 
         setLayout(new BorderLayout());
+        setIgnoreRepaint(true);
 
         Thread thread = new Thread(this);
         thread.start();
@@ -38,7 +37,7 @@ public class BackgroundPanel extends JPanel implements Runnable {
                     y = 0;
                 }
                 repaint();
-                Thread.sleep(35);
+                Thread.sleep(32);
             }
         } catch (Exception e) {
             System.out.println("Erro ao carregar imagem de fundo: " + e);

@@ -1,4 +1,4 @@
-package modelos;
+package modelos.Jogo;
 
 public class Enemy {
 }

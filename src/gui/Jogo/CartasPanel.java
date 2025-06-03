@@ -1,6 +1,6 @@
-package gui;
+package gui.Jogo;
 
-import modelos.Carta;
+import modelos.Cartas.Carta;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -75,16 +75,13 @@ public class CartasPanel extends JPanel {
             }
         });
 
-        diminui = new Timer(delay, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (escalaAtual > escalaInicial) {
-                    escalaAtual -= escalaPasso;
-                    carregarImagem(escalaAtual);
-                    frameAtual++;
-                } else {
-                    diminui.stop();
-                }
+        diminui = new Timer(delay, e -> {
+            if (escalaAtual > escalaInicial) {
+                escalaAtual -= escalaPasso;
+                carregarImagem(escalaAtual);
+                frameAtual++;
+            } else {
+                diminui.stop();
             }
         });
     }

@@ -1,5 +1,4 @@
-package gui;
-import modelos.Carta;
+package gui.Jogo;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
@@ -8,7 +7,9 @@ public class MesaGUI extends JPanel{
     private final JLabel labelMesa;
 
     public MesaGUI(){
+        
         labelMesa = new JLabel();
+        setMinimumSize(new Dimension(1271, 720));
         carregarImagem();
         add(labelMesa);
     }

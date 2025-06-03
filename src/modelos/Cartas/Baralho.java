@@ -1,4 +1,6 @@
-package modelos;
+package modelos.Cartas;
+
+import modelos.Cartas.*;
 
 import java.util.*;
 
