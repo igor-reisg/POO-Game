@@ -1,0 +1,26 @@
+[
+  {
+    "nome": "teste1",
+    "descricao": "teste descricao",
+    "efeito": "teste efeito",
+    "preco": 100,
+    "xp": 0,
+    "nivel": 1
+  },
+  {
+    "nome": "teste2",
+    "descricao": "teste descricao",
+    "efeito": "teste efeito",
+    "preco": 100,
+    "xp": 0,
+    "nivel": 1
+  },
+  {
+    "nome": "teste3",
+    "descricao": "teste descricao",
+    "efeito": "teste efeito",
+    "preco": 100,
+    "xp": 0,
+    "nivel": 1
+  }
+]
