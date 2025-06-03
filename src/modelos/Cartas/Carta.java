@@ -1,4 +1,4 @@
-package modelos;
+package modelos.Cartas;
 
 public class Carta {
     private final Naipe naipe;

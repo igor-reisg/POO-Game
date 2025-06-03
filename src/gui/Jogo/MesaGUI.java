@@ -1,5 +1,4 @@
-package gui;
-import modelos.Carta;
+package gui.Jogo;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;

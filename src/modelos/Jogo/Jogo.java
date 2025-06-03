@@ -1,4 +1,7 @@
-package modelos;
+package modelos.Jogo;
+
+import modelos.Cartas.*;
+import modelos.Jogo.*;
 
 public class Jogo {
     Baralho baralho;

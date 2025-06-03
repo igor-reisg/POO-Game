@@ -1,4 +1,6 @@
-package modelos;
+package modelos.Jogo;
+
+import modelos.Cartas.Carta;
 
 public class Player {
     int vida;

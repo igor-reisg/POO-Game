@@ -1,14 +1,15 @@
-package gui;
+package gui.Jogo;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Objects;
 
 import javax.swing.*;
-import javax.swing.text.StyledEditorKit.BoldAction;
 
-import modelos.Carta;
+import gui.*;
+import gui.Jogo.*;
+import gui.Menu.MenuGUI;
+import modelos.Cartas.Carta;
 
 public class JogoGUI extends JPanel {
     Dimension tamanhoTela;
@@ -16,7 +17,8 @@ public class JogoGUI extends JPanel {
 
     JanelaGUI app;
     MesaGUI mesa;
-    CartasPanel cartasJogador[], cartasInimigo[];
+    CartasPanel[] cartasJogador;
+    CartasPanel[] cartasInimigo;
     IconeGUI jogadorIcon, adversarioIcon;
     VidaGUI jogadorHP, adversarioHP;
     BotoesGUI pause, inicio;

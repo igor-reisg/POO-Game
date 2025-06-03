@@ -1,10 +1,6 @@
-package gui;
+package gui.Jogo;
 import javax.swing.*;
 import javax.swing.border.Border;
-
-import modelos.Player;
-import modelos.Enemy;
-
 
 import java.awt.*;
 import java.awt.event.*;

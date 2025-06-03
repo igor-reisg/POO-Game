@@ -1,4 +1,6 @@
 package gui;
+import gui.Menu.MenuGUI;
+
 import javax.swing.*;
 import java.awt.*;
 

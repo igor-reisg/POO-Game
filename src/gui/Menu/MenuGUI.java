@@ -1,10 +1,11 @@
-package gui;
+package gui.Menu;
+
+import gui.*;
+import gui.Jogo.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.net.*;
-import java.util.Objects;
 
 public class MenuGUI extends JPanel implements ActionListener {
     JanelaGUI app;
