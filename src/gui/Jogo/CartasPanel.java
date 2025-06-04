@@ -29,7 +29,6 @@ public class CartasPanel extends JPanel {
         carregarImagem(escalaInicial);
 
         inicializaTimers();
-
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

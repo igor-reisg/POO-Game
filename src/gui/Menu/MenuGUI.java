@@ -2,6 +2,7 @@ package gui.Menu;
 
 import gui.*;
 import gui.Jogo.*;
+import modelos.Jogo.Jogo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -83,7 +84,7 @@ public class MenuGUI extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == BotoesMenu[0].getBotao()) {
-            app.trocarTela(new JogoGUI(app));
+            app.trocarTela(new JogoGUI(app, new Jogo()));
         }
         else if (e.getSource() == BotoesMenu[1].getBotao()) {
             mostrarPainelOpcoes();
