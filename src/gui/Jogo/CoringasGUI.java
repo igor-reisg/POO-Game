@@ -1,41 +1,55 @@
 package gui.Jogo;
 
 import modelos.Cartas.Coringa;
-
-import modelos.Cartas.Carta;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.net.*;
+import java.net.URL;
 
 public class CoringasGUI extends JPanel {
     private final Coringa coringa;
-    private final JLabel labelCoringa;
+    private ImageIcon imgCoringa;
+    private Point prevMouse;
+    private ImageIcon imgCoringa2;
 
-    public CoringasGUI(Coringa coringa){
+    public CoringasGUI(Coringa coringa, int posX, int posY, int largura, int altura) {
         this.coringa = coringa;
 
-        this.setLayout(new BorderLayout());
-        labelCoringa = new JLabel();
-        this.add(labelCoringa, BorderLayout.CENTER);
-        carregarImagem();
+        // Carregar imagem
+        URL url = getClass().getResource(coringa.getImagemCaminho());
+        if (url != null) {
+            imgCoringa = new ImageIcon(url);
+            Image imgRed = imgCoringa.getImage().getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
+            imgCoringa2 = new ImageIcon(imgRed);
+        }
+
+        setSize(largura, altura);
+        setOpaque(false);
+        setLocation(posX, posY);
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                prevMouse = e.getPoint();
+            }
+        });
+
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                int dx = e.getX() - prevMouse.x;
+                int dy = e.getY() - prevMouse.y;
+                Point location = getLocation();
+                setLocation(location.x + dx, location.y + dy);
+            }
+        });
     }
 
-    private void carregarImagem() {
-        try {
-            String caminhoImagem = coringa.getImagemCaminho();
-            URL urlImagem = getClass().getResource(caminhoImagem);
-
-            if (urlImagem != null) {
-                ImageIcon imagem = new ImageIcon(urlImagem);
-                Image img = imagem.getImage();
-                int largura = img.getWidth(null);
-                int altura = img.getHeight(null);
-                Image imagemRedimensionada = img.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
-                labelCoringa.setIcon(new ImageIcon(imagemRedimensionada));
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao carregar imagem da carta: " + e.getMessage());
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (imgCoringa2 != null) {
+            imgCoringa2.paintIcon(this, g, 0, 0);
         }
     }
 }

@@ -17,13 +17,16 @@ public class LojaGUI extends JPanel {
     BotoesGUI[] BotoesLoja;
     String caminhoBackground = "/assets/images/background/pattern2.png";
     String caminhoCoringas = "/assets/data/coringas.json";
-    CoringasGUI coringa;
-    List<CoringasGUI> coringas;
-    CoringaReader lerCoringas;
+    int locationX = 100;
+    int locationY = 100;
+    int largura;
+    int altura;
+
 
     public LojaGUI(JanelaGUI app) throws IOException {
         this.app = app;
 
+        //Geração dos botões da loja
         BotoesLoja = new BotoesGUI[3];
         for (int i = 0; i < BotoesLoja.length; i++) {
             BotoesLoja[i] = new BotoesGUI("loja/", 95, 189, i);
@@ -34,13 +37,22 @@ public class LojaGUI extends JPanel {
         background.add(lojaPainel, BorderLayout.CENTER);
 
         JPanel painelDireita = new JPanel();
-        painelDireita.setLayout(new FlowLayout());
+        painelDireita.setLayout(new BorderLayout());
 
-        JPanel panelCoringas = new JPanel(new FlowLayout());
+        //Tamanho dos Coringas
+        largura = 176;
+        altura = 248;
+
+        //Panel dos Coringas
+        JLayeredPane layerCoringas = new JLayeredPane();
+        layerCoringas.setOpaque(false);
+        layerCoringas.setSize(largura, altura);
+
         List<Coringa> coringasData = CoringaReader.CoringaRead(caminhoCoringas).getCoringas();
         for (Coringa coringaData : coringasData) {
-            CoringasGUI coringaGUI = new CoringasGUI(coringaData);
-            panelCoringas.add(coringaGUI);
+            CoringasGUI coringaGUI = new CoringasGUI(coringaData, locationX, locationY, largura, altura);
+            layerCoringas.add(coringaGUI, JLayeredPane.DRAG_LAYER);
+            locationX += 250;
         }
 
         JPanel painelInferiorDireito = new JPanel();
@@ -49,13 +61,14 @@ public class LojaGUI extends JPanel {
             painelInferiorDireito.add(BotoesLoja[i].getBotao());
         }
         painelDireita.add(painelInferiorDireito, BorderLayout.SOUTH);
-        painelDireita.add(panelCoringas, BorderLayout.NORTH);
 
-        lojaPainel.add(painelDireita, BorderLayout.EAST);
+        background.add(painelDireita, BorderLayout.EAST);
+        background.add(layerCoringas, BorderLayout.CENTER);
 
         painelDireita.setOpaque(false);
         painelInferiorDireito.setOpaque(false);
         lojaPainel.setOpaque(false);
+        layerCoringas.setOpaque(false);
 
         setLayout(new BorderLayout());
         add(background, BorderLayout.CENTER);
