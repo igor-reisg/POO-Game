@@ -7,14 +7,15 @@ import java.io.IOException;
 import javax.swing.*;
 
 import gui.*;
-import gui.Jogo.*;
+import modelos.Jogo.Jogo;
 import gui.Loja.LojaGUI;
 import gui.Menu.MenuGUI;
 import modelos.Cartas.Carta;
 
 public class JogoGUI extends JPanel {
-    Dimension tamanhoTela;
-    Double x_gap = 0.33;
+    private Jogo jogo;
+    private Dimension tamanhoTela;
+    private Double x_gap = 0.33;
 
     JanelaGUI app;
     MesaGUI mesa;
@@ -23,12 +24,12 @@ public class JogoGUI extends JPanel {
     IconeGUI jogadorIcon, adversarioIcon;
     VidaGUI jogadorHP, adversarioHP;
     BotoesGUI pause, inicio;
-    BotoesGUI fold, check;
-    JLabel pote;
+    BotoesGUI check;
     ImageIcon[] checkIcons, foldIcons, pauseIcons, inicioIcons;
 
     
-    public JogoGUI(JanelaGUI app) {
+    public JogoGUI(JanelaGUI app, Jogo jogo) {
+        this.jogo = jogo;
         this.app = app;
         Dimension tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
         this.tamanhoTela = tamanhoTela;
@@ -40,9 +41,9 @@ public class JogoGUI extends JPanel {
         add(background, BorderLayout.CENTER); 
 
         //Mesa
-        mesa = new MesaGUI();
-        mesa.setOpaque(false); 
-        
+        mesa = new MesaGUI(jogo.getMesa());
+        mesa.setOpaque(false);
+
         //Hub do jogador
         JPanel hubJogador = new JPanel();
         hubJogador.setLayout(new BoxLayout(hubJogador, BoxLayout.X_AXIS));
@@ -61,17 +62,29 @@ public class JogoGUI extends JPanel {
         cartasPanel.setOpaque(true);
         hubJogador.add(cartasPanel);
         hubJogador.add(Box.createHorizontalStrut((int) (tamanhoTela.getWidth() * x_gap)));
- 
+
         // Painel dos botões Check e Fold
         JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0)); 
         
         check = new BotoesGUI("jogo/check", 63, 128, 0);
-        fold = new BotoesGUI("jogo/fold", 63, 128, 0);
-
+        BotoesGUI fold = new BotoesGUI("jogo/fold", 63, 128, 0);
 
         checkIcons = new ImageIcon[3];
         foldIcons = new ImageIcon[3];
-        
+
+        check.getBotao().addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                jogo.getJogador().escolhaDaJogada(1);
+            }
+        });
+
+        fold.getBotao().addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jogo.getJogador().escolhaDaJogada(0);
+            }
+        });
 
         painelBotoes.add(check.getBotao());
         painelBotoes.add(fold.getBotao());
@@ -80,7 +93,7 @@ public class JogoGUI extends JPanel {
         JPanel painelBotoesVida = new JPanel();
         painelBotoesVida.setLayout(new BoxLayout(painelBotoesVida, BoxLayout.Y_AXIS));
 
-        jogadorHP = new VidaGUI();
+        jogadorHP = new VidaGUI(jogo.getJogador().getVida());
         jogadorHP.setAlignmentX(Component.CENTER_ALIGNMENT);
         jogadorHP.setOpaque(true);
         jogadorHP.setBackground(Color.GREEN);
@@ -95,7 +108,7 @@ public class JogoGUI extends JPanel {
         
         JPanel potePanel = new JPanel();
         potePanel.setLayout(new FlowLayout());
-        pote = new JLabel();
+        JLabel pote = new JLabel();
         //pote.setPreferredSize(new Dimension(20, 30));
         pote.setBackground(Color.RED);
         potePanel.add(pote);
@@ -107,7 +120,7 @@ public class JogoGUI extends JPanel {
         
         //Vida do inimigo
 
-        adversarioHP = new VidaGUI();
+        adversarioHP = new VidaGUI(jogo.getInimigo().getVida());
         adversarioHP.setLayout(new BorderLayout(20, 20));
         adversarioHP.setPreferredSize(new Dimension(1000, 10));
         adversarioHP.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -168,6 +181,8 @@ public class JogoGUI extends JPanel {
         background.add(potePanel, BorderLayout.WEST);
         background.add(mesa, BorderLayout.CENTER);
         background.add(hubJogador, BorderLayout.SOUTH);
+
+        jogo.iniciarJogo();
     }
 
 }

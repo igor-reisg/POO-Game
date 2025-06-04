@@ -2,17 +2,19 @@ package modelos.Jogo;
 
 import modelos.Cartas.*;
 
-public class Player {
+public class Jogador {
     private int vida;
     private String nome;
+    private int blind;
+    private int jogada;
     private Carta[] mao;
     private int dinheiro;
-    private int blind;
 
-    public Player(String nome){
-        vida = 150;
+    public Jogador(String nome){
+        this.vida = 1500;
         this.nome = nome;
     }
+
 
     public void recebeCarta(Baralho baralho){
         mao = new Carta[2];
@@ -20,8 +22,18 @@ public class Player {
         mao[1] = baralho.pegaCarta();
 
     }
+    public void escolhaDaJogada(int escolha){
+        this.jogada = escolha;
+        if(escolha == 1){
+            check();
+        } else{
+            fold();
+        }
+    }
+
     public void check(){
         vida -= 10;
+        System.out.println(vida);
     }
 
     public void fold(){
@@ -31,18 +43,33 @@ public class Player {
     public int getVida(){
         return vida;
     }
+    public void setVida(int vida){
+        this.vida = vida;
+    }
+
     public Carta[] getMao(){
         return mao;
+    }
+    public void setMao(Carta[] mao){
+        this.mao = mao;
+    }
+    public void setBlind(int blind){
+        this.blind = blind;
+    }
+    public int getBlind(){
+        return blind;
     }
     public int getDinheiro(){
         return dinheiro;
     }
-
-    public int getBlind(){
-        return blind;
+    public void setDinheiro(int dinheiro){
+        this.dinheiro = dinheiro;
     }
-    public void setBlind(int blind){
-        this.blind = blind;
+    public int getJogada(){
+        return jogada;
+    }
+    public void setJogada(int jogada){
+        this.jogada = jogada;
     }
 
 }

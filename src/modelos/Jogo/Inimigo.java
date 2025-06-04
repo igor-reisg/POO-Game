@@ -3,15 +3,25 @@ package modelos.Jogo;
 import modelos.Cartas.Baralho;
 import modelos.Cartas.Carta;
 
-public class Enemy {
-    int vida;
-    String nome;
-    Carta[] mao;
-    int dinheiro;
-    int blind;
+public class Inimigo {
+    private int vida;
+    private int jogada;
+    private String nome;
+    private Carta[] mao;
+    private int dinheiro;
+    private int blind;
 
-    public Enemy(){
+    public Inimigo(){
+        this.vida = 1500;
+    }
 
+    public void escolhaDaJogada(int escolha){
+        this.jogada = escolha;
+        if(escolha == 1){
+            check();
+        } else{
+            fold();
+        }
     }
 
     public void check(){
@@ -33,14 +43,19 @@ public class Enemy {
     public int getVida(){
         return vida;
     }
+    public void setVida(int vida){ this.vida = vida; }
     public Carta[] getMao(){
         return mao;
     }
+    public void setMao(Carta[] mao){ this.mao = mao; }
     public int getDinheiro(){
         return dinheiro;
     }
-    public int getBlind(){
-        return blind;
+    public void setDinheiro(int dinheiro){ this.dinheiro = dinheiro; }
+    public int getBlind(){ return blind; }
+    public void setBlind(int blind){ this.blind = blind; }
+    public int getJogada(){
+        return 0;//jogada
     }
-
+    public void setJogada(int jogada){ this.jogada = jogada; }
 }

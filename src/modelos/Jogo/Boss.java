@@ -1,4 +1,11 @@
 package modelos.Jogo;
 
-public class Boss {
+import modelos.Cartas.Coringa;
+
+public class Boss extends Inimigo {
+    Coringa coringa;
+
+    public Boss(Coringa coringa){
+        this.coringa = coringa;
+    }
 }

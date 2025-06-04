@@ -6,7 +6,7 @@ import java.awt.*;
 public class VidaGUI extends JPanel{
     Border borda;
 
-    public VidaGUI(){
+    public VidaGUI(int vida){
         setBackground(Color.WHITE);
         borda = BorderFactory.createLineBorder(Color.BLACK, 3);
         setBorder(borda);
