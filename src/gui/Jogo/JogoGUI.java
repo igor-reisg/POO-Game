@@ -13,142 +13,99 @@ import gui.Menu.MenuGUI;
 import modelos.Cartas.Carta;
 
 public class JogoGUI extends JPanel {
-    private Jogo jogo;
     private Dimension tamanhoTela;
-    private Double x_gap = 0.33;
 
     JanelaGUI app;
     MesaGUI mesa;
     CartasPanel[] cartasJogador;
-    CartasPanel[] cartasInimigo;
+    CartasPanel cartasInimigo;
     IconeGUI jogadorIcon, adversarioIcon;
     VidaGUI jogadorHP, adversarioHP;
     BotoesGUI pause, inicio;
-    BotoesGUI check;
+    BotoesGUI check, fold;
     ImageIcon[] checkIcons, foldIcons, pauseIcons, inicioIcons;
 
-    
+
     public JogoGUI(JanelaGUI app, Jogo jogo) {
-        this.jogo = jogo;
         this.app = app;
-        Dimension tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
-        this.tamanhoTela = tamanhoTela;
-        setLayout(new BorderLayout()); 
+
+        tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
+        int larguraTela = tamanhoTela.width;
+        int alturaTela = tamanhoTela.height;
+
+        setLayout(new BorderLayout());
 
         //Background
         BackgroundPanel background = new BackgroundPanel("/assets/images/background/pattern1.png");
-        background.setLayout(new BorderLayout(10, 20)); 
-        add(background, BorderLayout.CENTER); 
+        background.setLayout(null);
+        add(background, BorderLayout.CENTER);
 
-        //Mesa
-        mesa = new MesaGUI(jogo.getMesa());
-        mesa.setOpaque(false);
+        jogadorIcon = new IconeGUI("/assets/images/frames/framesBoss/boss0_1.png", "Gabiel Maka");
+        Dimension jogadorIconSize = jogadorIcon.getPreferredSize();
+        jogadorIcon.setBounds(0, alturaTela - jogadorIconSize.height, jogadorIconSize.width, jogadorIconSize.height);
+        background.add(jogadorIcon);
 
-        //Hub do jogador
-        JPanel hubJogador = new JPanel();
-        hubJogador.setLayout(new BoxLayout(hubJogador, BoxLayout.X_AXIS));
-        //Icones
-        jogadorIcon = new IconeGUI();
-        jogadorIcon.setPreferredSize(new Dimension(200, 150));
-        hubJogador.add(jogadorIcon);
-        //Cartas do jogador
-        JPanel cartasPanel = new JPanel(new FlowLayout());
+        adversarioIcon = new IconeGUI("/assets/images/frames/framesBoss/boss1_1.png", "Nulio Cisar");
+        Dimension adversarioIconSize = adversarioIcon.getPreferredSize();
+        adversarioIcon.setBounds(larguraTela - adversarioIconSize.width, 0, adversarioIconSize.width, adversarioIconSize.height);
+        background.add(adversarioIcon);
+
         cartasJogador = new CartasPanel[2];
-        cartasJogador[0] = new CartasPanel(new Carta(Carta.Naipe.COPAS, Carta.Valor.DOIS));
-        cartasJogador[1] = new CartasPanel(new Carta(Carta.Naipe.COPAS, Carta.Valor.DOIS));
+        for(int i = 0 ; i < 2 ; i++){
+            cartasJogador[i] = new CartasPanel(jogo.getJogador().getMao()[i]);
+            cartasJogador[i].setBounds(
+                    jogadorIcon.getWidth() + cartasJogador[i].getWidth()*(1+i) + 20,
+                    alturaTela - cartasJogador[i].getHeight() ,
+                    cartasJogador[i].getWidth(),
+                    cartasJogador[i].getHeight());
+            background.add(cartasJogador[i]);
+        }
 
-        cartasPanel.add(cartasJogador[0]);
-        cartasPanel.add(cartasJogador[1]);
-        cartasPanel.setOpaque(true);
-        hubJogador.add(cartasPanel);
-        hubJogador.add(Box.createHorizontalStrut((int) (tamanhoTela.getWidth() * x_gap)));
+        mesa = new MesaGUI(jogo.getMesa());
+        Dimension mesaSize = mesa.getPreferredSize();
 
-        // Painel dos botões Check e Fold
-        JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0)); 
-        
-        check = new BotoesGUI("jogo/check", 63, 128, 0);
-        BotoesGUI fold = new BotoesGUI("jogo/fold", 63, 128, 0);
-
-        checkIcons = new ImageIcon[3];
-        foldIcons = new ImageIcon[3];
-
-        check.getBotao().addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                jogo.getJogador().escolhaDaJogada(1);
-            }
-        });
-
-        fold.getBotao().addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jogo.getJogador().escolhaDaJogada(0);
-            }
-        });
-
-        painelBotoes.add(check.getBotao());
-        painelBotoes.add(fold.getBotao());
-
-        // Painel com informações de vida e botões
-        JPanel painelBotoesVida = new JPanel();
-        painelBotoesVida.setLayout(new BoxLayout(painelBotoesVida, BoxLayout.Y_AXIS));
+        mesa.setBounds( (int) (larguraTela/2 - ( mesaSize.getWidth()/2) ) , (int) (alturaTela/2 - mesaSize.getHeight()/2),  mesaSize.width, mesaSize.height);
+        mesa.setOpaque(false);
+        background.add(mesa);
 
         jogadorHP = new VidaGUI(jogo.getJogador().getVida());
-        jogadorHP.setAlignmentX(Component.CENTER_ALIGNMENT);
-        jogadorHP.setOpaque(true);
-        jogadorHP.setBackground(Color.GREEN);
+        Dimension vidaJogadorSize = jogadorHP.getPreferredSize();
+        jogadorHP.setBounds(
+                larguraTela - vidaJogadorSize.width,
+                alturaTela - vidaJogadorSize.height - 100,
+                vidaJogadorSize.width,
+                vidaJogadorSize.height
+        );
 
-        painelBotoesVida.add(jogadorHP);
-        painelBotoesVida.add(painelBotoes);
+        background.add(jogadorHP);
 
-        hubJogador.add(painelBotoesVida);
 
-        painelBotoesVida.setOpaque(false);
-        painelBotoes.setOpaque(false);
-        
-        JPanel potePanel = new JPanel();
-        potePanel.setLayout(new FlowLayout());
-        JLabel pote = new JLabel();
-        //pote.setPreferredSize(new Dimension(20, 30));
-        pote.setBackground(Color.RED);
-        potePanel.add(pote);
-        pote.setOpaque(true);
-        
-        //Criação do Hub do Adversário
-        JPanel hubAdversario = new JPanel();
-        hubAdversario.setLayout(new BoxLayout(hubAdversario, BoxLayout.X_AXIS));
-        
-        //Vida do inimigo
+        adversarioHP = new VidaGUI(jogo.getJogador().getVida());
+        Dimension vidaAdversarioSize = adversarioHP.getPreferredSize();
+        adversarioHP.setBounds(
+                0,
+                0,
+                vidaAdversarioSize.width,
+                vidaAdversarioSize.height
+        );
 
-        adversarioHP = new VidaGUI(jogo.getInimigo().getVida());
-        adversarioHP.setLayout(new BorderLayout(20, 20));
-        adversarioHP.setPreferredSize(new Dimension(1000, 10));
-        adversarioHP.setAlignmentX(Component.CENTER_ALIGNMENT);
-        adversarioHP.setOpaque(true);
-        adversarioHP.setBackground(Color.RED);
-        hubAdversario.add(adversarioHP);
-        hubAdversario.add(Box.createHorizontalStrut(700));
-    
-        //Cartas do adversário
-        JPanel cartasAdversarioPanel = new JPanel();
-        cartasInimigo = new CartasPanel[2];
-        cartasInimigo[0] = new CartasPanel(new Carta(Carta.Naipe.COPAS, Carta.Valor.DOIS));
-        cartasInimigo[1] = new CartasPanel(new Carta(Carta.Naipe.COPAS, Carta.Valor.DOIS));
-        cartasAdversarioPanel.add(cartasInimigo[0]);
-        cartasAdversarioPanel.add(cartasInimigo[1]);
-        cartasAdversarioPanel.setOpaque(false);
-        hubAdversario.add(cartasAdversarioPanel);
-        //Icone do adversario
-        adversarioIcon = new IconeGUI();
-        //adversarioIcon.setPreferredSize(new Dimension(200, 200));
-        hubAdversario.add(adversarioIcon);
+        background.add(adversarioHP);
 
-        //Controle do Jogo(pause e home)
+        pause = new BotoesGUI("jogo/pause", 50, 50, 0);
+        pause.setBotao(pause.getBotao());
+        pause.add(pause.getBotao());
         pauseIcons = new ImageIcon[3];
-        JPanel controleJogo = new JPanel();
-        controleJogo.setLayout(new BoxLayout(controleJogo, BoxLayout.Y_AXIS));
-        pause = new BotoesGUI("jogo/pause", 84, 42, 0);
-        inicio = new BotoesGUI("jogo/pause", 84, 42, 0);
+        pause.setBounds(larguraTela - 50, (alturaTela - 50)/2 - 50, 50, 50);
+        pause.setOpaque(false);
+        background.add(pause);
+
+        inicio = new BotoesGUI("jogo/pause", 50, 50, 0);
+        inicio.setBotao(inicio.getBotao());
+        inicio.add(inicio.getBotao());
+        inicioIcons = new ImageIcon[3];
+        inicio.setBounds(larguraTela - 50, (alturaTela - 50)/2, 50, 50);
+        inicio.setOpaque(false);
+        background.add(inicio);
 
         inicio.getBotao().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt){
@@ -164,25 +121,48 @@ public class JogoGUI extends JPanel {
             }
         });
 
-        controleJogo.add(pause.getBotao());
-        controleJogo.add(inicio.getBotao());
-        controleJogo.setOpaque(true);
+        check = new BotoesGUI("jogo/check", 84, 42, 0);
+        check.setEscalaX(5);
+        check.setEscalaY(1.3);
+        checkIcons = new ImageIcon[3];
+        check.setBotao(check.getBotao()); //KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
+        check.add(check.getBotao());
+        check.setBounds(
+                (larguraTela  - vidaJogadorSize.width),
+                (int) (alturaTela - 84 * 1.3),
+                (42 * 5),
+                (int) (84 * 1.3)
+        );
+        check.setOpaque(false);
+        background.add(check);
 
-        //Set de todos os containers para falso para o background
-        controleJogo.setOpaque(false);
-        hubAdversario.setOpaque(false);
-        hubJogador.setOpaque(false);
-        cartasPanel.setOpaque(false);
-        painelBotoes.setOpaque(false);
-        painelBotoesVida.setOpaque(false);
-        
-        background.add(controleJogo, BorderLayout.EAST);
-        background.add(hubAdversario, BorderLayout.NORTH);
-        background.add(potePanel, BorderLayout.WEST);
-        background.add(mesa, BorderLayout.CENTER);
-        background.add(hubJogador, BorderLayout.SOUTH);
+        check.getBotao().addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                jogo.getJogador().escolhaDaJogada(1);
+            }
+        });
 
-        jogo.iniciarJogo();
+        fold = new BotoesGUI("jogo/fold", 84, 42, 0);
+        foldIcons = new ImageIcon[3];
+        fold.setEscalaX(5);
+        fold.setEscalaY(1.3);
+        fold.setBotao(fold.getBotao());
+        fold.add(fold.getBotao());
+        fold.setOpaque(false);
+        background.add(fold);
+        fold.setBounds(
+                (int) (larguraTela  - vidaJogadorSize.width + 42 * 5.5),
+                (int) (alturaTela - 84 * 1.3),
+                (int)(42 * 5),
+                (int) (84 * 1.3)
+        );
+
+        fold.getBotao().addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jogo.getJogador().escolhaDaJogada(0);
+            }
+        });
     }
-
 }

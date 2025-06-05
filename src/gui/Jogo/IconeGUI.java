@@ -3,39 +3,66 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 import java.awt.*;
-import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.*;
-import java.util.Objects;
 
 public class IconeGUI extends JPanel{
     Border borda;
-    JLabel labelIcone;
+    String caminhoImagemBorda = "/assets/images/frames/framePrincipal/frame01.png";
+    String caminhoImagem;
+    JLabel labelIcone, labelNomeJogador, labelIconeJogador;
+    private int largura;
+    private int altura;
+    private String nome;
 
-    public IconeGUI(){
-        setBackground(Color.WHITE);
+
+    public IconeGUI(String caminhoImagem, String nome){
+        this.caminhoImagem = caminhoImagem;
+        Font fontePersonalizada;
          labelIcone = new JLabel();
+         labelNomeJogador = new JLabel(nome);
+         labelIconeJogador = new JLabel();
 
 
-        carregarImagem();
+         File fonteArquivo = new File("src/assets/fonts/RetroGaming.ttf");
+         try{
+            fontePersonalizada = Font.createFont(Font.TRUETYPE_FONT, fonteArquivo).deriveFont(18f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(fontePersonalizada);
+         } catch(FontFormatException | IOException e) {
+             fontePersonalizada = new Font("Arial", Font.PLAIN, 24);
+         }
+        carregarImagem(caminhoImagemBorda, labelIcone);
         add(labelIcone);
+        labelIcone.setLayout(null);
+
+        labelNomeJogador.setBounds(10, 10, 170, 20);
+        labelNomeJogador.setFont(fontePersonalizada);
+        labelIcone.add(labelNomeJogador);
+
+        labelIconeJogador.setBounds(10, 30, 170, 120);
+        carregarImagem(caminhoImagem, labelIconeJogador);
+        labelIcone.add(labelIconeJogador);
+
     }
 
-    private void carregarImagem() {
-        try {
-            String caminhoImagem = "/assets/images/framePrincipal/frame01.png";
-            URL urlImagem = getClass().getResource(caminhoImagem);
 
-            if (urlImagem != null) {
-                ImageIcon imagem = new ImageIcon(urlImagem);
-                Image img = imagem.getImage();
-                int largura = (int) (img.getWidth(null) * 1.1);
-                int altura = (int) (img.getHeight(null) * 1.1);
-                Image imagemRedimensionada = img.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
-                labelIcone.setIcon(new ImageIcon(imagemRedimensionada));
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao carregar imagem da carta: " + e.getMessage());
+    private void carregarImagem(String caminhoImagem, JLabel destino) {
+        URL urlImagem = getClass().getResource(caminhoImagem);
+        if (urlImagem == null) {
+            System.err.println("Imagem não encontrada: " + caminhoImagem);
+            return;
         }
+
+        ImageIcon imagem = new ImageIcon(urlImagem);
+        Image img = imagem.getImage();
+        this.largura = img.getWidth(null);
+        this.altura = img.getHeight(null);
+        destino.setIcon(imagem);
     }
 
+    public Dimension getPreferredSize(JLabel x) {
+        return new Dimension(largura, altura);
+    }
 }

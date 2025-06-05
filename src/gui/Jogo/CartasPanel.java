@@ -19,6 +19,8 @@ public class CartasPanel extends JPanel {
 
     private double escalaAtual;
     private int frameAtual;
+    private int largura;
+    private int altura;
 
     public CartasPanel(Carta carta) {
         this.carta = carta;
@@ -45,14 +47,22 @@ public class CartasPanel extends JPanel {
             if (urlImagem != null) {
                 ImageIcon imagem = new ImageIcon(urlImagem);
                 Image img = imagem.getImage();
-                int largura = (int) (img.getWidth(null) * escala);
-                int altura = (int) (img.getHeight(null) * escala);
+                this.largura = (int) (img.getWidth(null) * escala);
+                this.altura = (int) (img.getHeight(null) * escala);
                 Image imagemRedimensionada = img.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
                 labelCarta.setIcon(new ImageIcon(imagemRedimensionada));
             }
         } catch (Exception e) {
             System.out.println("Erro ao carregar imagem da carta: " + e.getMessage());
         }
+    }
+
+    public int getWidth(){
+        return largura;
+    }
+
+    public int getHeight(){
+        return altura;
     }
 
     private void inicializaTimers() {

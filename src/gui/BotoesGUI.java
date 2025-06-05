@@ -5,32 +5,36 @@ import java.awt.*;
 import java.util.*;
 
 public class BotoesGUI extends JPanel{
-    String caminhoBotao = "/assets/images/botoes/";
-    int largura;
-    int altura;
-    ImageIcon[] Imagens;
-    int numeroBotao;
-    JButton botao;
+    private String caminhoBotao = "/assets/images/botoes/";
+    private final int largura;
+    private final int altura;
+    private final ImageIcon[] imagens;
+    private final int numeroBotao;
+    private JButton botao;
+    private double escalaX;
+    private double escalaY;
 
     public BotoesGUI(String caminhoBase, int altura, int largura, int numeroBotao){
+        escalaX = 1;
+        escalaY = 1;
         this.altura = altura;
         this.largura = largura;
         caminhoBotao += caminhoBase;
         this.numeroBotao = numeroBotao;
-        this.Imagens = new ImageIcon[3];
+        this.imagens = new ImageIcon[3];
     }
 
     private JButton criarBotao() {
-        for (int i = 0; i < Imagens.length; i++){
+        for (int i = 0; i < imagens.length; i++){
             Image img = new ImageIcon(Objects.requireNonNull(getClass().getResource(caminhoBotao + numeroBotao + "_" + i + ".png"))).getImage();
-            img = img.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
-            Imagens[i] = new ImageIcon(img);
+            img = img.getScaledInstance((int) (largura * escalaX), (int) (altura * escalaY), Image.SCALE_SMOOTH);
+            imagens[i] = new ImageIcon(img);
         }
 
-        botao = new JButton(Imagens[0]);
-        botao.setPreferredSize(new Dimension(largura, altura));
-        botao.setRolloverIcon(Imagens[1]);
-        botao.setPressedIcon(Imagens[2]);
+        botao = new JButton(imagens[0]);
+        botao.setPreferredSize(new Dimension((int)(largura * escalaX),(int) (altura * escalaY)));
+        botao.setRolloverIcon(imagens[1]);
+        botao.setPressedIcon(imagens[2]);
         botao.setBorderPainted(false);
         botao.setContentAreaFilled(false);
         botao.setOpaque(false);
@@ -42,6 +46,15 @@ public class BotoesGUI extends JPanel{
             botao = criarBotao();
         }
         return botao;
+    }
+    public void setBotao(JButton botao) {
+        this.botao = botao;
+    }
+    public void setEscalaX(double escalaX){
+        this.escalaX = escalaX;
+    }
+    public void setEscalaY(double escalaY){
+        this.escalaY = escalaY;
     }
 
 }

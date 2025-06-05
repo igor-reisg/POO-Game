@@ -1,8 +1,5 @@
 package gui.Loja;
 
-import gui.BotoesGUI;
-import gui.JanelaGUI;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.InputStream;
@@ -13,7 +10,7 @@ public class SacolaGUI extends JPanel {
     double total = 0.0;
     JLabel labelTotal;
     private Font fonte;
-    private final String caminhoFonte = "/assets/fonts/Retro Gaming.ttf";
+    private final String caminhoFonte = "/assets/fonts/RetroGaming.ttf";
 
     public SacolaGUI() {
         setLayout(new BorderLayout());

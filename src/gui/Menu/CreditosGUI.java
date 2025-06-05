@@ -10,7 +10,7 @@ import java.util.*;
 public class CreditosGUI extends JPanel implements Runnable {
     JanelaGUI app;
     private Font fonte;
-    private final String caminhoFonte = "/assets/fonts/Retro Gaming.ttf";
+    private final String caminhoFonte = "/assets/fonts/RetroGaming.ttf";
     private final String caminhoLogo = "/assets/images/logo/logo01.png";
     private final String[] creditos = {
             "Título do Jogo: Fold or Fight",
