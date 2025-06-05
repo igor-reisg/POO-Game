@@ -26,7 +26,7 @@ public class CreditosGUI extends JPanel implements Runnable {
             "Trilha Sonora: ",
             "Ferramentas e Tecnologias Utilizadas: Java Swing, Java",
     };
-    BotoesGUI botaoVoltar = new BotoesGUI("menu/", 66, 66, 4);
+    BotoesGUI botaoVoltar = new BotoesGUI("menu/", 66, 66, 5);
     private int y = 600;
     private final Image logo;
     private int alturaLogo;

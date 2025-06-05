@@ -12,18 +12,15 @@ import java.util.Objects;
 public class MenuGUI extends JPanel implements ActionListener {
     JanelaGUI app;
     private final String caminhoBackground = "/assets/images/background/pattern2.png";
-    private final String caminhoLogo = "/assets/images/logo/logo01.png";
     BotoesGUI[] BotoesMenu;
 
     public MenuGUI(JanelaGUI app) {
         this.app = app;
 
         //CRIAÇÃO DO LOGO DO MENU
-        ImageIcon logoIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource(caminhoLogo)));
-        Image logoRedimensionada = logoIcon.getImage().getScaledInstance(1600, 900, Image.SCALE_SMOOTH);
-        ImageIcon logoIconRedimensionado = new ImageIcon(logoRedimensionada);
-        JLabel logoLabel = new JLabel(logoIconRedimensionado);
-        logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        LogoMenu logo = new LogoMenu();
+        logo.setPreferredSize(new Dimension(1100, 800));
+        logo.setLayout(null);
 
         //CRIAÇÃO DOS BOTÕES DO MENU
         BotoesMenu = new BotoesGUI[5];
@@ -50,12 +47,13 @@ public class MenuGUI extends JPanel implements ActionListener {
         JPanel menuPainel = new JPanel(new BorderLayout());
         menuPainel.add(panelInferior, BorderLayout.SOUTH);
         menuPainel.add(panelSuperior, BorderLayout.NORTH);
-        menuPainel.add(logoLabel, BorderLayout.CENTER);
+        menuPainel.add(logo, BorderLayout.CENTER);
 
         //Deixa tudo invisivel alem dos botoes/carta teste, pra mostrar o background
         panelInferior.setOpaque(false);
         panelSuperior.setOpaque(false);
         menuPainel.setOpaque(false);
+        logo.setOpaque(false);
 
         //Tem que adicionar
         BackgroundPanel background = new BackgroundPanel(caminhoBackground);

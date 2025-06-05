@@ -1,47 +1,37 @@
 package gui;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.net.*;
+import java.util.Objects;
 
-public class BackgroundPanel extends JPanel implements Runnable {
+public class BackgroundPanel extends JPanel {
     private int x = 0;
-    private Image img;
+    private BufferedImage img;
     private int y = 0;
     private int velocidade = 1;
 
     public BackgroundPanel(String caminhoImagem) {
-        URL urlImagem = getClass().getResource(caminhoImagem);
-
-        if (urlImagem != null) {
-            ImageIcon imagem = new ImageIcon(urlImagem);
-            img = imagem.getImage();
-        }
+        try {
+            img = ImageIO.read(Objects.requireNonNull(getClass().getResource(caminhoImagem)));
+        } catch (Exception ignored) {};
 
         setLayout(new BorderLayout());
-        setIgnoreRepaint(true);
+        setDoubleBuffered(true);
 
-        Thread thread = new Thread(this);
-        thread.start();
-    }
+        new Timer(32, e -> {
+            x -= velocidade;
+            y -= velocidade;
 
-    @Override
-    public void run() {
-        try {
-            while (true) {
-                x -= velocidade;
-                y -= velocidade;
-
-                if (img != null && x < -img.getWidth(null) && y < -img.getHeight(null)) {
-                    x = 0;
-                    y = 0;
-                }
-                repaint();
-                Thread.sleep(32);
+            if (img != null && x < -img.getWidth() && y < -img.getHeight()) {
+                x = 0;
+                y = 0;
             }
-        } catch (Exception e) {
-            System.out.println("Erro ao carregar imagem de fundo: " + e);
-        }
+            repaint();
+        }).start();
+
     }
 
     @Override
