@@ -24,16 +24,16 @@ public class Jogador {
     }
     public void escolhaDaJogada(int escolha){
         this.jogada = escolha;
+
         if(escolha == 1){
             check();
-        } else{
+        } else {
             fold();
         }
     }
 
     public void check(){
-        vida -= 10;
-        System.out.println(vida);
+
     }
 
     public void fold(){
