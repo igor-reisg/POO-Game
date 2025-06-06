@@ -1,6 +1,6 @@
 package modelos.Cartas;
 
-public class Carta {
+public class    Carta {
     private final Naipe naipe;
     private final Valor valor;
     private boolean verso = true;

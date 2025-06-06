@@ -14,25 +14,24 @@ public class IconeGUI extends JPanel{
     JLabel labelIcone, labelNomeJogador, labelIconeJogador;
     private int largura;
     private int altura;
-    private String nome;
 
 
     public IconeGUI(String caminhoImagem, String nome){
         this.caminhoImagem = caminhoImagem;
         Font fontePersonalizada;
-         labelIcone = new JLabel();
-         labelNomeJogador = new JLabel(nome);
-         labelIconeJogador = new JLabel();
+        labelIcone = new JLabel();
+        labelNomeJogador = new JLabel(nome);
+        labelIconeJogador = new JLabel();
 
 
-         File fonteArquivo = new File("src/assets/fonts/RetroGaming.ttf");
-         try{
+        File fonteArquivo = new File("src/assets/fonts/RetroGaming.ttf");
+        try{
             fontePersonalizada = Font.createFont(Font.TRUETYPE_FONT, fonteArquivo).deriveFont(18f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(fontePersonalizada);
-         } catch(FontFormatException | IOException e) {
+        } catch(FontFormatException | IOException e) {
              fontePersonalizada = new Font("Arial", Font.PLAIN, 24);
-         }
+        }
         carregarImagem(caminhoImagemBorda, labelIcone);
         add(labelIcone);
         labelIcone.setLayout(null);

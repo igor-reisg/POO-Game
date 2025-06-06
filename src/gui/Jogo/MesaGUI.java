@@ -19,7 +19,7 @@ public class MesaGUI extends JPanel{
 
         cartasMesa = new CartasPanel[5];
         int espacamento = 150;
-        int xInicial = largura / 2 - (cartasMesa.length * espacamento) / 2 + 100; //arrume esses numeros
+        int xInicial = largura / 2 - (cartasMesa.length * espacamento) / 2 + 15;
 
         for(int i = 0 ; i < cartasMesa.length; i++){
             cartasMesa[i] = new CartasPanel(mesa.getCartas()[i]);
@@ -44,7 +44,7 @@ public class MesaGUI extends JPanel{
                 labelMesa.setIcon(new ImageIcon(imagemRedimensionada));
             }
         } catch (Exception e) {
-            System.out.println("Erro ao carregar imagem da carta: " + e.getMessage());
+            System.out.println("Erro ao carregar imagem da mesa: " + e.getMessage());
         }
     }
 
