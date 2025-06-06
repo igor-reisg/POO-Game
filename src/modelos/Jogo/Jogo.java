@@ -3,8 +3,6 @@ package modelos.Jogo;
 import java.util.Random;
 import modelos.Cartas.*;
 
-import javax.swing.*;
-
 public class Jogo {
     int level;
     int fase;
@@ -41,17 +39,14 @@ public class Jogo {
     }
 
     public void iniciarRodada(){
-        mesa.recebeCarta(baralho);
+
+        System.out.println("Rodada " + rodada++);
+
         jogador.recebeCarta(baralho);
         inimigo.recebeCarta(baralho);
 
         inimigoPronto = false;
         jogadorPronto = false;
-
-        Random r = new Random();
-        int moeda = r.nextInt(2);
-        jogador.setBlind(moeda);
-        inimigo.setBlind(1 - moeda);
 
     }
 
@@ -78,27 +73,32 @@ public class Jogo {
             jogador.setVida(jogador.getVida() - pote.getQuantidade());
         } else if(jogadaInimigo == 0){
             inimigo.setVida(jogador.getVida() - pote.getQuantidade());
-        } else{
-            novaRodada();
         }
     }
 
     public void iniciarJogo() {
+
         if (jogador.getVida() <= 0 || inimigo.getVida() <= 0) {
             finalizarJogo();
             return;
         }
-        System.out.println("Rodada " + rodada++);
-        mesa.revelaCarta();
-        mesa.revelaCarta();
-        mesa.revelaCarta();
 
-        novaRodada();
+        Random r = new Random();
+        int moeda = r.nextInt(2);
+
+        jogador.setBlind(moeda);
+        inimigo.setBlind(1 - moeda);
+
+        while(jogador.getVida() <= 0 || inimigo.getVida() <= 0){
+
+            iniciarRodada();
+            novaRodada();
+
+        }
     }
 
     private void novaRodada(){
         rodada++;
-        mesa.revelaCarta();
 
         if(jogador.getBlind() == 1){
             jogador.setVida(jogador.getVida() - 200);
@@ -113,10 +113,37 @@ public class Jogo {
             pote.setQuantidade(100);
         }
 
-        //Inverte os blinds
-        jogador.setBlind(1 - jogador.getBlind());
-        inimigo.setBlind(1 - inimigo.getBlind());
-        pote.resetPote();
+        int contTurnos = 0;
+
+        while(contTurnos <=2){
+
+
+            if(jogador.getBlind() == 1){
+                registrarEscolhaJogador(jogador.getJogada());
+                registrarEscolhaInimigo();
+            } else {
+                registrarEscolhaInimigo();
+                registrarEscolhaJogador(jogador.getJogada());
+            }
+
+            //Inverte os blinds
+            jogador.setBlind(1 - jogador.getBlind());
+            inimigo.setBlind(1 - inimigo.getBlind());
+            pote.resetPote();
+
+            if(contTurnos == 0){
+                mesa.revelaCarta(0);
+                mesa.revelaCarta(1);
+                mesa.revelaCarta(2);
+
+            } if(contTurnos == 1){
+                mesa.revelaCarta(3);
+            } if(contTurnos == 2) {
+                mesa.revelaCarta(4);
+            }
+            contTurnos++;
+
+        }
     }
 
 

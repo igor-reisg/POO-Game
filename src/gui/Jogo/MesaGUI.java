@@ -19,7 +19,7 @@ public class MesaGUI extends JPanel{
 
         cartasMesa = new CartasPanel[5];
         int espacamento = 150;
-        int xInicial = largura / 2 - (cartasMesa.length * espacamento) / 2 + 100; //arrume esses numeros
+        int xInicial = largura / 2 - (cartasMesa.length * espacamento) / 2 + 15; //arrume esses numeros
 
         for(int i = 0 ; i < cartasMesa.length; i++){
             cartasMesa[i] = new CartasPanel(mesa.getCartas()[i]);

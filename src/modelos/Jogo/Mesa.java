@@ -16,6 +16,7 @@ public class Mesa {
         cartas[1] = baralho.pegaCarta();
         cartas[2] = baralho.pegaCarta();
         cartas[3] = baralho.pegaCarta();
+        cartas[4] = baralho.pegaCarta();
 
     }
 
@@ -24,6 +25,7 @@ public class Mesa {
         cartas[1] = baralho.pegaCarta();
         cartas[2] = baralho.pegaCarta();
         cartas[3] = baralho.pegaCarta();
+        cartas[4] = baralho.pegaCarta();
 
     }
 
@@ -31,6 +33,11 @@ public class Mesa {
 
     public void revelaCarta(){
         cartas[cartasViradas].virarCarta();
+        cartasViradas++;
+    }
+
+    public void revelaCarta(int numeroDaCarta){
+        cartas[numeroDaCarta].virarCarta();
         cartasViradas++;
     }
 

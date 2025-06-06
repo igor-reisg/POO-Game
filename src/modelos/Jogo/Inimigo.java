@@ -55,7 +55,7 @@ public class Inimigo {
     public int getBlind(){ return blind; }
     public void setBlind(int blind){ this.blind = blind; }
     public int getJogada(){
-        return 0;//jogada
+        return 1;//jogada
     }
     public void setJogada(int jogada){ this.jogada = jogada; }
 }

@@ -139,7 +139,8 @@ public class JogoGUI extends JPanel {
         check.getBotao().addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                jogo.getJogador().escolhaDaJogada(1);
+                jogo.registrarEscolhaJogador(1);
+                jogo.registrarEscolhaInimigo();
             }
         });
 
@@ -161,7 +162,8 @@ public class JogoGUI extends JPanel {
         fold.getBotao().addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                jogo.getJogador().escolhaDaJogada(0);
+                jogo.registrarEscolhaJogador(0);
+                jogo.registrarEscolhaInimigo();
             }
         });
     }
