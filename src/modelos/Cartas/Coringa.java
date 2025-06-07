@@ -62,16 +62,4 @@ public class Coringa {
         this.verso = !this.verso;
     }
 
-    @Override
-    public String toString() {
-        return "Coringa {" +
-                "name='" + nome + '\'' +
-                ", descricao='" + descricao + '\'' +
-                ", efeito=" + efeito + '\'' +
-                ", preco='" + preco +
-                ", xp=" + xp +
-                ", level=" + level +
-                ", imagemCaminho='" + imagemCaminho + '\'' +
-                '}';
-    }
 }

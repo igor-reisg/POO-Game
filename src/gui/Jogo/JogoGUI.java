@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.swing.*;
 
 import gui.*;
+import modelos.Jogo.Inventario;
 import modelos.Jogo.Jogo;
 import gui.Loja.LojaGUI;
 import gui.Menu.MenuGUI;
@@ -24,7 +25,7 @@ public class JogoGUI extends JPanel {
     BotoesGUI pause, inicio;
     BotoesGUI check, fold;
     ImageIcon[] checkIcons, foldIcons, pauseIcons, inicioIcons;
-
+    Inventario inventario;
 
     public JogoGUI(JanelaGUI app, Jogo jogo) {
         this.app = app;
@@ -104,11 +105,7 @@ public class JogoGUI extends JPanel {
         pause.setOpaque(false);
         background.add(pause);
         pause.getBotao().addActionListener(e -> {
-            try {
-                app.trocarTela(new LojaGUI(app));
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            app.trocarTela(new LojaGUI(app, inventario));
         });
 
         //Inicio
