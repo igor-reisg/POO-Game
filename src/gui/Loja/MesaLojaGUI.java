@@ -2,7 +2,7 @@ package gui.Loja;
 
 import gui.Jogo.CoringasGUI;
 import modelos.Cartas.Coringa;
-import modelos.Jogo.MesaLoja;
+import modelos.Loja.MesaLoja;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package modelos.Jogo;
+package modelos.Loja;
 
 public class Loja {
     MesaLoja mesa;

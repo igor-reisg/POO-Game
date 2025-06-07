@@ -1,11 +1,8 @@
-package modelos.Jogo;
+package modelos.Loja;
 
-import gui.Jogo.CoringasGUI;
 import modelos.Cartas.Coringa;
-import modelos.Cartas.CoringaDetails;
 import modelos.Cartas.CoringaReader;
 
-import java.io.IOException;
 import java.util.List;
 
 public class MesaLoja {

@@ -4,17 +4,13 @@ import gui.BackgroundPanel;
 import gui.BotoesGUI;
 import gui.JanelaGUI;
 import gui.Jogo.CoringasGUI;
-import gui.Jogo.MesaGUI;
 import modelos.Cartas.Coringa;
 import modelos.Cartas.CoringaReader;
 import modelos.Jogo.Inventario;
-import modelos.Jogo.Jogo;
-import modelos.Jogo.Loja;
-import modelos.Jogo.MesaLoja;
+import modelos.Loja.MesaLoja;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 import java.util.List;
 
 public class LojaGUI extends JPanel {
