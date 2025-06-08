@@ -12,7 +12,6 @@ public class CoringasGUI extends JPanel {
     private final Coringa coringa;
     private ImageIcon imgCoringa2;
     private StaticBackgroundPanel previewPanel;
-    private Point prevMouse;
     private final int largura;
     private final int altura;
 
@@ -28,21 +27,14 @@ public class CoringasGUI extends JPanel {
         setOpaque(false);
         setLayout(null);
 
-        // Painel com as características do coringa
         previewPanel = new StaticBackgroundPanel(coringa.getImagemCaminho(), largura, altura);
         previewPanel.setBounds(posX + largura + 10, posY, largura, altura);
         previewPanel.setVisible(false);
 
         addMouseListener(new MouseAdapter() {
             @Override
-            public void mousePressed(MouseEvent e) {
-                prevMouse = e.getPoint();
-            }
-
-            @Override
             public void mouseEntered(MouseEvent e) {
                 Container parent = SwingUtilities.getAncestorOfClass(JLayeredPane.class, CoringasGUI.this);
-
                 if (parent instanceof JLayeredPane) {
                     JLayeredPane layered = (JLayeredPane) parent;
 
@@ -61,20 +53,31 @@ public class CoringasGUI extends JPanel {
                 previewPanel.setVisible(false);
             }
         });
+    }
 
-        addMouseMotionListener(new MouseMotionAdapter() {
+    public void moveTo(Point destino, int passos, Runnable noFinal) {
+        Point origem = getLocation();
+        int dx = (destino.x - origem.x) / passos;
+        int dy = (destino.y - origem.y) / passos;
+
+        Timer timer = new Timer(10, null);
+
+        timer.addActionListener(new ActionListener() {
+            int contador = 0;
+
             @Override
-            public void mouseDragged(MouseEvent e) {
-                int dx = e.getX() - prevMouse.x;
-                int dy = e.getY() - prevMouse.y;
-                Point location = getLocation();
-                setLocation(location.x + dx, location.y + dy);
-
-                if (previewPanel != null) {
-                    previewPanel.setLocation(getX() + largura + 10, getY());
+            public void actionPerformed(ActionEvent e) {
+                if (contador < passos) {
+                    setLocation(getX() + dx, getY() + dy);
+                    contador++;
+                } else {
+                    setLocation(destino);
+                    timer.stop();
+                    if (noFinal != null) noFinal.run();
                 }
             }
         });
+        timer.start();
     }
 
     @Override
