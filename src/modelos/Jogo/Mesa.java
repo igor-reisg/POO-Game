@@ -1,11 +1,13 @@
 package modelos.Jogo;
 
+import gui.Jogo.JogoGUI;
 import modelos.Cartas.*;
 
 public class Mesa {
     private final Carta[] cartas;
     private Baralho baralho;
     int cartasViradas;
+
 
     public Mesa(Baralho baralho){
         this.cartasViradas = 0;
@@ -37,7 +39,10 @@ public class Mesa {
     }
 
     public void revelaCarta(int numeroDaCarta){
+
+
         cartas[numeroDaCarta].virarCarta();
+
         cartasViradas++;
     }
 

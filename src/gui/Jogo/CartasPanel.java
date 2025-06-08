@@ -31,9 +31,17 @@ public class CartasPanel extends JPanel {
         carregarImagem(escalaInicial);
 
         inicializaTimers();
-        this.addMouseListener(new MouseAdapter() {
+
+//        this.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                animacaoVirarCarta();
+//            }
+//        });
+
+        this.carta.setCartaListener(new Carta.CartaListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void aoVirarCarta() {
                 animacaoVirarCarta();
             }
         });
@@ -95,9 +103,14 @@ public class CartasPanel extends JPanel {
         });
     }
 
-    private void animacaoVirarCarta() {
+    public void animacaoVirarCarta() {
         escalaAtual = escalaInicial;
-        frameAtual = 0;
+        frameAtual = 1;
         aumenta.start();
     }
+
+
+
+
 }
+

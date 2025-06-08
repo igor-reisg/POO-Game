@@ -140,7 +140,6 @@ public class JogoGUI extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 jogo.registrarEscolhaJogador(1);
-                jogo.registrarEscolhaInimigo();
             }
         });
 
@@ -163,7 +162,6 @@ public class JogoGUI extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 jogo.registrarEscolhaJogador(0);
-                jogo.registrarEscolhaInimigo();
             }
         });
     }

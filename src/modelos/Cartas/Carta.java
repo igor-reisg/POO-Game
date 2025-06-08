@@ -1,10 +1,21 @@
 package modelos.Cartas;
 
+import gui.Jogo.CartasPanel;
+
 public class Carta {
     private final Naipe naipe;
     private final Valor valor;
     private boolean verso = true;
     private final static String imagemCaminho = "/assets/images/cartas/baralho/";
+    private CartaListener listener;
+
+    public interface CartaListener {
+        void aoVirarCarta();
+    }
+
+    public void setCartaListener(CartaListener listener) {
+        this.listener = listener;
+    }
 
     public enum Naipe {
         COPAS, ESPADAS, OUROS, PAUS;
@@ -40,16 +51,16 @@ public class Carta {
         this.valor = valor;
     }
 
-    public Naipe getNaipe() {
-        return naipe;
-    }
-
-    public Valor getValor() {
-        return valor;
-    }
 
     public void virarCarta() {
+
+
         this.verso = !this.verso;
+
+        if (listener != null) {
+            listener.aoVirarCarta();
+            listener = null;
+        }
 
     }
 
@@ -60,4 +71,14 @@ public class Carta {
         else
             return imagemCaminho + naipe.toString() + "/" + valor.toString() + ".png";
     }
+
+    public Naipe getNaipe() {
+        return naipe;
+    }
+
+    public Valor getValor() {
+        return valor;
+    }
 }
+
+

@@ -7,6 +7,7 @@ public class Jogo {
     int level;
     int fase;
     int rodada;
+    private int etapaRodada = 0;
 
     Baralho baralho;
     Pote pote;
@@ -19,8 +20,7 @@ public class Jogo {
     private int jogadaJogador;
     private int jogadaInimigo;
 
-    public Jogo(){
-
+    public Jogo() {
         this.rodada = 1;
         this.fase = 1;
         this.level = 1;
@@ -28,143 +28,137 @@ public class Jogo {
         pote = new Pote();
         inimigo = new Inimigo();
         jogador = new Jogador("Naka");
+
         baralho = new Baralho();
         baralho.criaBaralho();
         baralho.embaralhaBaralho();
 
         mesa = new Mesa(baralho);
         mesa.recebeCarta(baralho);
-        jogador.recebeCarta(baralho);
-        inimigo.recebeCarta(baralho);
-    }
 
-    public void iniciarRodada(){
-
-        System.out.println("Rodada " + rodada++);
-
-        jogador.recebeCarta(baralho);
-        inimigo.recebeCarta(baralho);
-
-        inimigoPronto = false;
-        jogadorPronto = false;
-
-    }
-
-    public void registrarEscolhaJogador(int escolha) {
-        this.jogadaJogador = escolha;
-        jogadorPronto = true;
-        verificarSePodeAvancar();
-    }
-
-    public void registrarEscolhaInimigo() {
-        this.jogadaInimigo = inimigo.getJogada(); // IA decide
-        inimigoPronto = true;
-        verificarSePodeAvancar();
-    }
-
-    public void verificarSePodeAvancar(){
-        if(inimigoPronto && jogadorPronto){
-            processarRodada();
-        }
-    }
-
-    public void processarRodada(){
-        if(jogadaJogador == 0){
-            jogador.setVida(jogador.getVida() - pote.getQuantidade());
-        } else if(jogadaInimigo == 0){
-            inimigo.setVida(jogador.getVida() - pote.getQuantidade());
-        }
+        iniciarJogo();
     }
 
     public void iniciarJogo() {
-
-        if (jogador.getVida() <= 0 || inimigo.getVida() <= 0) {
-            finalizarJogo();
-            return;
-        }
-
+        // Define quem é SB/BB aleatoriamente
         Random r = new Random();
         int moeda = r.nextInt(2);
 
         jogador.setBlind(moeda);
         inimigo.setBlind(1 - moeda);
 
-        while(jogador.getVida() <= 0 || inimigo.getVida() <= 0){
-
-            iniciarRodada();
-            novaRodada();
-
-        }
+        novaRodada();
     }
 
-    private void novaRodada(){
-        rodada++;
+    private void novaRodada() {
+        System.out.println("Rodada " + rodada++);
+        etapaRodada = 0;
 
-        if(jogador.getBlind() == 1){
+        // Deduz blinds
+        if (jogador.getBlind() == 1) {
             jogador.setVida(jogador.getVida() - 200);
             pote.setQuantidade(200);
             inimigo.setVida(inimigo.getVida() - 100);
             pote.setQuantidade(100);
-
+            System.out.println("Jogador é SB");
         } else {
             jogador.setVida(jogador.getVida() - 100);
             pote.setQuantidade(200);
             inimigo.setVida(inimigo.getVida() - 200);
             pote.setQuantidade(100);
+            System.out.println("Jogador é BB");
         }
 
-        int contTurnos = 0;
+        // Reinicia mesa e baralho
+        baralho = new Baralho();
+        baralho.criaBaralho();
+        baralho.embaralhaBaralho();
 
-        while(contTurnos <=2){
+        mesa = new Mesa(baralho);
+        mesa.recebeCarta(baralho);
 
+        // Distribui cartas
+        jogador.recebeCarta(baralho);
+        inimigo.recebeCarta(baralho);
 
-            if(jogador.getBlind() == 1){
-                registrarEscolhaJogador(jogador.getJogada());
-                registrarEscolhaInimigo();
-            } else {
-                registrarEscolhaInimigo();
-                registrarEscolhaJogador(jogador.getJogada());
+        jogadorPronto = false;
+        inimigoPronto = false;
+    }
+
+    public void registrarEscolhaJogador(int escolha) {
+        this.jogadaJogador = escolha;
+        jogadorPronto = true;
+
+        System.out.println("Jogador realizou jogada");
+        registrarEscolhaInimigo(); // IA
+    }
+
+    public void registrarEscolhaInimigo() {
+        this.jogadaInimigo = inimigo.getJogada();
+        inimigoPronto = true;
+
+        System.out.println("Inimigo realizou jogada");
+        verificarSePodeAvancar();
+    }
+
+    public void verificarSePodeAvancar() {
+        if (jogadorPronto && inimigoPronto) {
+            processarRodada();
+            jogadorPronto = false;
+            inimigoPronto = false;
+
+            etapaRodada++;
+
+            switch (etapaRodada) {
+                case 1:
+                    mesa.revelaCarta(0);
+                    mesa.revelaCarta(1);
+                    mesa.revelaCarta(2);
+                    System.out.println("Flop dado");
+                    break;
+                case 2:
+                    mesa.revelaCarta(3);
+                    System.out.println("Turn dado");
+                    break;
+                case 3:
+                    mesa.revelaCarta(4);
+                    System.out.println("River dado");
+                    break;
+                case 4:
+                    finalizarJogo();
+                    return;
             }
 
-            //Inverte os blinds
-            jogador.setBlind(1 - jogador.getBlind());
-            inimigo.setBlind(1 - inimigo.getBlind());
-            pote.resetPote();
-
-            if(contTurnos == 0){
-                mesa.revelaCarta(0);
-                mesa.revelaCarta(1);
-                mesa.revelaCarta(2);
-
-            } if(contTurnos == 1){
-                mesa.revelaCarta(3);
-            } if(contTurnos == 2) {
-                mesa.revelaCarta(4);
-            }
-            contTurnos++;
-
+            System.out.println("Etapa rodada " + etapaRodada + " processada");
         }
     }
 
+    public void processarRodada() {
+        if (jogadaJogador == 0) {
+            jogador.setVida(jogador.getVida() - pote.getQuantidade());
+            System.out.println("Jogador perdeu a rodada");
+        } else if (jogadaInimigo == 0) {
+            inimigo.setVida(inimigo.getVida() - pote.getQuantidade());
+            System.out.println("Inimigo perdeu a rodada");
+        } else {
+            System.out.println("Ambos continuam na rodada");
+        }
+    }
 
-    public void finalizarJogo(){
-        if(jogador.getVida() <= 0){
+    public void finalizarJogo() {
+        if (jogador.getVida() <= 0) {
             System.out.println("Você perdeu!");
         } else if (inimigo.getVida() <= 0) {
             System.out.println("Você venceu!");
+        } else {
+            System.out.println("Fim da rodada. Iniciando próxima...");
+            novaRodada(); // Reinicia
         }
     }
 
-    public Jogador getJogador(){
-        return jogador;
-    }
-    public Inimigo getInimigo(){
-        return inimigo;
-    }
-    public Mesa getMesa(){
-        return mesa;
-    }
-    public  Pote getPote(){
-        return pote;
-    }
+
+    public Jogador getJogador() { return jogador; }
+    public Inimigo getInimigo() { return inimigo; }
+    public Mesa getMesa() { return mesa; }
+    public Pote getPote() { return pote; }
 }
