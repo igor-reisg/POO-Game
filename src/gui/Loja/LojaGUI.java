@@ -4,10 +4,15 @@ import gui.BackgroundPanel;
 import gui.BotoesGUI;
 import gui.JanelaGUI;
 import gui.Jogo.CoringasGUI;
+import gui.Jogo.InventarioGUI;
+import gui.Jogo.JogoGUI;
+import gui.StaticBackgroundPanel;
 import modelos.Cartas.Coringa;
 import modelos.Cartas.CoringaReader;
 import modelos.Jogo.Inventario;
+import modelos.Jogo.Jogo;
 import modelos.Loja.MesaLoja;
+import modelos.Loja.Sacola;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,10 +25,12 @@ public class LojaGUI extends JPanel {
     String caminhoCoringas = "/assets/data/coringas.json";
     int locationX = 100;
     int locationY = 100;
-    int largura;
-    int altura;
+    int largura = 176;
+    int altura = 248;
     private Dimension tamanhoTela;
     MesaLojaGUI mesa;
+    SacolaGUI sacola;
+    private StaticBackgroundPanel panelInventario;
 
     public LojaGUI(JanelaGUI app, Inventario inventario) {
         this.app = app;
@@ -31,61 +38,67 @@ public class LojaGUI extends JPanel {
         int larguraTela = tamanhoTela.width;
         int alturaTela = tamanhoTela.height;
 
-        //Geração dos botões da loja
-        BotoesLoja = new BotoesGUI[3];
-        for (int i = 0; i < BotoesLoja.length; i++) {
-            BotoesLoja[i] = new BotoesGUI("loja/", 95, 189, i);
-        }
+        setLayout(new BorderLayout());
 
-        JPanel lojaPainel = new JPanel(new BorderLayout());
+        // Painel em camadas
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(larguraTela, alturaTela));
+        add(layeredPane, BorderLayout.CENTER);
+
+        // Background
         BackgroundPanel background = new BackgroundPanel(caminhoBackground);
-        background.add(lojaPainel, BorderLayout.CENTER);
+        background.setBounds(0, 0, larguraTela, alturaTela);
+        background.setLayout(null);
+        layeredPane.add(background, Integer.valueOf(0));
 
-        //Imagens das mesas ?????????????????????????????????????????????????????????????????????????????????? ESSA BOSTA NAO TA FUNCIONANDO DIREITO
+        // Mesa c/ Coringas
         mesa = new MesaLojaGUI(new MesaLoja());
         Dimension mesaSize = mesa.getPreferredSize();
-        mesa.setBounds((int) (larguraTela/2 - ( mesaSize.getWidth()/2) ) , (int) (alturaTela/2 - mesaSize.getHeight()/2),  mesaSize.width, mesaSize.height);
+        mesa.setBounds((int)(larguraTela / 2 - mesaSize.getWidth() / 2), (int)(alturaTela / 2 - mesaSize.getHeight() / 2), mesaSize.width, mesaSize.height);
         mesa.setOpaque(false);
-        background.add(mesa);
+        background.add(mesa, Integer.valueOf(1));
 
-        JPanel painelDireita = new JPanel();
-        painelDireita.setLayout(new BorderLayout());
+        // Carrinho p/ comprar Coringas
+        sacola = new SacolaGUI(new Sacola());
+        Dimension sacolaSize = sacola.getPreferredSize();
+        sacola.setBounds((larguraTela - sacolaSize.width - 30), (alturaTela - sacolaSize.height - 135), sacolaSize.width, sacolaSize.height);
+        sacola.setOpaque(false);
+        background.add(sacola, Integer.valueOf(1));
 
-        //Tamanho dos Coringas
-        largura = 176;
-        altura = 248;
+        // Inventário GUI sobre tudo
+        InventarioGUI inventarioGUI = new InventarioGUI(inventario);
+        //inventarioGUI.setBounds(0, 0, larguraTela, alturaTela);
+        inventarioGUI.setOpaque(false);
+        inventarioGUI.setVisible(false);
+        layeredPane.add(inventarioGUI, Integer.valueOf(5));
 
-        //Panel dos Coringas
-        JLayeredPane layerCoringas = new JLayeredPane();
-        layerCoringas.setOpaque(false);
-        layerCoringas.setSize(largura, altura);
-
-        try {
-            List<Coringa> coringasData = CoringaReader.CoringaRead(caminhoCoringas).getCoringas();
-            for (Coringa coringaData : coringasData) {
-                CoringasGUI coringaGUI = new CoringasGUI(coringaData, locationX, locationY, largura, altura);
-                layerCoringas.add(coringaGUI, JLayeredPane.DRAG_LAYER);
-                locationX += 250;
-            }
-        } catch (Exception e) {}
-
-        JPanel painelInferiorDireito = new JPanel();
-        painelInferiorDireito.setLayout(new BoxLayout(painelInferiorDireito, BoxLayout.Y_AXIS));
-        for (int i = 0; i < 2; i++) {
-            painelInferiorDireito.add(BotoesLoja[i].getBotao());
+        // Botões da loja (coluna 1)
+        BotoesLoja = new BotoesGUI[4];
+        for (int i = 0; i < 3; i++) {
+            BotoesLoja[i] = new BotoesGUI("loja/", 95, 189, i);
+            JButton botaoLoja = BotoesLoja[i].getBotao();
+            botaoLoja.setBounds(larguraTela - 220, alturaTela - (110 * (3 - i)), 189, 95);
+            layeredPane.add(botaoLoja, Integer.valueOf(1));
         }
-        painelDireita.add(painelInferiorDireito, BorderLayout.SOUTH);
 
-        background.add(painelDireita, BorderLayout.EAST);
-        background.add(layerCoringas, BorderLayout.CENTER);
+        // Botões da loja (coluna 2)
+        BotoesLoja[3] = new BotoesGUI("loja/", 95, 189, 3);
+        JButton botaoLoja = BotoesLoja[3].getBotao();
+        botaoLoja.setBounds(larguraTela - 440, alturaTela - 110, 189, 95);
+        layeredPane.add(botaoLoja, Integer.valueOf(1));
 
-        painelDireita.setOpaque(false);
-        painelInferiorDireito.setOpaque(false);
-        lojaPainel.setOpaque(false);
-        layerCoringas.setOpaque(false);
+        //tem que arrumar dps pra avançar o game e não iniciar um novo
+        BotoesLoja[1].getBotao().addActionListener(e -> app.trocarTela(new JogoGUI(app, new Jogo())));
 
-        setLayout(new BorderLayout());
-        add(background, BorderLayout.CENTER);
+        BotoesLoja[2].getBotao().addActionListener(e -> {
+            inventarioGUI.mostrarCoringas();
+            inventarioGUI.setVisible(true);
+        });
+
         setVisible(true);
+    }
+
+    public SacolaGUI getSacolaGUI() {
+        return sacola;
     }
 }

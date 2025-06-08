@@ -9,14 +9,23 @@ import java.util.List;
 public class Inventario {
     private final int maxCoringas = 5;
     List<Coringa> coringasInventario;
+    private int valorTotal;
+    private int moedas;
 
     public Inventario() {
         this.coringasInventario = new ArrayList<>();
+        this.valorTotal = 0;
+        this.moedas = 0;
+
+        for (int i = 0; i < coringasInventario.size(); i++) {
+            valorTotal += coringasInventario.get(i).getPreco();
+        }
     }
 
     public boolean adicionarCoringa(Coringa coringa) {
         if (coringasInventario.size() < maxCoringas) {
             coringasInventario.add(coringa);
+            valorTotal += coringa.getPreco();
             return true;
         }
         else {
@@ -24,8 +33,18 @@ public class Inventario {
         }
     }
 
-    public boolean removerCoringa(Coringa coringa) {
+    public String getMoedasInventarioString() {
+        return moedas + "";
+    }
+
+    public int getMoedasInventario() {
+        return moedas;
+    }
+
+    public boolean venderCoringa(Coringa coringa) {
         coringasInventario.remove(coringa);
+        moedas += coringa.getPreco();
+        valorTotal -= coringa.getPreco();
         return true;
     }
 
@@ -37,5 +56,11 @@ public class Inventario {
         return coringasInventario.size() >= maxCoringas;
     }
 
+    public int getQtdCoringas() {
+        return coringasInventario.size();
+    }
 
+    public int getMaxCoringas() {
+        return maxCoringas;
+    }
 }

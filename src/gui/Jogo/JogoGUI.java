@@ -104,6 +104,7 @@ public class JogoGUI extends JPanel {
         pause.setBounds(larguraTela - 50, (alturaTela - 50)/2 - 50, 50, 50);
         pause.setOpaque(false);
         background.add(pause);
+        inventario = new Inventario();
         pause.getBotao().addActionListener(e -> {
             app.trocarTela(new LojaGUI(app, inventario));
         });

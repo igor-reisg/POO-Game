@@ -6,6 +6,8 @@ import modelos.Loja.MesaLoja;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.URL;
 
 public class MesaLojaGUI extends JPanel {
@@ -27,11 +29,11 @@ public class MesaLojaGUI extends JPanel {
         int qtd = Math.min(cartas.length, 6);
         coringasMesa = new CoringasGUI[qtd];
 
-        int espacamentoX = 300;
-        int espacamentoY = 260;
+        int espacamentoX = 400;
+        int espacamentoY = 450;
 
-        int xInicial = largura / 2 - (3 * espacamentoX) / 2 + 15;
-        int yInicial = 120;
+        int xInicial = 200;
+        int yInicial = 175;
 
         for (int i = 0; i < qtd; i++) {
             Coringa carta = cartas[i];
@@ -42,10 +44,10 @@ public class MesaLojaGUI extends JPanel {
             int posX = xInicial + col * espacamentoX;
             int posY = yInicial + lin * espacamentoY;
 
-            CoringasGUI panelCoringas = new CoringasGUI(carta, posX, posY, 176, 248);
+            CoringasGUI panelCoringas = new CoringasGUI(carta, posX, posY, 212, 298);
 
             coringasMesa[i] = panelCoringas;
-            labelMesa.add(panelCoringas);
+            labelMesa.add(panelCoringas, Integer.valueOf(4));
         }
         add(labelMesa);
     }
