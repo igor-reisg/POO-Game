@@ -44,6 +44,8 @@ public class Jogo {
     }
 
     private void novaRodada() {
+
+        Timer timer = new Timer();
         System.out.println("Rodada " + rodada++);
         etapaRodada = 0;
 
@@ -60,8 +62,9 @@ public class Jogo {
         jogador.recebeCarta(baralho);
         inimigo.recebeCarta(baralho);
 
-        jogador.revelaCarta(0);
-        jogador.revelaCarta(1);
+        timer.schedule(new TimerTask() { public void run() { jogador.revelaCarta(0); }}, 300);
+        timer.schedule(new TimerTask() { public void run() { jogador.revelaCarta(1); }}, 500);
+
 
         jogadorPronto = false;
         inimigoPronto = false;

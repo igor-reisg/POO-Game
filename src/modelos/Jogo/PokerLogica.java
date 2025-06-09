@@ -18,13 +18,17 @@ public class PokerLogica {
         List<Carta> maoInimigo = new ArrayList<>(cartasInimigo);
         maoInimigo.addAll(mesa);
 
+        System.out.print("JOGADOR TEM: ");
         MaoAvaliacao avaliacaoJogador = avaliarMao(maoJogador);
+        System.out.print("INIMIGO TEM: ");
         MaoAvaliacao avaliacaoInimigo = avaliarMao(maoInimigo);
 
         int comparacao = avaliacaoJogador.compareTo(avaliacaoInimigo);
-        if (comparacao > 0) return Resultado.JOGADOR_VENCE;
-        else if (comparacao < 0) return Resultado.INIMIGO_VENCE;
-        else return Resultado.EMPATE;
+        if (comparacao > 0) {
+            return Resultado.JOGADOR_VENCE;
+        } else if (comparacao < 0) {
+            return Resultado.INIMIGO_VENCE;
+        } else return Resultado.EMPATE;
     }
 
     private static class MaoAvaliacao implements Comparable<MaoAvaliacao> {
@@ -65,6 +69,7 @@ public class PokerLogica {
 
         if (ehFlush && ehStraight) {
             desempate.addAll(valoresOrdenados);
+            System.out.println("STRAIGH FLUSH");
             return new MaoAvaliacao(800, desempate);
         }
 
@@ -72,6 +77,7 @@ public class PokerLogica {
             int quadra = getPorFrequencia(freq, 4L).get(0);
             desempate.add(quadra);
             desempate.addAll(getRestantes(freq, List.of(quadra)));
+            System.out.println("QUADRA");
             return new MaoAvaliacao(700, desempate);
         }
 
@@ -80,16 +86,19 @@ public class PokerLogica {
             int par = getPorFrequencia(freq, 2L).get(0);
             desempate.add(trinca);
             desempate.add(par);
+            System.out.println("FULL HOUSE");
             return new MaoAvaliacao(600, desempate);
         }
 
         if (ehFlush) {
             desempate.addAll(valoresOrdenados);
+            System.out.println("FLUSH");
             return new MaoAvaliacao(500, desempate);
         }
 
         if (ehStraight) {
             desempate.addAll(valoresOrdenados);
+            System.out.println("SEQUENCIA");
             return new MaoAvaliacao(400, desempate);
         }
 
@@ -97,6 +106,7 @@ public class PokerLogica {
             int trinca = getPorFrequencia(freq, 3L).get(0);
             desempate.add(trinca);
             desempate.addAll(getRestantes(freq, List.of(trinca)));
+            System.out.println("TRINCA");
             return new MaoAvaliacao(300, desempate);
         }
 
@@ -105,6 +115,7 @@ public class PokerLogica {
             pares.sort(Comparator.reverseOrder());
             desempate.addAll(pares);
             desempate.addAll(getRestantes(freq, pares));
+            System.out.println("DOIS PARES");
             return new MaoAvaliacao(200, desempate);
         }
 
@@ -112,10 +123,12 @@ public class PokerLogica {
             int par = getPorFrequencia(freq, 2L).get(0);
             desempate.add(par);
             desempate.addAll(getRestantes(freq, List.of(par)));
+            System.out.println("PAR");
             return new MaoAvaliacao(100, desempate);
         }
 
         desempate.addAll(valoresOrdenados);
+        System.out.println("CARTA ALTA");
         return new MaoAvaliacao(0, desempate);
     }
 
