@@ -1,13 +1,11 @@
 package gui.Jogo;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import javax.swing.*;
 
 import gui.*;
 import gui.Loja.LojaGUI;
 import gui.Menu.MenuGUI;
-import modelos.Cartas.Carta;
 import modelos.Jogo.Inventario;
 import modelos.Jogo.Jogo;
 
@@ -17,9 +15,9 @@ public class JogoGUI extends JPanel {
     private final Dimension tamanhoTela;
 
     private final MesaGUI mesa;
-    private final CartasPanel[] cartasJogador;
-    private final IconeGUI jogadorIcon, adversarioIcon;
-    private final VidaGUI jogadorHP, adversarioHP;
+    private final CartasPanel[] cartasJogador, cartasInimigo;
+    private final IconeGUI jogadorIcon, inimigoIcon;
+    private final VidaGUI jogadorHP, inimigoHP;
     private final BotoesGUI pause, inicio, check, fold;
     private final Inventario inventario;
 
@@ -44,10 +42,10 @@ public class JogoGUI extends JPanel {
         background.add(jogadorIcon);
 
         // Ícone do adversário
-        adversarioIcon = new IconeGUI("/assets/images/frames/framesBoss/boss1_1.png", "Nulio Cisar");
-        Dimension adversarioIconSize = adversarioIcon.getPreferredSize();
-        adversarioIcon.setBounds(tamanhoTela.width - adversarioIconSize.width, 0, adversarioIconSize.width, adversarioIconSize.height);
-        background.add(adversarioIcon);
+        inimigoIcon = new IconeGUI("/assets/images/frames/framesBoss/boss1_1.png", "Nulio Cisar");
+        Dimension inimigoIconSize = inimigoIcon.getPreferredSize();
+        inimigoIcon.setBounds(tamanhoTela.width - inimigoIconSize.width, 0, inimigoIconSize.width, inimigoIconSize.height);
+        background.add(inimigoIcon);
 
         // Cartas do jogador
         cartasJogador = new CartasPanel[2];
@@ -60,6 +58,18 @@ public class JogoGUI extends JPanel {
                     cartasJogador[i].getHeight()
             );
             background.add(cartasJogador[i]);
+        }
+
+        cartasInimigo = new CartasPanel[2];
+        for (int i = 0; i < 2; i++) {
+            cartasInimigo[i] = new CartasPanel(jogo.getInimigo().getMao()[i]);
+            cartasInimigo[i].setBounds(
+                    tamanhoTela.width - inimigoIcon.getWidth() - cartasInimigo[i].getWidth() * (1 + i) - 130,
+                    0,
+                    cartasInimigo[i].getWidth(),
+                    cartasInimigo[i].getHeight()
+            );
+            background.add(cartasInimigo[i]);
         }
 
         // Mesa
@@ -86,10 +96,10 @@ public class JogoGUI extends JPanel {
         background.add(jogadorHP);
 
         // Vida do adversário
-        adversarioHP = new VidaGUI(jogo.getJogador().getVida(), 2);
-        Dimension vidaAdversarioSize = adversarioHP.getPreferredSize();
-        adversarioHP.setBounds(0, 0, vidaAdversarioSize.width, vidaAdversarioSize.height);
-        background.add(adversarioHP);
+        inimigoHP = new VidaGUI(jogo.getJogador().getVida(), 2);
+        Dimension vidaAdversarioSize = inimigoHP.getPreferredSize();
+        inimigoHP.setBounds(0, 0, vidaAdversarioSize.width, vidaAdversarioSize.height);
+        background.add(inimigoHP);
 
         // Botão Pause
         pause = new BotoesGUI("jogo/pause", 50, 50, 0);
@@ -164,6 +174,12 @@ public class JogoGUI extends JPanel {
             }
         }
 
+        for (CartasPanel cartaPanel : cartasInimigo) {
+            if (cartaPanel.getParent() == background) {
+                background.remove(cartaPanel);
+            }
+        }
+
         // Adiciona as novas cartas do jogador
         for (int i = 0; i < 2; i++) {
             cartasJogador[i] = new CartasPanel(jogo.getJogador().getMao()[i]);
@@ -174,6 +190,17 @@ public class JogoGUI extends JPanel {
                     cartasJogador[i].getHeight()
             );
             background.add(cartasJogador[i]);
+        }
+
+        for (int i = 0; i < 2; i++) {
+            cartasInimigo[i] = new CartasPanel(jogo.getInimigo().getMao()[i]);
+            cartasInimigo[i].setBounds(
+                    tamanhoTela.width - inimigoIcon.getWidth() - cartasInimigo[i].getWidth() * (1 + i) - 130,
+                    0,
+                    cartasInimigo[i].getWidth(),
+                    cartasInimigo[i].getHeight()
+            );
+            background.add(cartasInimigo[i]);
         }
 
         mesa.atualizarMesa(jogo.getMesa());

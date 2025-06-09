@@ -20,6 +20,8 @@ public class Jogo {
     private int jogadaJogador;
     private int jogadaInimigo;
 
+    private boolean fimRodada;
+
     private Runnable onNovaRodada;
 
     public Jogo() {
@@ -44,6 +46,8 @@ public class Jogo {
     private void novaRodada() {
         System.out.println("Rodada " + rodada++);
         etapaRodada = 0;
+
+        fimRodada = false;
 
         jogador.limpaCartas();
         inimigo.limpaCartas();
@@ -86,13 +90,16 @@ public class Jogo {
 
             Timer timer = new Timer();
             if (etapaRodada == 1) {
+
                 mesa.revelaCarta(0);
                 timer.schedule(new TimerTask() { public void run() { mesa.revelaCarta(1); }}, 500);
                 timer.schedule(new TimerTask() { public void run() { mesa.revelaCarta(2); }}, 1000);
+
             } else if (etapaRodada == 2) {
                 mesa.revelaCarta(3);
             } else if (etapaRodada == 3) {
                 mesa.revelaCarta(4);
+                fimRodada = true;
             } else {
                 timer.schedule(new TimerTask() {
                     public void run() {
@@ -108,16 +115,18 @@ public class Jogo {
 
     private void processarRodada() {
         if (jogadaJogador == 0) {
-            System.out.println("Jogador desistiu.");
+            System.out.println("Inimigo venceu!");
         } else if (jogadaInimigo == 0) {
-            System.out.println("Inimigo desistiu.");
-        } else {
-            PokerLogica.Resultado resultado = new PokerLogica().avaliarRodada(
+            System.out.println("Jogador venceu!");
+        } else if(fimRodada){
+            inimigo.revelaCarta(0);
+            inimigo.revelaCarta(1);
+
+            PokerLogica.Resultado resultado = PokerLogica.avaliarRodada(
                     Arrays.asList(jogador.getMao()),
                     Arrays.asList(inimigo.getMao()),
                     Arrays.asList(mesa.getCartas())
             );
-
             switch (resultado) {
                 case JOGADOR_VENCE -> System.out.println("Jogador venceu!");
                 case INIMIGO_VENCE -> System.out.println("Inimigo venceu!");

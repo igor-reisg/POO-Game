@@ -18,21 +18,38 @@ public class PokerLogica {
         List<Carta> maoInimigo = new ArrayList<>(cartasInimigo);
         maoInimigo.addAll(mesa);
 
-        int valorJogador = avaliarMao(maoJogador);
-        int valorInimigo = avaliarMao(maoInimigo);
+        MaoAvaliacao avaliacaoJogador = avaliarMao(maoJogador);
+        MaoAvaliacao avaliacaoInimigo = avaliarMao(maoInimigo);
 
-        if (valorJogador > valorInimigo) {
-            return Resultado.JOGADOR_VENCE;
-        } else if (valorInimigo > valorJogador) {
-            return Resultado.INIMIGO_VENCE;
-        } else {
-            return Resultado.EMPATE;
+        int comparacao = avaliacaoJogador.compareTo(avaliacaoInimigo);
+        if (comparacao > 0) return Resultado.JOGADOR_VENCE;
+        else if (comparacao < 0) return Resultado.INIMIGO_VENCE;
+        else return Resultado.EMPATE;
+    }
+
+    private static class MaoAvaliacao implements Comparable<MaoAvaliacao> {
+        int forca; // tipo da mão: 800 = straight flush, 700 = quadra, etc.
+        List<Integer> desempate; // valores para desempate: kicker, par alto, etc.
+
+        public MaoAvaliacao(int forca, List<Integer> desempate) {
+            this.forca = forca;
+            this.desempate = desempate;
+        }
+
+        @Override
+        public int compareTo(MaoAvaliacao o) {
+            if (this.forca != o.forca) return Integer.compare(this.forca, o.forca);
+
+            for (int i = 0; i < Math.min(this.desempate.size(), o.desempate.size()); i++) {
+                int comp = Integer.compare(this.desempate.get(i), o.desempate.get(i));
+                if (comp != 0) return comp;
+            }
+            return 0;
         }
     }
 
-    public static int avaliarMao(List<Carta> cartas) {
-        // Exemplo simplificado: verifica apenas se há uma trinca, par ou carta alta
-        Map<Integer, Long> frequencia = cartas.stream()
+    public static MaoAvaliacao avaliarMao(List<Carta> cartas) {
+        Map<Integer, Long> freq = cartas.stream()
                 .collect(Collectors.groupingBy(c -> c.getValor().ordinal(), Collectors.counting()));
 
         boolean ehFlush = cartas.stream().map(c -> c.getNaipe().name()).distinct().count() == 1;
@@ -44,16 +61,77 @@ public class PokerLogica {
 
         boolean ehStraight = ehSequencia(valoresOrdenados);
 
-        if (ehFlush && ehStraight) return 800;
-        if (frequencia.containsValue(4L)) return 700;
-        if (frequencia.containsValue(3L) && frequencia.containsValue(2L)) return 600;
-        if (ehFlush) return 500;
-        if (ehStraight) return 400;
-        if (frequencia.containsValue(3L)) return 300;
-        if (frequencia.values().stream().filter(v -> v == 2L).count() == 2) return 200;
-        if (frequencia.containsValue(2L)) return 100;
+        List<Integer> desempate = new ArrayList<>();
 
-        return valoresOrdenados.get(0); // carta mais alta
+        if (ehFlush && ehStraight) {
+            desempate.addAll(valoresOrdenados);
+            return new MaoAvaliacao(800, desempate);
+        }
+
+        if (freq.containsValue(4L)) {
+            int quadra = getPorFrequencia(freq, 4L).get(0);
+            desempate.add(quadra);
+            desempate.addAll(getRestantes(freq, List.of(quadra)));
+            return new MaoAvaliacao(700, desempate);
+        }
+
+        if (freq.containsValue(3L) && freq.containsValue(2L)) {
+            int trinca = getPorFrequencia(freq, 3L).get(0);
+            int par = getPorFrequencia(freq, 2L).get(0);
+            desempate.add(trinca);
+            desempate.add(par);
+            return new MaoAvaliacao(600, desempate);
+        }
+
+        if (ehFlush) {
+            desempate.addAll(valoresOrdenados);
+            return new MaoAvaliacao(500, desempate);
+        }
+
+        if (ehStraight) {
+            desempate.addAll(valoresOrdenados);
+            return new MaoAvaliacao(400, desempate);
+        }
+
+        if (freq.containsValue(3L)) {
+            int trinca = getPorFrequencia(freq, 3L).get(0);
+            desempate.add(trinca);
+            desempate.addAll(getRestantes(freq, List.of(trinca)));
+            return new MaoAvaliacao(300, desempate);
+        }
+
+        if (freq.values().stream().filter(v -> v == 2L).count() == 2) {
+            List<Integer> pares = getPorFrequencia(freq, 2L);
+            pares.sort(Comparator.reverseOrder());
+            desempate.addAll(pares);
+            desempate.addAll(getRestantes(freq, pares));
+            return new MaoAvaliacao(200, desempate);
+        }
+
+        if (freq.containsValue(2L)) {
+            int par = getPorFrequencia(freq, 2L).get(0);
+            desempate.add(par);
+            desempate.addAll(getRestantes(freq, List.of(par)));
+            return new MaoAvaliacao(100, desempate);
+        }
+
+        desempate.addAll(valoresOrdenados);
+        return new MaoAvaliacao(0, desempate);
+    }
+
+    private static List<Integer> getPorFrequencia(Map<Integer, Long> freq, long alvo) {
+        return freq.entrySet().stream()
+                .filter(e -> e.getValue() == alvo)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    private static List<Integer> getRestantes(Map<Integer, Long> freq, List<Integer> usados) {
+        return freq.entrySet().stream()
+                .filter(e -> !usados.contains(e.getKey()))
+                .sorted((a, b) -> Long.compare(b.getKey(), a.getKey()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     private static boolean ehSequencia(List<Integer> valoresOrdenados) {
@@ -72,7 +150,7 @@ public class PokerLogica {
             if (sequencia) return true;
         }
 
-        // Checa caso especial: A-2-3-4-5
-        return valores.containsAll(List.of(0, 1, 2, 3, 12)); // Supondo Ás = 12
+        // A-2-3-4-5: Ás como 12
+        return valores.containsAll(List.of(0, 1, 2, 3, 12));
     }
 }

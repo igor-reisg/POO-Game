@@ -36,6 +36,12 @@ public class Inimigo {
 
     }
 
+    public void revelaCarta(int numeroDaCarta){
+
+        mao[numeroDaCarta].virarCarta();
+
+    }
+
 
 
     public void recebeCarta(Baralho baralho){
