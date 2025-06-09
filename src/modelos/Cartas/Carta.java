@@ -90,5 +90,3 @@ public class Carta {
         return larguraOriginal;
     }
 }
-
-

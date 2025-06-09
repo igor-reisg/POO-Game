@@ -15,11 +15,15 @@ public class Jogador {
         this.nome = nome;
     }
 
+    public void limpaCartas() {
+        this.mao = new Carta[2];
+    }
+
 
     public void recebeCarta(Baralho baralho){
         mao = new Carta[2];
-        mao[0] = baralho.pegaCarta();
 
+        mao[0] = baralho.pegaCarta();
 
         mao[1] = baralho.pegaCarta();
 
@@ -39,6 +43,12 @@ public class Jogador {
     }
 
     public void fold(){
+
+    }
+
+    public void revelaCarta(int numeroDaCarta){
+
+        mao[numeroDaCarta].virarCarta();
 
     }
 

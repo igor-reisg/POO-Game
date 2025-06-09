@@ -2,171 +2,183 @@ package gui.Jogo;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
 import javax.swing.*;
 
 import gui.*;
-import modelos.Jogo.Inventario;
-import modelos.Jogo.Jogo;
 import gui.Loja.LojaGUI;
 import gui.Menu.MenuGUI;
 import modelos.Cartas.Carta;
+import modelos.Jogo.Inventario;
+import modelos.Jogo.Jogo;
 
 public class JogoGUI extends JPanel {
-    private Dimension tamanhoTela;
+    private final JanelaGUI app;
+    private final Jogo jogo;
+    private final Dimension tamanhoTela;
 
-    JanelaGUI app;
-    MesaGUI mesa;
-    CartasPanel[] cartasJogador;
-    CartasPanel cartasInimigo;
-    IconeGUI jogadorIcon, adversarioIcon;
-    VidaGUI jogadorHP, adversarioHP;
-    BotoesGUI pause, inicio;
-    BotoesGUI check, fold;
-    ImageIcon[] checkIcons, foldIcons, pauseIcons, inicioIcons;
-    Inventario inventario;
+    private final MesaGUI mesa;
+    private final CartasPanel[] cartasJogador;
+    private final IconeGUI jogadorIcon, adversarioIcon;
+    private final VidaGUI jogadorHP, adversarioHP;
+    private final BotoesGUI pause, inicio, check, fold;
+    private final Inventario inventario;
+
+    private final BackgroundPanel background;
 
     public JogoGUI(JanelaGUI app, Jogo jogo) {
         this.app = app;
-
-        tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
-        int larguraTela = tamanhoTela.width;
-        int alturaTela = tamanhoTela.height;
+        this.jogo = jogo;
+        this.tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
 
         setLayout(new BorderLayout());
 
-        //Background
-        BackgroundPanel background = new BackgroundPanel("/assets/images/background/pattern1.png");
+        // Background
+        background = new BackgroundPanel("/assets/images/background/pattern1.png");
         background.setLayout(null);
         add(background, BorderLayout.CENTER);
 
-        //Icone do player
+        // Ícone do jogador
         jogadorIcon = new IconeGUI("/assets/images/frames/framesBoss/boss0_1.png", "Gabiel Maka");
         Dimension jogadorIconSize = jogadorIcon.getPreferredSize();
-        jogadorIcon.setBounds(0, alturaTela - jogadorIconSize.height, jogadorIconSize.width, jogadorIconSize.height);
+        jogadorIcon.setBounds(0, tamanhoTela.height - jogadorIconSize.height, jogadorIconSize.width, jogadorIconSize.height);
         background.add(jogadorIcon);
 
-        //Icone do adversario
+        // Ícone do adversário
         adversarioIcon = new IconeGUI("/assets/images/frames/framesBoss/boss1_1.png", "Nulio Cisar");
         Dimension adversarioIconSize = adversarioIcon.getPreferredSize();
-        adversarioIcon.setBounds(larguraTela - adversarioIconSize.width, 0, adversarioIconSize.width, adversarioIconSize.height);
+        adversarioIcon.setBounds(tamanhoTela.width - adversarioIconSize.width, 0, adversarioIconSize.width, adversarioIconSize.height);
         background.add(adversarioIcon);
 
-        //Cartas do adversário
+        // Cartas do jogador
         cartasJogador = new CartasPanel[2];
-        for(int i = 0 ; i < 2 ; i++){
+        for (int i = 0; i < 2; i++) {
             cartasJogador[i] = new CartasPanel(jogo.getJogador().getMao()[i]);
             cartasJogador[i].setBounds(
-                    jogadorIcon.getWidth() + cartasJogador[i].getWidth()*(1+i) + 20,
-                    alturaTela - cartasJogador[i].getHeight() ,
+                    jogadorIcon.getWidth() + cartasJogador[i].getWidth() * (1 + i) + 20,
+                    tamanhoTela.height - cartasJogador[i].getHeight(),
                     cartasJogador[i].getWidth(),
-                    cartasJogador[i].getHeight());
+                    cartasJogador[i].getHeight()
+            );
             background.add(cartasJogador[i]);
         }
 
-        //Mesa
+        // Mesa
         mesa = new MesaGUI(jogo.getMesa());
         Dimension mesaSize = mesa.getPreferredSize();
-        mesa.setBounds( (int) (larguraTela/2 - ( mesaSize.getWidth()/2) ) , (int) (alturaTela/2 - mesaSize.getHeight()/2),  mesaSize.width, mesaSize.height);
+        mesa.setBounds(
+                (tamanhoTela.width - mesaSize.width) / 2,
+                (tamanhoTela.height - mesaSize.height) / 2,
+                mesaSize.width,
+                mesaSize.height
+        );
         mesa.setOpaque(false);
         background.add(mesa);
 
-        //Vida do jogador
+        // Vida do jogador
         jogadorHP = new VidaGUI(jogo.getJogador().getVida(), 1);
         Dimension vidaJogadorSize = jogadorHP.getPreferredSize();
         jogadorHP.setBounds(
-                larguraTela - vidaJogadorSize.width,
-                alturaTela - vidaJogadorSize.height - 100,
+                tamanhoTela.width - vidaJogadorSize.width,
+                tamanhoTela.height - vidaJogadorSize.height - 100,
                 vidaJogadorSize.width,
                 vidaJogadorSize.height
         );
-
         background.add(jogadorHP);
 
-        //Vida do Adversario
+        // Vida do adversário
         adversarioHP = new VidaGUI(jogo.getJogador().getVida(), 2);
         Dimension vidaAdversarioSize = adversarioHP.getPreferredSize();
-        adversarioHP.setBounds(
-                0,
-                0,
-                vidaAdversarioSize.width,
-                vidaAdversarioSize.height
-        );
-
+        adversarioHP.setBounds(0, 0, vidaAdversarioSize.width, vidaAdversarioSize.height);
         background.add(adversarioHP);
 
-        //Pause
+        // Botão Pause
         pause = new BotoesGUI("jogo/pause", 50, 50, 0);
         pause.setBotao(pause.getBotao());
         pause.add(pause.getBotao());
-        pauseIcons = new ImageIcon[3];
-        pause.setBounds(larguraTela - 50, (alturaTela - 50)/2 - 50, 50, 50);
+        pause.setBounds(tamanhoTela.width - 50, (tamanhoTela.height - 50) / 2 - 50, 50, 50);
         pause.setOpaque(false);
         background.add(pause);
-        inventario = new Inventario();
-        pause.getBotao().addActionListener(e -> {
-            app.trocarTela(new LojaGUI(app, inventario));
-        });
 
-        //Inicio
+        inventario = new Inventario();
+        pause.getBotao().addActionListener(e -> app.trocarTela(new LojaGUI(app, inventario)));
+
+        // Botão Início
         inicio = new BotoesGUI("jogo/pause", 50, 50, 0);
         inicio.setBotao(inicio.getBotao());
         inicio.add(inicio.getBotao());
-        inicioIcons = new ImageIcon[3];
-        inicio.setBounds(larguraTela - 50, (alturaTela - 50)/2, 50, 50);
+        inicio.setBounds(tamanhoTela.width - 50, (tamanhoTela.height - 50) / 2, 50, 50);
         inicio.setOpaque(false);
         background.add(inicio);
-        inicio.getBotao().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt){
-                app.trocarTela(new MenuGUI(app));
-            }
-        });
 
-        //Check
+        inicio.getBotao().addActionListener(e -> app.trocarTela(new MenuGUI(app)));
+
+        // Botão Check
         check = new BotoesGUI("jogo/check", 84, 42, 0);
         check.setEscalaX(5);
         check.setEscalaY(1.3);
-        checkIcons = new ImageIcon[3];
-        check.setBotao(check.getBotao()); //KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
+        check.setBotao(check.getBotao());
         check.add(check.getBotao());
         check.setBounds(
-                (larguraTela  - vidaJogadorSize.width),
-                (int) (alturaTela - 84 * 1.3),
-                (42 * 5),
+                tamanhoTela.width - vidaJogadorSize.width,
+                (int) (tamanhoTela.height - 84 * 1.3),
+                42 * 5,
                 (int) (84 * 1.3)
         );
         check.setOpaque(false);
         background.add(check);
-        check.getBotao().addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                jogo.getJogador().escolhaDaJogada(1);
-                jogo.registrarEscolhaJogador(1);
-            }
+
+        check.getBotao().addActionListener(e -> {
+            jogo.getJogador().escolhaDaJogada(1);
+            jogo.registrarEscolhaJogador(1);
         });
 
-        //Fold
+        // Botão Fold
         fold = new BotoesGUI("jogo/fold", 84, 42, 0);
-        foldIcons = new ImageIcon[3];
         fold.setEscalaX(5);
         fold.setEscalaY(1.3);
         fold.setBotao(fold.getBotao());
         fold.add(fold.getBotao());
         fold.setOpaque(false);
-        background.add(fold);
         fold.setBounds(
-                (int) (larguraTela  - vidaJogadorSize.width + 42 * 5.5),
-                (int) (alturaTela - 84 * 1.3),
-                (int)(42 * 5),
+                tamanhoTela.width - vidaJogadorSize.width + (int) (42 * 5.5),
+                (int) (tamanhoTela.height - 84 * 1.3),
+                42 * 5,
                 (int) (84 * 1.3)
         );
-        fold.getBotao().addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jogo.getJogador().escolhaDaJogada(0);
-                jogo.registrarEscolhaJogador(0);
-            }
+        background.add(fold);
+
+        fold.getBotao().addActionListener(e -> {
+            jogo.getJogador().escolhaDaJogada(0);
+            jogo.registrarEscolhaJogador(0);
         });
+
+        // Atualização automática a cada nova rodada
+        jogo.setOnNovaRodada(() -> SwingUtilities.invokeLater(() -> atualizarTudo()));
+    }
+
+    public void atualizarTudo() {
+        // Remove as cartas antigas
+        for (CartasPanel cartaPanel : cartasJogador) {
+            if (cartaPanel.getParent() == background) {
+                background.remove(cartaPanel);
+            }
+        }
+
+        // Adiciona as novas cartas do jogador
+        for (int i = 0; i < 2; i++) {
+            cartasJogador[i] = new CartasPanel(jogo.getJogador().getMao()[i]);
+            cartasJogador[i].setBounds(
+                    jogadorIcon.getWidth() + cartasJogador[i].getWidth() * (1 + i) + 20,
+                    tamanhoTela.height - cartasJogador[i].getHeight(),
+                    cartasJogador[i].getWidth(),
+                    cartasJogador[i].getHeight()
+            );
+            background.add(cartasJogador[i]);
+        }
+
+        mesa.atualizarMesa(jogo.getMesa());
+
+        this.revalidate();
+        this.repaint();
     }
 }

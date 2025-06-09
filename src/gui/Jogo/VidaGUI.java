@@ -102,4 +102,6 @@ public class VidaGUI extends JPanel{
         this.altura = altura;
     }
 
+
+
 }

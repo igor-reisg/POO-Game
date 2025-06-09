@@ -1,6 +1,8 @@
 package gui.Jogo;
 
 import modelos.Cartas.Carta;
+import modelos.Jogo.Jogo;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -111,6 +113,8 @@ public class CartasPanel extends JPanel {
 
     private void atualizarImagemComLargura(int largura, int altura) {
         try {
+            if (largura <= 0 || altura <= 0) return;
+
             String caminhoImagem = carta.getImagemCaminho();
             URL urlImagem = getClass().getResource(caminhoImagem);
 
@@ -119,12 +123,13 @@ public class CartasPanel extends JPanel {
                 Image img = imagem.getImage();
                 Image imagemRedimensionada = img.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
                 labelCarta.setIcon(new ImageIcon(imagemRedimensionada));
-                labelCarta.setBounds((getWidth() - largura) / 2, (getHeight() - altura) / 2, largura, altura); // <- centraliza
+                labelCarta.setBounds((getWidth() - largura) / 2, (getHeight() - altura) / 2, largura, altura);
             }
         } catch (Exception e) {
             System.out.println("Erro ao redimensionar carta: " + e.getMessage());
         }
     }
+
 
 
     public void animacaoVirarCarta() {
@@ -135,4 +140,3 @@ public class CartasPanel extends JPanel {
 
 
 }
-

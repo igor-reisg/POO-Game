@@ -23,6 +23,10 @@ public class Inimigo {
             fold();
         }
     }
+    public void limpaCartas() {
+        this.mao = new Carta[2];
+    }
+
 
     public void check(){
 

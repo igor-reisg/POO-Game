@@ -48,4 +48,33 @@ public class MesaGUI extends JPanel{
         }
     }
 
+    public void atualizarMesa(Mesa novaMesa) {
+        this.mesa = novaMesa;
+        atualizarCartas();
+    }
+
+    public void atualizarCartas() {
+        // Remove cartas
+        Component[] componentes = labelMesa.getComponents();
+        for (Component c : componentes) {
+            if (c instanceof CartasPanel) {
+                labelMesa.remove(c);
+            }
+        }
+
+        // Recria cartas
+        cartasMesa = new CartasPanel[5];
+        int espacamento = 150;
+        int xInicial = largura / 2 - (cartasMesa.length * espacamento) / 2 + 15;
+
+        for (int i = 0; i < cartasMesa.length; i++) {
+            cartasMesa[i] = new CartasPanel(mesa.getCartas()[i]);
+            cartasMesa[i].setBounds(xInicial + i * espacamento, altura / 2 - cartasMesa[i].getHeight() / 2, cartasMesa[i].getWidth(), cartasMesa[i].getHeight());
+            labelMesa.add(cartasMesa[i]);
+        }
+
+        labelMesa.revalidate();
+        labelMesa.repaint();
+    }
+
 }
