@@ -14,30 +14,20 @@ public class CartasPanel extends JPanel {
     private Timer diminui;
 
     private final double escalaInicial = 1.0;
-    private final double escalaFinal = 1.2;
-    private final double escalaPasso = 0.05;
-
-    private double escalaAtual;
-    private int frameAtual;
     private int largura;
     private int altura;
 
     public CartasPanel(Carta carta) {
         this.carta = carta;
-        this.setLayout(new BorderLayout());
+        this.setLayout(null);
+        this.setOpaque(false);
 
         labelCarta = new JLabel();
-        this.add(labelCarta, BorderLayout.CENTER);
+        labelCarta.setOpaque(false);
+        this.add(labelCarta);
         carregarImagem(escalaInicial);
 
         inicializaTimers();
-
-//        this.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                animacaoVirarCarta();
-//            }
-//        });
 
         this.carta.setCartaListener(new Carta.CartaListener() {
             @Override
@@ -46,6 +36,7 @@ public class CartasPanel extends JPanel {
             }
         });
     }
+
 
     private void carregarImagem(double escala) {
         try {
@@ -58,12 +49,15 @@ public class CartasPanel extends JPanel {
                 this.largura = (int) (img.getWidth(null) * escala);
                 this.altura = (int) (img.getHeight(null) * escala);
                 Image imagemRedimensionada = img.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
+
                 labelCarta.setIcon(new ImageIcon(imagemRedimensionada));
+                labelCarta.setBounds((getWidth() - largura) / 2, (getHeight() - altura) / 2, largura, altura); // <- centraliza
             }
         } catch (Exception e) {
             System.out.println("Erro ao carregar imagem da carta: " + e.getMessage());
         }
     }
+
 
     public int getWidth(){
         return largura;
@@ -74,38 +68,66 @@ public class CartasPanel extends JPanel {
     }
 
     private void inicializaTimers() {
-        int delay = 30;
-        aumenta = new Timer(delay, new ActionListener() {
+        int delay = 20;
+        int passo = 20; // pixels por frame
+        final int larguraOriginal = carta.getLarguraOriginal();
+        final int alturaOriginal = carta.getAlturaOriginal();
+
+        aumenta = new Timer(delay, null);
+        diminui = new Timer(delay, null);
+
+        aumenta.addActionListener(new ActionListener() {
+            int larguraAtual = larguraOriginal;
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (escalaAtual < escalaFinal) {
-                    escalaAtual += escalaPasso;
-                    carregarImagem(escalaAtual);
-                    frameAtual++;
+                if (larguraAtual > 0) {
+                    larguraAtual -= passo;
+                    if (larguraAtual < 0) larguraAtual = 0;
+                    atualizarImagemComLargura(larguraAtual, alturaOriginal);
                 } else {
                     aumenta.stop();
-                    carta.virarCarta();
-                    carregarImagem(escalaAtual);
-                    frameAtual = 0;
+                    carregarImagem(1.0);
                     diminui.start();
                 }
             }
         });
 
-        diminui = new Timer(delay, e -> {
-            if (escalaAtual > escalaInicial) {
-                escalaAtual -= escalaPasso;
-                carregarImagem(escalaAtual);
-                frameAtual++;
-            } else {
-                diminui.stop();
+        diminui.addActionListener(new ActionListener() {
+            int larguraAtual = 0;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (larguraAtual < larguraOriginal) {
+                    larguraAtual += passo;
+                    if (larguraAtual > larguraOriginal) larguraAtual = larguraOriginal;
+                    atualizarImagemComLargura(larguraAtual, alturaOriginal);
+                } else {
+                    diminui.stop();
+                }
             }
         });
     }
 
+    private void atualizarImagemComLargura(int largura, int altura) {
+        try {
+            String caminhoImagem = carta.getImagemCaminho();
+            URL urlImagem = getClass().getResource(caminhoImagem);
+
+            if (urlImagem != null) {
+                ImageIcon imagem = new ImageIcon(urlImagem);
+                Image img = imagem.getImage();
+                Image imagemRedimensionada = img.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
+                labelCarta.setIcon(new ImageIcon(imagemRedimensionada));
+                labelCarta.setBounds((getWidth() - largura) / 2, (getHeight() - altura) / 2, largura, altura); // <- centraliza
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao redimensionar carta: " + e.getMessage());
+        }
+    }
+
+
     public void animacaoVirarCarta() {
-        escalaAtual = escalaInicial;
-        frameAtual = 1;
         aumenta.start();
     }
 

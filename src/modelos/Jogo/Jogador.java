@@ -19,6 +19,8 @@ public class Jogador {
     public void recebeCarta(Baralho baralho){
         mao = new Carta[2];
         mao[0] = baralho.pegaCarta();
+
+
         mao[1] = baralho.pegaCarta();
 
     }

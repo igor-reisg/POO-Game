@@ -8,6 +8,8 @@ public class Carta {
     private boolean verso = true;
     private final static String imagemCaminho = "/assets/images/cartas/baralho/";
     private CartaListener listener;
+    private final int larguraOriginal = 117;
+    private final int alturaOriginal = 165;
 
     public interface CartaListener {
         void aoVirarCarta();
@@ -78,6 +80,14 @@ public class Carta {
 
     public Valor getValor() {
         return valor;
+    }
+
+    public int getAlturaOriginal() {
+        return alturaOriginal;
+    }
+
+    public int getLarguraOriginal() {
+        return larguraOriginal;
     }
 }
 
