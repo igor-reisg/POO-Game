@@ -22,7 +22,7 @@ public class InventarioGUI extends JPanel {
     int altura = 950;
     Inventario inventario;
     CoringasGUI[] coringas;
-    String caminhoBackground = "/assets/images/background/pattern4.png";
+    String caminhoBackground = "/assets/images/mesaPrincipal/inventario.png";
     private final String caminhoFonte = "/assets/fonts/RetroGaming.ttf";
     BotoesGUI fechar, ajuda;
     JLabel totalMoedas;
