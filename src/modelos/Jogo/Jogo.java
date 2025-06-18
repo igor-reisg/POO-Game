@@ -131,9 +131,15 @@ public class Jogo {
                     Arrays.asList(mesa.getCartas())
             );
             switch (resultado) {
-                case JOGADOR_VENCE -> System.out.println("Jogador venceu!");
-                case INIMIGO_VENCE -> System.out.println("Inimigo venceu!");
-                case EMPATE -> System.out.println("Empate!");
+                case JOGADOR_VENCE:
+                    System.out.println("Jogador venceu!");
+                    break;
+                case INIMIGO_VENCE:
+                    System.out.println("Inimigo venceu!");
+                    break;
+                case EMPATE:
+                    System.out.println("Empate!");
+                    break;
             }
         }
     }

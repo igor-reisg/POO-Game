@@ -76,7 +76,7 @@ public class PokerLogica {
         if (freq.containsValue(4L)) {
             int quadra = getPorFrequencia(freq, 4L).get(0);
             desempate.add(quadra);
-            desempate.addAll(getRestantes(freq, List.of(quadra)));
+            desempate.addAll(getRestantes(freq, Arrays.asList(quadra)));
             System.out.println("QUADRA");
             return new MaoAvaliacao(700, desempate);
         }
@@ -105,7 +105,7 @@ public class PokerLogica {
         if (freq.containsValue(3L)) {
             int trinca = getPorFrequencia(freq, 3L).get(0);
             desempate.add(trinca);
-            desempate.addAll(getRestantes(freq, List.of(trinca)));
+            desempate.addAll(getRestantes(freq, Arrays.asList(trinca)));
             System.out.println("TRINCA");
             return new MaoAvaliacao(300, desempate);
         }
@@ -122,7 +122,7 @@ public class PokerLogica {
         if (freq.containsValue(2L)) {
             int par = getPorFrequencia(freq, 2L).get(0);
             desempate.add(par);
-            desempate.addAll(getRestantes(freq, List.of(par)));
+            desempate.addAll(getRestantes(freq, Arrays.asList(par)));
             System.out.println("PAR");
             return new MaoAvaliacao(100, desempate);
         }
@@ -164,6 +164,6 @@ public class PokerLogica {
         }
 
         // A-2-3-4-5: Ás como 12
-        return valores.containsAll(List.of(0, 1, 2, 3, 12));
+        return valores.containsAll(Arrays.asList(0, 1, 2, 3, 12));
     }
 }
