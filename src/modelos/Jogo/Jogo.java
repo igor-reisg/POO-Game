@@ -115,6 +115,9 @@ public class Jogo {
             inimigoPronto = false;
         }
     }
+    public int getRound(){
+        return rodada;
+    }
 
     private void processarRodada() {
         if (jogadaJogador == 0) {

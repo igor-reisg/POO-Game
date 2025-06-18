@@ -14,6 +14,7 @@ public class JogoGUI extends JPanel {
     private final Jogo jogo;
     private final Dimension tamanhoTela;
 
+    private final RoundCounterGUI contadorDeRound;
     private final MesaGUI mesa;
     private final CartasPanel[] cartasJogador, cartasInimigo;
     private final IconeGUI jogadorIcon, inimigoIcon;
@@ -100,6 +101,12 @@ public class JogoGUI extends JPanel {
         Dimension vidaAdversarioSize = inimigoHP.getPreferredSize();
         inimigoHP.setBounds(0, 0, vidaAdversarioSize.width, vidaAdversarioSize.height);
         background.add(inimigoHP);
+
+        // Contador de Round
+        contadorDeRound = new RoundCounterGUI(jogo.getRound());
+        Dimension contadorDeRoundSize = contadorDeRound.getPreferredSize();
+        contadorDeRound.setBounds((tamanhoTela.width - contadorDeRoundSize.width)/ 2, 0,  contadorDeRoundSize.width, contadorDeRoundSize.height);
+        background.add(contadorDeRound);
 
         // Botão Pause
         pause = new BotoesGUI("jogo/pause", 50, 50, 0);
