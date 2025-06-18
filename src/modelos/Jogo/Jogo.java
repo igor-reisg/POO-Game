@@ -62,8 +62,8 @@ public class Jogo {
         jogador.recebeCarta(baralho);
         inimigo.recebeCarta(baralho);
 
-        timer.schedule(new TimerTask() { public void run() { jogador.revelaCarta(0); }}, 300);
-        timer.schedule(new TimerTask() { public void run() { jogador.revelaCarta(1); }}, 500);
+        timer.schedule(new TimerTask() { public void run() { jogador.revelaCarta(0); }}, 500);
+        timer.schedule(new TimerTask() { public void run() { jogador.revelaCarta(1); }}, 700);
 
 
         jogadorPronto = false;

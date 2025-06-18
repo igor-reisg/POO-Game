@@ -3,7 +3,7 @@
     {
       "nome": "teste1",
       "descricao": "teste descricao",
-      "efeito": "teste efeito",
+      "raridade": "teste raridade",
       "preco": 100,
       "xp": 0,
       "level": 1,
@@ -12,7 +12,7 @@
     {
       "nome": "teste2",
       "descricao": "teste descricao",
-      "efeito": "teste efeito",
+      "raridade": "teste raridade",
       "preco": 100,
       "xp": 0,
       "level": 1,
@@ -21,7 +21,7 @@
     {
       "nome": "teste3",
       "descricao": "teste descricao",
-      "efeito": "teste efeito",
+      "raridade": "teste raridade",
       "preco": 100,
       "xp": 0,
       "level": 1,
@@ -30,7 +30,7 @@
     {
       "nome": "teste4",
       "descricao": "teste descricao",
-      "efeito": "teste efeito",
+      "raridade": "teste raridade",
       "preco": 100,
       "xp": 0,
       "level": 1,
@@ -39,7 +39,7 @@
     {
       "nome": "teste5",
       "descricao": "teste descricao",
-      "efeito": "teste efeito",
+      "raridade": "teste raridade",
       "preco": 100,
       "xp": 0,
       "level": 1,

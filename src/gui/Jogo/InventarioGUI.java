@@ -30,6 +30,7 @@ public class InventarioGUI extends JPanel {
     private Dimension tamanhoTela;
     private StaticBackgroundPanel panelInventario;
     private JLabel quantidadeCoringas;
+    private JLabel labelTextHolder;
 
     public InventarioGUI(Inventario inventario) {
         this.inventario = inventario;
@@ -46,6 +47,7 @@ public class InventarioGUI extends JPanel {
         panelInventario = new StaticBackgroundPanel(caminhoBackground, largura, altura);
         panelInventario.setLayout(null);
         panelInventario.setBounds(0, 0, largura, altura);
+        panelInventario.setOpaque(false);
 
         //Puxando a fonte para a escrita
         try {
@@ -59,28 +61,34 @@ public class InventarioGUI extends JPanel {
         //Quantidade de moedas no inventário
         totalMoedas = new JLabel("Moedas: $" + inventario.getMoedasInventarioString());
         totalMoedas.setFont(fonte);
-        totalMoedas.setForeground(new Color(200, 200, 200));
-        totalMoedas.setBounds(largura - 1530, altura - 70, 189, 95);
-        panelInventario.add(totalMoedas);
+        totalMoedas.setForeground(new Color(40, 40, 40));
+        totalMoedas.setBounds(largura - 1490, altura - 120, 189, 95);
+        panelInventario.add(totalMoedas, Integer.valueOf(2));
 
         //Quantidade máxima de Coringas e Quantidade de Coringas atuais
         quantidadeCoringas = new JLabel("(" + inventario.getQtdCoringas() + "/" + inventario.getMaxCoringas() + ")");
         quantidadeCoringas.setFont(fonte);
-        quantidadeCoringas.setForeground(new Color(200, 200, 200));
-        quantidadeCoringas.setBounds(largura - 1530, altura - 100, 189, 95);
-        panelInventario.add(quantidadeCoringas);
+        quantidadeCoringas.setForeground(new Color(40, 40, 40));
+        quantidadeCoringas.setBounds(largura - 1490, altura - 150, 189, 95);
+        panelInventario.add(quantidadeCoringas, Integer.valueOf(2));
+
+        //Caixinha que fica embaixo da qtd de moedas e de coringas
+        labelTextHolder = new JLabel();
+        carregarImagem();
+        labelTextHolder.setBounds(largura - 1500, altura - 150, 200, 100);
+        panelInventario.add(labelTextHolder, Integer.valueOf(1));
 
         //Botão voltar do inventário
         fechar = new BotoesGUI("inventario/", 50, 50, 0);
         fechar.getBotao().addActionListener(e -> setVisible(false));
-        fechar.getBotao().setBounds(largura - 70, altura - 70, 50, 50);
+        fechar.getBotao().setBounds(largura - 150, altura - 100, 50, 50);
         fechar.getBotao().setFocusPainted(false);
         panelInventario.add(fechar.getBotao());
 
         //Botão de ajuda do inventário
         ajuda = new BotoesGUI("inventario/", 50, 50, 1);
         ajuda.getBotao().addActionListener(e -> setVisible(false));
-        ajuda.getBotao().setBounds(largura - 70, altura - 930, 50, 50);
+        ajuda.getBotao().setBounds(largura - 150, altura - 900, 50, 50);
         ajuda.getBotao().setFocusPainted(false);
         panelInventario.add(ajuda.getBotao());
 
@@ -103,5 +111,15 @@ public class InventarioGUI extends JPanel {
         }
         panelInventario.revalidate();
         panelInventario.repaint();
+    }
+
+    private void carregarImagem() {
+        String caminhoImagem = "/assets/images/mesaPrincipal/textholder.png";
+        URL url = getClass().getResource(caminhoImagem);
+        if (url != null) {
+            ImageIcon original = new ImageIcon(url);
+            Image img = original.getImage().getScaledInstance(200, 100, Image.SCALE_SMOOTH);
+            labelTextHolder.setIcon(new ImageIcon(img));
+        }
     }
 }
