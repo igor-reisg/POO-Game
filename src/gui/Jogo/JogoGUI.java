@@ -138,6 +138,7 @@ public class JogoGUI extends JPanel {
         background.add(check);
 
         check.getBotao().addActionListener(e -> {
+            jogadorHP.apostar();
             jogo.getJogador().escolhaDaJogada(1);
             jogo.registrarEscolhaJogador(1);
         });

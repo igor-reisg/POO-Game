@@ -1,64 +1,122 @@
 package gui.Jogo;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.net.URL;
 
-public class VidaGUI extends JPanel{
+public class VidaGUI extends JPanel {
     private final JLabel labelVida;
     private JLabel labelVidaDiscreta;
     private int largura;
     private int altura;
+    private final int alturaUnidade = 72;
+    private final int larguraUnidade = 53;
+
     private int vida;
     private JLabel[] vidaDiscreta;
+    private Listener[] listeners;
+    private final String caminhoVidaInimigo = "/assets/images/botoes/jogo/unidadevida3.png";
+    private final String caminhoVidaJogador = "/assets/images/botoes/jogo/unidadevida2.png";
+    private final String caminhoVidaJogadorSelecionada = "/assets/images/botoes/jogo/unidadevida1.png";
+
+    private final int vidaTotal = 15;
+    private int vidaAtual = 10;
     private int vidaSelecionada = 0;
 
-    public VidaGUI(int vida, int tipoJogador){
+    public VidaGUI(int vida, int tipoJogador) {
         this.vida = vida;
         labelVida = new JLabel();
-        labelVida.setLayout(new FlowLayout(FlowLayout.RIGHT,-20,0));
+        labelVida.setLayout(null);
 
         carregarImagem(labelVida, "/assets/images/botoes/jogo/barravida1.png");
         setDimensions();
         setOpaque(false);
         add(labelVida);
-        vidaDiscreta = new JLabel[15];
 
-        for(int i = 0 ; i < vidaDiscreta.length; i++){
-            final int index = i;
-            vidaDiscreta[index] = new JLabel();
-            if(tipoJogador == 1){
-                carregarImagem(vidaDiscreta[i], "/assets/images/botoes/jogo/unidadevida2.png");
-            } else{
-                carregarImagem(vidaDiscreta[i], "/assets/images/botoes/jogo/unidadevida3.png");
+        vidaDiscreta = new JLabel[vidaTotal];
+        listeners = new Listener[vidaTotal];
+
+        for (int i = 0; i < vidaTotal; i++) {
+            vidaDiscreta[i] = new JLabel();
+            listeners[i] = new Listener(i);
+
+            vidaDiscreta[i].setBounds(
+                    largura - larguraUnidade - 27 * i - 3,
+                    4,
+                    larguraUnidade,
+                    alturaUnidade
+            );
+
+            if (tipoJogador == 1) {
+                if (i >= vidaTotal - vidaAtual) {
+                    vidaDiscreta[i].addMouseListener(listeners[i]);
+                    carregarImagem(vidaDiscreta[i], caminhoVidaJogador);
+                }
+            } else {
+                carregarImagem(vidaDiscreta[i], caminhoVidaInimigo);
             }
+
             labelVida.add(vidaDiscreta[i]);
-            if(tipoJogador == 1){
-                vidaDiscreta[i].addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseEntered(MouseEvent e) {
-                        for(int j = 0 ; j < index ; j++){
-                            carregarImagem(vidaDiscreta[j], "/assets/images/botoes/jogo/unidadevida1.png");
-                        }
-                        carregarImagem(vidaDiscreta[index], "/assets/images/botoes/jogo/unidadevida1.png");
-                    }
+        }
+    }
 
-                    @Override
-                    public void mouseExited(MouseEvent e) {
-                        for(int j = 0 ; j < index ; j++){
-                            carregarImagem(vidaDiscreta[j], "/assets/images/botoes/jogo/unidadevida2.png");
-                        }
-                        carregarImagem(vidaDiscreta[index], "/assets/images/botoes/jogo/unidadevida2.png");
-                    }
+    private class Listener implements MouseListener {
+        boolean selecionado = false;
+        int index;
 
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        vidaSelecionada = 100 * index;
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (selecionado) {
+                for (int i = index; i < vidaTotal; i++) {
+                    if (i > vidaSelecionada) {
+                        carregarImagem(vidaDiscreta[i], caminhoVidaJogador);
+                        listeners[i].selecionado = false;
                     }
-                });
+                }
+                selecionado = false;
+                vidaSelecionada = 0;
+            } else {
+                for (int i = vidaTotal - vidaAtual; i <= index && !listeners[i].selecionado; i++) {
+                    listeners[i].selecionado = true;
+                }
+                vidaSelecionada = vidaAtual - (vidaTotal - index);
+                System.out.println(vidaSelecionada);
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {}
+
+        @Override
+        public void mouseReleased(MouseEvent e) {}
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            if (selecionado) return;
+            for (int i = vidaTotal - vidaAtual; i <= index && !listeners[i].selecionado; i++) {
+                carregarImagem(vidaDiscreta[i], caminhoVidaJogadorSelecionada);
+            }
+            if(index < vidaTotal - 1){
+                carregarImagem(vidaDiscreta[index + 1], caminhoVidaJogadorSelecionada);
             }
 
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            if (selecionado) return;
+            for (int i = vidaTotal - vidaAtual ; i <= index && !listeners[i].selecionado; i++) {
+                carregarImagem(vidaDiscreta[i], caminhoVidaJogador);
+            }
+            if(index < vidaTotal - 1){
+                carregarImagem(vidaDiscreta[index + 1], caminhoVidaJogador);
+            }
+        }
+
+        public Listener(int index) {
+            this.index = index;
         }
     }
 
@@ -67,41 +125,68 @@ public class VidaGUI extends JPanel{
             URL urlImagem = getClass().getResource(caminhoImagem);
             if (urlImagem != null) {
                 ImageIcon imagem = new ImageIcon(urlImagem);
-                Image img = imagem.getImage();
-                this.largura = (int) (img.getWidth(null));
-                this.altura = (int) (img.getHeight(null));
                 label.setIcon(imagem);
+            } else {
+                label.setIcon(null);
             }
         } catch (Exception e) {
-            System.out.println("Erro ao carregar imagem da carta: " + e.getMessage());
+            System.out.println("Erro ao carregar imagem: " + e.getMessage());
         }
     }
 
-    private void setDimensions(){
+    private void reabilitarUnidadesVida(int cura) {
+        int novaVida = Math.min(vidaAtual + cura, vidaTotal);
+        for (int i = vidaTotal - novaVida; i < vidaTotal - vidaAtual; i++) {
+            carregarImagem(vidaDiscreta[i], caminhoVidaJogador);
+            vidaDiscreta[i].addMouseListener(listeners[i]);
+        }
+        vidaAtual = novaVida;
+    }
+
+    private void desabilitarUnidadesVida(int dano) {
+        int novaVida = Math.max(vidaAtual - dano, 0);
+        for (int i = vidaTotal - vidaAtual; i < vidaTotal - novaVida; i++) {
+            vidaDiscreta[i].setIcon(null);
+            vidaDiscreta[i].removeMouseListener(listeners[i]);
+        }
+        vidaAtual = novaVida;
+    }
+
+    private void setDimensions() {
         try {
             URL urlImagem = getClass().getResource("/assets/images/botoes/jogo/barravida1.png");
             if (urlImagem != null) {
                 ImageIcon imagem = new ImageIcon(urlImagem);
+                Image img = imagem.getImage();
+                largura = img.getWidth(null);
+                altura = img.getHeight(null);
             }
         } catch (Exception e) {
             System.out.println("Erro ao carregar imagem da vida: " + e.getMessage());
         }
     }
 
-    public int getLargura(){
+    public void vidaRetornada(int cura) {
+        reabilitarUnidadesVida(cura);
+    }
+
+    public int apostar() {
+        int aux = vidaSelecionada;
+        System.out.println(vidaSelecionada);
+        desabilitarUnidadesVida(vidaSelecionada + 1);
+        vidaSelecionada = 0;
+        return aux;
+    }
+
+    public void setVidaApostada(int vidaSelecionada) {
+        this.vidaSelecionada = vidaSelecionada;
+    }
+
+    public int getLargura() {
         return largura;
     }
 
-    public int getAltura(){
+    public int getAltura() {
         return altura;
     }
-
-
-
-    public void setAltura(int altura){
-        this.altura = altura;
-    }
-
-
-
 }
