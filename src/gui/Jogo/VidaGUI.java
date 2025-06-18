@@ -17,9 +17,11 @@ public class VidaGUI extends JPanel {
     private int vida;
     private JLabel[] vidaDiscreta;
     private Listener[] listeners;
-    private final String caminhoVidaInimigo = "/assets/images/botoes/jogo/unidadevida3.png";
-    private final String caminhoVidaJogador = "/assets/images/botoes/jogo/unidadevida2.png";
-    private final String caminhoVidaJogadorPressionada = "/assets/images/botoes/jogo/unidadevida1.png";
+    private final String caminhoVidaInimigo = "/assets/images/JogoHUB/unidadevida3.png";
+    private final String caminhoVidaJogador = "/assets/images/JogoHUB/unidadevida2.png";
+    private final String caminhoVidaJogadorPressionada = "/assets/images/JogoHUB/unidadevida1.png";
+    private final String caminhoVidaJogadorTransparente = "/assets/images/JogoHUB/unidadevida5.png";
+    private final String caminhoVidaInimigoTransparente = "/assets/images/JogoHUB/unidadevida6.png";
 
     private final int vidaTotal = 15;
     private int vidaAtual = 15;
@@ -30,7 +32,7 @@ public class VidaGUI extends JPanel {
         labelVida = new JLabel();
         labelVida.setLayout(null);
 
-        carregarImagem(labelVida, "/assets/images/botoes/jogo/barravida1.png");
+        carregarImagem(labelVida, "/assets/images/JogoHUB/barravida1.png");
         setDimensions();
         setOpaque(false);
         add(labelVida);
@@ -68,9 +70,10 @@ public class VidaGUI extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
             for(int i = vidaTotal - vidaAtual ; i <= index ; i++){
-                carregarImagem(vidaDiscreta[i], caminhoVidaInimigo);
+                carregarImagem(vidaDiscreta[i], caminhoVidaJogadorTransparente);
             }
             vidaSelecionada = vidaAtual - (vidaTotal - index);
+            System.out.println(vidaSelecionada);
             apostar();
         }
 
@@ -116,7 +119,7 @@ public class VidaGUI extends JPanel {
                 label.setIcon(null);
             }
         } catch (Exception e) {
-            System.out.println("Erro ao carregar imagem: " + e.getMessage());
+            System.out.println("Erro ao carregar imagem na vida: " + e.getMessage());
         }
     }
 
@@ -139,7 +142,7 @@ public class VidaGUI extends JPanel {
 
     private void setDimensions() {
         try {
-            URL urlImagem = getClass().getResource("/assets/images/botoes/jogo/barravida1.png");
+            URL urlImagem = getClass().getResource("/assets/images/JogoHUB/barravida1.png");
             if (urlImagem != null) {
                 ImageIcon imagem = new ImageIcon(urlImagem);
                 Image img = imagem.getImage();
@@ -159,6 +162,7 @@ public class VidaGUI extends JPanel {
 
         int aux = vidaSelecionada;
         desabilitarUnidadesVida(vidaSelecionada + 1);
+        System.out.println(vidaSelecionada);
         vidaSelecionada = 0;
         return aux;
     }
