@@ -156,6 +156,7 @@ public class VidaGUI extends JPanel {
     }
 
     public int apostar() {
+
         int aux = vidaSelecionada;
         desabilitarUnidadesVida(vidaSelecionada + 1);
         vidaSelecionada = 0;
