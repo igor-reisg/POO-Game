@@ -14,6 +14,7 @@ public class JogoGUI extends JPanel {
     private final Jogo jogo;
     private final Dimension tamanhoTela;
 
+    private final PoteGUI pote;
     private final RoundCounterGUI contadorDeRound;
     private final MesaGUI mesa;
     private final CartasPanel[] cartasJogador, cartasInimigo;
@@ -108,6 +109,13 @@ public class JogoGUI extends JPanel {
         contadorDeRound.setBounds((tamanhoTela.width - contadorDeRoundSize.width)/ 2, 0,  contadorDeRoundSize.width, contadorDeRoundSize.height);
         background.add(contadorDeRound);
 
+        // Pote
+        pote = new PoteGUI(jogo.getPote());
+        Dimension poteSize = pote.getPreferredSize();
+        pote.setBounds(0, (tamanhoTela.height - poteSize.height)/2, poteSize.width, poteSize.height);
+        pote.adicionarPote(jogo.getPote().getQuantidade());
+        background.add(pote);
+
         // Botão Pause
         pause = new BotoesGUI("jogo/pause", 50, 50, 0);
         pause.setBotao(pause.getBotao());
@@ -145,7 +153,6 @@ public class JogoGUI extends JPanel {
         background.add(check);
 
         check.getBotao().addActionListener(e -> {
-            jogadorHP.apostar();
             jogo.getJogador().escolhaDaJogada(1);
             jogo.registrarEscolhaJogador(1);
         });

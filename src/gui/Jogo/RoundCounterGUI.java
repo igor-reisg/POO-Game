@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class RoundCounterGUI extends JPanel {
     private int round;
-    private final String caminhoRaiz = "/assets/images/botoes/jogo/roundcounter";
+    private final String caminhoRaiz = "/assets/images/JogoHUB/roundcounter";
     private final ImageIcon[] icon = new ImageIcon[3];
     private final JLabel panelRound = new JLabel();
 
@@ -20,8 +20,8 @@ public class RoundCounterGUI extends JPanel {
                 ImageIcon tempIcon = new ImageIcon(urlImagem);
                 Image img = tempIcon.getImage();
 
-                int largura = img.getWidth(null) * 6;
-                int altura = img.getHeight(null) * 6;
+                int largura =(int) (img.getWidth(null) * 3);
+                int altura = (int) (img.getHeight(null) * 3);
                 Image imgEscalada = img.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
 
                 icon[i] = new ImageIcon(imgEscalada);
@@ -40,7 +40,6 @@ public class RoundCounterGUI extends JPanel {
         setLayout(new BorderLayout());
         add(panelRound, BorderLayout.CENTER);
 
-        System.out.println("RoundCounterGUI inicializado.");
     }
 
     public void changeRound() {
