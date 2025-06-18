@@ -3,7 +3,7 @@ package modelos.Cartas;
 public class Coringa {
     private final String imagemCaminho;
     private final int preco;
-    private final String efeito;
+    private final String raridade;
     private final String nome;
     private final String descricao;
     private final int xp;
@@ -13,16 +13,16 @@ public class Coringa {
     public Coringa() {
         this.imagemCaminho = null;
         this.preco = 0;
-        this.efeito = null;
+        this.raridade = null;
         this.nome = null;
         this.descricao = null;
         this.xp = 0;
         this.level = 0;
     }
 
-    public Coringa(String nome, String descricao, String efeito, int preco, int xp, int level, String imagemCaminho) {
+    public Coringa(String nome, String descricao, String raridade, int preco, int xp, int level, String imagemCaminho) {
         this.preco = preco;
-        this.efeito = efeito;
+        this.raridade = raridade;
         this.xp = xp;
         this.level = level;
         this.nome = nome;
@@ -38,8 +38,8 @@ public class Coringa {
         return preco;
     }
 
-    public String getEfeito() {
-        return efeito;
+    public String getRaridade() {
+        return raridade;
     }
 
     public String getDescricao() {

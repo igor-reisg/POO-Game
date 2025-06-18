@@ -8,7 +8,7 @@ public class Sacola {
 
     }
 
-    public void adicionarCoringa(Coringa coringa) {
+    public void adicionarCoringaSacola(Coringa coringa) {
 
     }
 }

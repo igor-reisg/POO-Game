@@ -58,7 +58,7 @@ public class LojaGUI extends JPanel {
         mesa.setOpaque(false);
         background.add(mesa, Integer.valueOf(1));
 
-        // Carrinho p/ comprar Coringas
+        // Sacola p/ comprar Coringas
         sacola = new SacolaGUI(new Sacola());
         Dimension sacolaSize = sacola.getPreferredSize();
         sacola.setBounds((larguraTela - sacolaSize.width - 30), (alturaTela - sacolaSize.height - 135), sacolaSize.width, sacolaSize.height);
