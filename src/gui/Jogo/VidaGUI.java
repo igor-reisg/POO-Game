@@ -19,10 +19,10 @@ public class VidaGUI extends JPanel {
     private Listener[] listeners;
     private final String caminhoVidaInimigo = "/assets/images/botoes/jogo/unidadevida3.png";
     private final String caminhoVidaJogador = "/assets/images/botoes/jogo/unidadevida2.png";
-    private final String caminhoVidaJogadorSelecionada = "/assets/images/botoes/jogo/unidadevida1.png";
+    private final String caminhoVidaJogadorPressionada = "/assets/images/botoes/jogo/unidadevida1.png";
 
     private final int vidaTotal = 15;
-    private int vidaAtual = 10;
+    private int vidaAtual = 15;
     private int vidaSelecionada = 0;
 
     public VidaGUI(int vida, int tipoJogador) {
@@ -63,27 +63,15 @@ public class VidaGUI extends JPanel {
     }
 
     private class Listener implements MouseListener {
-        boolean selecionado = false;
         int index;
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (selecionado) {
-                for (int i = index; i < vidaTotal; i++) {
-                    if (i > vidaSelecionada) {
-                        carregarImagem(vidaDiscreta[i], caminhoVidaJogador);
-                        listeners[i].selecionado = false;
-                    }
-                }
-                selecionado = false;
-                vidaSelecionada = 0;
-            } else {
-                for (int i = vidaTotal - vidaAtual; i <= index && !listeners[i].selecionado; i++) {
-                    listeners[i].selecionado = true;
-                }
-                vidaSelecionada = vidaAtual - (vidaTotal - index);
-                System.out.println(vidaSelecionada);
+            for(int i = vidaTotal - vidaAtual ; i <= index ; i++){
+                carregarImagem(vidaDiscreta[i], caminhoVidaInimigo);
             }
+            vidaSelecionada = vidaAtual - (vidaTotal - index);
+            apostar();
         }
 
         @Override
@@ -94,20 +82,18 @@ public class VidaGUI extends JPanel {
 
         @Override
         public void mouseEntered(MouseEvent e) {
-            if (selecionado) return;
-            for (int i = vidaTotal - vidaAtual; i <= index && !listeners[i].selecionado; i++) {
-                carregarImagem(vidaDiscreta[i], caminhoVidaJogadorSelecionada);
+            for (int i = vidaTotal - vidaAtual; i <= index; i++) {
+                carregarImagem(vidaDiscreta[i], caminhoVidaJogadorPressionada);
             }
             if(index < vidaTotal - 1){
-                carregarImagem(vidaDiscreta[index + 1], caminhoVidaJogadorSelecionada);
+                carregarImagem(vidaDiscreta[index + 1], caminhoVidaJogadorPressionada);
             }
 
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-            if (selecionado) return;
-            for (int i = vidaTotal - vidaAtual ; i <= index && !listeners[i].selecionado; i++) {
+            for (int i = vidaTotal - vidaAtual ; i <= index  ; i++) {
                 carregarImagem(vidaDiscreta[i], caminhoVidaJogador);
             }
             if(index < vidaTotal - 1){
@@ -146,7 +132,6 @@ public class VidaGUI extends JPanel {
     private void desabilitarUnidadesVida(int dano) {
         int novaVida = Math.max(vidaAtual - dano, 0);
         for (int i = vidaTotal - vidaAtual; i < vidaTotal - novaVida; i++) {
-            vidaDiscreta[i].setIcon(null);
             vidaDiscreta[i].removeMouseListener(listeners[i]);
         }
         vidaAtual = novaVida;
@@ -172,7 +157,6 @@ public class VidaGUI extends JPanel {
 
     public int apostar() {
         int aux = vidaSelecionada;
-        System.out.println(vidaSelecionada);
         desabilitarUnidadesVida(vidaSelecionada + 1);
         vidaSelecionada = 0;
         return aux;
