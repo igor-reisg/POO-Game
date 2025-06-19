@@ -8,11 +8,8 @@ import gui.Loja.LojaGUI;
 import gui.Menu.MenuGUI;
 import modelos.Jogo.Inventario;
 import modelos.Jogo.Jogo;
-<<<<<<< HEAD
 import modelos.Jogo.Pote;
-=======
 import modelos.Loja.Loja;
->>>>>>> 4957fcd38c898089de94371d1765194d40718e63
 
 public class JogoGUI extends JPanel {
     private final JanelaGUI app;
