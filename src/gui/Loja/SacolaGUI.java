@@ -20,7 +20,6 @@ public class SacolaGUI extends JPanel {
         labelSacola = new JLabel();
         setMinimumSize(new Dimension(largura, altura));
         labelSacola.setLayout(null);
-
         carregarImagem();
 
         add(labelSacola);

@@ -95,31 +95,6 @@ public class CoringasGUI extends JPanel {
         });
     }
 
-    public void moveTo(Point destino, int passos, Runnable noFinal) {
-        Point origem = getLocation();
-        int dx = (destino.x - origem.x) / passos;
-        int dy = (destino.y - origem.y) / passos;
-
-        Timer timer = new Timer(10, null);
-
-        timer.addActionListener(new ActionListener() {
-            int contador = 0;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (contador < passos) {
-                    setLocation(getX() + dx, getY() + dy);
-                    contador++;
-                } else {
-                    setLocation(destino);
-                    timer.stop();
-                    if (noFinal != null) noFinal.run();
-                }
-            }
-        });
-        timer.start();
-    }
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

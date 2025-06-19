@@ -3,6 +3,7 @@ package gui.Loja;
 import gui.Jogo.CoringasGUI;
 import modelos.Cartas.Coringa;
 import modelos.Loja.MesaLoja;
+import modelos.Loja.Sacola;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,51 +17,36 @@ public class MesaLojaGUI extends JPanel {
     int altura = 1080;
     MesaLoja mesa;
     CoringasGUI[] coringasMesa;
+    private Sacola sacola;
 
-    public MesaLojaGUI(MesaLoja mesa) {
+    public MesaLojaGUI(MesaLoja mesa, Sacola sacola) {
         this.mesa = mesa;
+        this.sacola = sacola;
         labelMesa = new JLabel();
         setMinimumSize(new Dimension(largura, altura));
         labelMesa.setLayout(null);
 
         carregarImagem();
 
-        Coringa[] cartas = mesa.getCartas();
-        int qtd = Math.min(cartas.length, 6);
-        coringasMesa = new CoringasGUI[qtd];
+        gerarCoringas();
 
-        int espacamentoX = 400;
-        int espacamentoY = 450;
-
-        int xInicial = 200;
-        int yInicial = 175;
-
-        for (int i = 0; i < qtd; i++) {
-            Coringa carta = cartas[i];
-
-            int lin = i / 3;
-            int col = i % 3;
-
-            int posX = xInicial + col * espacamentoX;
-            int posY = yInicial + lin * espacamentoY;
-
-            CoringasGUI panelCoringas = new CoringasGUI(carta, posX, posY, 212, 298);
-
-            coringasMesa[i] = panelCoringas;
-            labelMesa.add(panelCoringas, Integer.valueOf(4));
-        }
         add(labelMesa);
     }
 
     public void atualizarCartas() {
-        // Remove os antigos
         if (coringasMesa != null) {
             for (CoringasGUI coringaGUI : coringasMesa) {
                 labelMesa.remove(coringaGUI);
             }
         }
 
-        // Pega as novas cartas da mesa
+        gerarCoringas();
+
+        labelMesa.revalidate();
+        labelMesa.repaint();
+    }
+
+    private void gerarCoringas() {
         Coringa[] cartas = mesa.getCartas();
         int qtd = Math.min(cartas.length, 6);
         coringasMesa = new CoringasGUI[qtd];
@@ -79,11 +65,48 @@ public class MesaLojaGUI extends JPanel {
 
             CoringasGUI panelCoringa = new CoringasGUI(carta, posX, posY, 212, 298);
             coringasMesa[i] = panelCoringa;
+
+            panelCoringa.setLocation(posX, posY);
+            panelCoringa.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    JComponent coringa = (JComponent) e.getSource();
+                    Point destino = new Point(1550, 200);
+                    moverCoringaSacola(coringa, destino);
+                    sacola.contagemCoringas();
+                    System.out.println(sacola.getQtdCoringas());
+                }
+            });
+
             labelMesa.add(panelCoringa, Integer.valueOf(4));
         }
+    }
 
-        labelMesa.revalidate();
-        labelMesa.repaint();
+    private void moverCoringaSacola(JComponent comp, Point destino) {
+        Point origem = comp.getLocation();
+        int fps = 60;
+        int frames = 500 * fps / 1000;
+
+        Timer timer = new Timer(1000 / fps, null);
+        final int[] frame = {0};
+
+        timer.addActionListener(e -> {
+            frame[0]++;
+            float t = frame[0] / (float) frames;
+
+            int x = (int) (origem.x + (destino.x - origem.x) * t);
+            int y = (int) (origem.y + (destino.y - origem.y) * t);
+
+            comp.setLocation(x, y);
+            comp.getParent().repaint();
+
+            if (frame[0] >= frames) {
+                comp.setLocation(destino);
+                timer.stop();
+            }
+        });
+
+        timer.start();
     }
 
     private void carregarImagem() {
@@ -95,5 +118,4 @@ public class MesaLojaGUI extends JPanel {
             labelMesa.setIcon(new ImageIcon(img));
         }
     }
-
 }

@@ -26,10 +26,10 @@ public class LojaGUI extends JPanel {
     String caminhoBackground = "/assets/images/background/pattern2.png";
     private Dimension tamanhoTela;
     private MesaLojaGUI mesa;
-    private SacolaGUI sacola;
-    private StaticBackgroundPanel panelInventario;
+    private SacolaGUI sacolaGUI;
     private Loja loja;
     private MesaLoja mesaLoja;
+    private Sacola sacola;
 
     public LojaGUI(JanelaGUI app, Inventario inventario, Loja loja) {
         this.app = app;
@@ -52,21 +52,22 @@ public class LojaGUI extends JPanel {
         background.setLayout(null);
         layeredPane.add(background, Integer.valueOf(0));
 
+        //Sacola
+        sacola = new Sacola();
+        sacolaGUI = new SacolaGUI(sacola);
+        Dimension sacolaSize = sacolaGUI.getPreferredSize();
+        sacolaGUI.setBounds((larguraTela - sacolaSize.width - 30), (alturaTela - sacolaSize.height - 135), sacolaSize.width, sacolaSize.height);
+        sacolaGUI.setOpaque(false);
+        background.add(sacolaGUI, Integer.valueOf(0));
+
         // Mesa com Coringas
-        mesa = new MesaLojaGUI(mesaLoja);
+        mesa = new MesaLojaGUI(mesaLoja, sacola);
         Dimension mesaSize = mesa.getPreferredSize();
         int posX = (larguraTela - mesaSize.width) / 2;
         int posY = (alturaTela - mesaSize.height) / 2;
         mesa.setBounds(posX, posY, mesaSize.width, mesaSize.height);
         mesa.setOpaque(false);
-        background.add(mesa, Integer.valueOf(1));
-
-        //Sacola
-        sacola = new SacolaGUI(new Sacola());
-        Dimension sacolaSize = sacola.getPreferredSize();
-        sacola.setBounds((larguraTela - sacolaSize.width - 30), (alturaTela - sacolaSize.height - 135), sacolaSize.width, sacolaSize.height);
-        sacola.setOpaque(false);
-        background.add(sacola, Integer.valueOf(1));
+        layeredPane.add(mesa, Integer.valueOf(2));
 
         // Inventário GUI
         InventarioGUI inventarioGUI = new InventarioGUI(inventario);
@@ -105,7 +106,7 @@ public class LojaGUI extends JPanel {
                 mesaLoja.gerarNovosCoringas();
                 mesa.atualizarCartas();
             } else {
-                BotoesLoja[3].getBotao().setEnabled(false); //TEM QUE ARRUMAR ESSA BOSTA, SE MUDAR A IMAGEM MANUALMENTE ESSA MERDA FICA BUGADA
+                BotoesLoja[3].getBotao().setEnabled(false); //TEM QUE ARRUMAR ESSA BOSTA, SE MUDAR A IMAGEM MANUALMENTE FICA BUGADO
                 System.out.println("Não é possível atualizar a loja");
             }
         });
@@ -114,6 +115,6 @@ public class LojaGUI extends JPanel {
     }
 
     public SacolaGUI getSacolaGUI() {
-        return sacola;
+        return sacolaGUI;
     }
 }
