@@ -67,14 +67,18 @@ public class MesaLojaGUI extends JPanel {
             coringasMesa[i] = panelCoringa;
 
             panelCoringa.setLocation(posX, posY);
+            int finalI = i;
+
+            //PRESSIONA MOUSE NO CORINGA DA LOJA. VAI PARA A SACOLA E FAZ MUITAS COISAS BEM IMPORTANTES MESMO
             panelCoringa.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     JComponent coringa = (JComponent) e.getSource();
                     Point destino = new Point(1550, 200);
                     moverCoringaSacola(coringa, destino);
-                    sacola.contagemCoringas();
-                    System.out.println(sacola.getQtdCoringas());
+                    sacola.contagemCoringas(); //POR QUE TA SOMANDO 2 ??????????????????????????????????????
+                    sacola.adicionarCoringaSacola(coringasMesa[finalI].getCoringaStats());
+                    System.out.println("Quantidade de coringa sacola: " + sacola.getQtdCoringas());
                 }
             });
 

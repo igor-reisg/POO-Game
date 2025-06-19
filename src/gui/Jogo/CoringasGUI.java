@@ -1,6 +1,5 @@
 package gui.Jogo;
 
-import gui.StaticBackgroundPanel;
 import modelos.Cartas.Coringa;
 
 import javax.swing.*;
@@ -110,5 +109,9 @@ public class CoringasGUI extends JPanel {
             Image img = original.getImage().getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
             imgCoringa2 = new ImageIcon(img);
         }
+    }
+
+    public Coringa getCoringaStats() {
+        return coringa;
     }
 }
