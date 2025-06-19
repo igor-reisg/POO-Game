@@ -15,7 +15,7 @@ public class Inventario {
     public Inventario() {
         this.coringasInventario = new ArrayList<>();
         this.valorTotal = 0;
-        this.moedas = 0;
+        this.moedas = 20;
 
         for (int i = 0; i < coringasInventario.size(); i++) {
             valorTotal += coringasInventario.get(i).getPreco();
@@ -46,6 +46,12 @@ public class Inventario {
         moedas += coringa.getPreco();
         valorTotal -= coringa.getPreco();
         return true;
+    }
+
+    public void usarMoedas(int valor) {
+        if (moedas > 0) {
+            moedas -= valor;
+        }
     }
 
     public List<Coringa> listarCoringas() {

@@ -52,6 +52,40 @@ public class MesaLojaGUI extends JPanel {
         add(labelMesa);
     }
 
+    public void atualizarCartas() {
+        // Remove os antigos
+        if (coringasMesa != null) {
+            for (CoringasGUI coringaGUI : coringasMesa) {
+                labelMesa.remove(coringaGUI);
+            }
+        }
+
+        // Pega as novas cartas da mesa
+        Coringa[] cartas = mesa.getCartas();
+        int qtd = Math.min(cartas.length, 6);
+        coringasMesa = new CoringasGUI[qtd];
+
+        int espacamentoX = 400;
+        int espacamentoY = 450;
+        int xInicial = 200;
+        int yInicial = 175;
+
+        for (int i = 0; i < qtd; i++) {
+            Coringa carta = cartas[i];
+            int lin = i / 3;
+            int col = i % 3;
+            int posX = xInicial + col * espacamentoX;
+            int posY = yInicial + lin * espacamentoY;
+
+            CoringasGUI panelCoringa = new CoringasGUI(carta, posX, posY, 212, 298);
+            coringasMesa[i] = panelCoringa;
+            labelMesa.add(panelCoringa, Integer.valueOf(4));
+        }
+
+        labelMesa.revalidate();
+        labelMesa.repaint();
+    }
+
     private void carregarImagem() {
         String caminhoImagem = "/assets/images/mesaPrincipal/loja.png";
         URL url = getClass().getResource(caminhoImagem);

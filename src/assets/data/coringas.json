@@ -1,16 +1,7 @@
 {
   "coringas" : [
     {
-      "nome": "teste1",
-      "descricao": "teste descricao",
-      "raridade": "teste raridade",
-      "preco": 100,
-      "xp": 0,
-      "level": 1,
-      "imagemCaminho" : "/assets/images/cartas/coringas/morangot.png"
-    },
-    {
-      "nome": "teste2",
+      "nome": "CORINGA NAKA",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,
@@ -19,25 +10,61 @@
       "imagemCaminho" : "/assets/images/cartas/coringas/coringaboss_0.png"
     },
     {
-      "nome": "teste3",
+      "nome": "CORINGA JULIO CESAR",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,
       "xp": 0,
       "level": 1,
-      "imagemCaminho" : "/assets/images/cartas/coringas/morangot.png"
+      "imagemCaminho" : "/assets/images/cartas/coringas/coringaboss_1.png"
     },
     {
-      "nome": "teste4",
+      "nome": "CORINGA TUX",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,
       "xp": 0,
       "level": 1,
-      "imagemCaminho" : "/assets/images/cartas/coringas/coringaboss_0.png"
+      "imagemCaminho" : "/assets/images/cartas/coringas/coringaboss_2.png"
     },
     {
-      "nome": "teste5",
+      "nome": "CORINGA ANDRE",
+      "descricao": "teste descricao",
+      "raridade": "teste raridade",
+      "preco": 100,
+      "xp": 0,
+      "level": 1,
+      "imagemCaminho" : "/assets/images/cartas/coringas/coringaboss_3.png"
+    },
+    {
+      "nome": "CORINGA DAVIZAO",
+      "descricao": "teste descricao",
+      "raridade": "teste raridade",
+      "preco": 100,
+      "xp": 0,
+      "level": 1,
+      "imagemCaminho" : "/assets/images/cartas/coringas/coringaboss_4.png"
+    },
+    {
+      "nome": "CORINGA DIABO",
+      "descricao": "teste descricao",
+      "raridade": "teste raridade",
+      "preco": 100,
+      "xp": 0,
+      "level": 1,
+      "imagemCaminho" : "/assets/images/cartas/coringas/diabo.png"
+    },
+    {
+      "nome": "CORINGA LABSICC",
+      "descricao": "teste descricao",
+      "raridade": "teste raridade",
+      "preco": 100,
+      "xp": 0,
+      "level": 1,
+      "imagemCaminho" : "/assets/images/cartas/coringas/labsicc.png"
+    },
+    {
+      "nome": "CORINGA MORANGAO",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,

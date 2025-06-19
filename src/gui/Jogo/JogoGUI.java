@@ -8,7 +8,11 @@ import gui.Loja.LojaGUI;
 import gui.Menu.MenuGUI;
 import modelos.Jogo.Inventario;
 import modelos.Jogo.Jogo;
+<<<<<<< HEAD
 import modelos.Jogo.Pote;
+=======
+import modelos.Loja.Loja;
+>>>>>>> 4957fcd38c898089de94371d1765194d40718e63
 
 public class JogoGUI extends JPanel {
     private final JanelaGUI app;
@@ -127,7 +131,7 @@ public class JogoGUI extends JPanel {
         background.add(pause);
 
         inventario = new Inventario();
-        pause.getBotao().addActionListener(e -> app.trocarTela(new LojaGUI(app, inventario)));
+        pause.getBotao().addActionListener(e -> app.trocarTela(new LojaGUI(app, inventario, new Loja(inventario))));
 
         // Botão Início
         inicio = new BotoesGUI("jogo/pause", 50, 50, 0);
