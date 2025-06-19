@@ -44,6 +44,15 @@
       "xp": 0,
       "level": 1,
       "imagemCaminho" : "/assets/images/cartas/coringas/morangot.png"
+    },
+    {
+      "nome": "teste6",
+      "descricao": "teste descricao",
+      "raridade": "teste raridade",
+      "preco": 100,
+      "xp": 0,
+      "level": 1,
+      "imagemCaminho" : "/assets/images/cartas/coringas/coringaboss_3.png"
     }
   ]
 }

@@ -33,17 +33,17 @@ public class CoringasGUI extends JPanel {
 
         previewPanel = new JLayeredPane();
         previewPanel.setVisible(false);
-        previewPanel.setBounds(posX + largura + 100, posY, largura, altura);
+        previewPanel.setBounds(posX + (largura * 2) + 100, posY, largura * 2, altura);
 
         //Imagem de fundo do previewPanel
         JLabel fundo = new JLabel();
         URL url = getClass().getResource(TextHolderImagem);
         if (url != null) {
             ImageIcon original = new ImageIcon(url);
-            Image img = original.getImage().getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
+            Image img = original.getImage().getScaledInstance(largura * 2, altura, Image.SCALE_SMOOTH);
             fundo.setIcon(new ImageIcon(img));
         }
-        fundo.setBounds(0, 0, largura, altura);
+        fundo.setBounds(0, 0, largura * 2, altura);
         previewPanel.add(fundo, JLayeredPane.DEFAULT_LAYER);
 
         //Carregando fonte
@@ -66,7 +66,7 @@ public class CoringasGUI extends JPanel {
         infos.setForeground(new Color(40, 40, 40));
         infos.setSize(infos.getPreferredSize());
         infos.setFont(fonte);
-        infos.setBounds(10, 10, largura - 20, altura - 20);
+        infos.setBounds(10, 10, (largura * 2) - 20, altura - 20);
         previewPanel.add(infos, JLayeredPane.PALETTE_LAYER);
 
         addMouseListener(new MouseAdapter() {
@@ -87,7 +87,6 @@ public class CoringasGUI extends JPanel {
                     System.out.println("Window ancestor is not JFrame or not found.");
                 }
             }
-
 
             @Override
             public void mouseExited(MouseEvent e) {

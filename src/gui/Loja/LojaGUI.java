@@ -8,32 +8,30 @@ import gui.Jogo.InventarioGUI;
 import gui.Jogo.JogoGUI;
 import gui.StaticBackgroundPanel;
 import modelos.Cartas.Coringa;
-import modelos.Cartas.CoringaReader;
 import modelos.Jogo.Inventario;
 import modelos.Jogo.Jogo;
 import modelos.Loja.MesaLoja;
 import modelos.Loja.Sacola;
+import modelos.Loja.Loja;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 public class LojaGUI extends JPanel {
     JanelaGUI app;
     BotoesGUI[] BotoesLoja;
     String caminhoBackground = "/assets/images/background/pattern2.png";
-    String caminhoCoringas = "/assets/data/coringas.json";
-    int locationX = 100;
-    int locationY = 100;
-    int largura = 176;
-    int altura = 248;
     private Dimension tamanhoTela;
-    MesaLojaGUI mesa;
-    SacolaGUI sacola;
+    private MesaLojaGUI mesa;
+    private SacolaGUI sacola;
     private StaticBackgroundPanel panelInventario;
+    private Loja loja;
+    private MesaLoja mesaLoja;
 
-    public LojaGUI(JanelaGUI app, Inventario inventario) {
+    public LojaGUI(JanelaGUI app, Inventario inventario, Loja loja) {
         this.app = app;
+        this.loja = loja;
+        this.mesaLoja = new MesaLoja();
         tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
         int larguraTela = tamanhoTela.width;
         int alturaTela = tamanhoTela.height;
@@ -51,23 +49,24 @@ public class LojaGUI extends JPanel {
         background.setLayout(null);
         layeredPane.add(background, Integer.valueOf(0));
 
-        // Mesa c/ Coringas
-        mesa = new MesaLojaGUI(new MesaLoja());
+        // Mesa com Coringas
+        mesa = new MesaLojaGUI(mesaLoja);
         Dimension mesaSize = mesa.getPreferredSize();
-        mesa.setBounds((int)(larguraTela / 2 - mesaSize.getWidth() / 2), (int)(alturaTela / 2 - mesaSize.getHeight() / 2), mesaSize.width, mesaSize.height);
+        int posX = (larguraTela - mesaSize.width) / 2;
+        int posY = (alturaTela - mesaSize.height) / 2;
+        mesa.setBounds(posX, posY, mesaSize.width, mesaSize.height);
         mesa.setOpaque(false);
         background.add(mesa, Integer.valueOf(1));
 
-        // Sacola p/ comprar Coringas
+        //Sacola
         sacola = new SacolaGUI(new Sacola());
         Dimension sacolaSize = sacola.getPreferredSize();
         sacola.setBounds((larguraTela - sacolaSize.width - 30), (alturaTela - sacolaSize.height - 135), sacolaSize.width, sacolaSize.height);
         sacola.setOpaque(false);
         background.add(sacola, Integer.valueOf(1));
 
-        // Inventário GUI sobre tudo
+        // Inventário GUI
         InventarioGUI inventarioGUI = new InventarioGUI(inventario);
-        //inventarioGUI.setBounds(0, 0, larguraTela, alturaTela);
         inventarioGUI.setOpaque(false);
         inventarioGUI.setVisible(false);
         layeredPane.add(inventarioGUI, Integer.valueOf(5));
@@ -81,18 +80,30 @@ public class LojaGUI extends JPanel {
             layeredPane.add(botaoLoja, Integer.valueOf(1));
         }
 
-        // Botões da loja (coluna 2)
+        // Botão atualizar (coluna 2)
         BotoesLoja[3] = new BotoesGUI("loja/", 95, 189, 3);
         JButton botaoLoja = BotoesLoja[3].getBotao();
         botaoLoja.setBounds(larguraTela - 440, alturaTela - 110, 189, 95);
         layeredPane.add(botaoLoja, Integer.valueOf(1));
 
-        //tem que arrumar dps pra avançar o game e não iniciar um novo
+        // Botão 1 - Avançar jogo (pode ajustar depois para rodadas reais)
         BotoesLoja[1].getBotao().addActionListener(e -> app.trocarTela(new JogoGUI(app, new Jogo())));
 
+        // Botão 2 - Mostrar Inventário
         BotoesLoja[2].getBotao().addActionListener(e -> {
             inventarioGUI.mostrarCoringas();
             inventarioGUI.setVisible(true);
+        });
+
+        // Botão 3 - Atualizar loja
+        BotoesLoja[3].getBotao().addActionListener(e -> {
+            if (loja.possivelAtualizarLoja()) {
+                loja.atualizarLoja();            // atualiza lógica
+                mesaLoja.gerarNovosCoringas();   // embaralha coringas
+                mesa.atualizarCartas();          // redesenha GUI
+            } else {
+                System.out.println("Não é possível atualizar a loja");
+            }
         });
 
         setVisible(true);

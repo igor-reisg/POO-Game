@@ -8,6 +8,10 @@ public class Sacola {
 
     }
 
+    public boolean possivelComprar() {
+        return true;
+    }
+
     public void adicionarCoringaSacola(Coringa coringa) {
 
     }
