@@ -1,16 +1,18 @@
 package gui.Jogo;
 
+import modelos.Jogo.Round;
+
 import javax.swing.*;
 import java.net.*;
 import java.awt.*;
 
 public class RoundCounterGUI extends JPanel {
-    private int round;
+    private Round round;
     private final String caminhoRaiz = "/assets/images/JogoHUB/roundcounter";
     private final ImageIcon[] icon = new ImageIcon[3];
     private final JLabel panelRound = new JLabel();
 
-    public RoundCounterGUI(int round) {
+    public RoundCounterGUI(Round round) {
         this.round = round;
 
         for (int i = 0; i < icon.length; i++) {
@@ -43,16 +45,20 @@ public class RoundCounterGUI extends JPanel {
     }
 
     public void changeRound() {
-        if (round >= 0 && round < icon.length && icon[round] != null) {
-            panelRound.setIcon(icon[round]);
-            System.out.println("Round alterado para: " + round);
+        // Alterar quando tiver a lógica do jogo
+        round.passaRound();
+        if (round.getRound() - 1 < icon.length && icon[round.getRound() - 1] != null) {
+            panelRound.setIcon(icon[round.getRound() - 1]);
         } else {
-            System.out.println("Round inválido ou imagem ausente: " + round);
+            System.out.println("Round inválido ou imagem ausente: " + (round.getRound() - 1));
         }
     }
 
-    public void atualizarRound(int novoRound) {
-        this.round = novoRound;
-        changeRound();
+    public void resetRound() {
+        if (icon[0] != null) {
+            panelRound.setIcon(icon[0]);
+        }
     }
+
+
 }

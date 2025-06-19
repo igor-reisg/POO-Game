@@ -3,7 +3,7 @@ package modelos.Jogo;
 import modelos.Cartas.*;
 
 public class Jogador {
-    private int vida;
+    private Vida vida;
     private String nome;
     private int blind;
     private int jogada;
@@ -11,7 +11,7 @@ public class Jogador {
     private int dinheiro;
 
     public Jogador(String nome){
-        this.vida = 1500;
+        vida = new Vida(1500);
         this.nome = nome;
     }
 
@@ -51,12 +51,8 @@ public class Jogador {
         mao[numeroDaCarta].virarCarta();
 
     }
-
-    public int getVida(){
+    public Vida getVida(){
         return vida;
-    }
-    public void setVida(int vida){
-        this.vida = vida;
     }
 
     public Carta[] getMao(){

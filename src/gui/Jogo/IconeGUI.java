@@ -19,6 +19,7 @@ public class IconeGUI extends JPanel{
     public IconeGUI(String caminhoImagem, String nome){
         this.caminhoImagem = caminhoImagem;
         Font fontePersonalizada;
+        setOpaque(false);
         labelIcone = new JLabel();
         labelNomeJogador = new JLabel(nome);
         labelIconeJogador = new JLabel();
@@ -40,7 +41,7 @@ public class IconeGUI extends JPanel{
         labelNomeJogador.setFont(fontePersonalizada);
         labelIcone.add(labelNomeJogador);
 
-        labelIconeJogador.setBounds(10, 30, 170, 120);
+        labelIconeJogador.setBounds(10, 40, 170, 120);
         carregarImagem(caminhoImagem, labelIconeJogador);
         labelIcone.add(labelIconeJogador);
 

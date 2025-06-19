@@ -7,16 +7,16 @@ import modelos.Jogo.Jogo;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Objects;
 
 public class MenuGUI extends JPanel implements ActionListener {
     JanelaGUI app;
     private final String caminhoBackground = "/assets/images/background/pattern2.png";
     BotoesGUI[] BotoesMenu;
+    JogoGUI telaJogo;
 
     public MenuGUI(JanelaGUI app) {
         this.app = app;
-
+        telaJogo =  new JogoGUI(app, new Jogo());
         //CRIAÇÃO DO LOGO DO MENU
         LogoMenu logo = new LogoMenu();
         logo.setPreferredSize(new Dimension(1100, 800));
@@ -82,7 +82,7 @@ public class MenuGUI extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == BotoesMenu[0].getBotao()) {
-            app.trocarTela(new JogoGUI(app, new Jogo()));
+            app.trocarTela(telaJogo);
         }
         else if (e.getSource() == BotoesMenu[1].getBotao()) {
             mostrarPainelOpcoes();

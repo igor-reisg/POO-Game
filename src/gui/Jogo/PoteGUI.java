@@ -69,16 +69,18 @@ public class PoteGUI extends JPanel {
     }
     public void adicionarPote(int quantidade) {
         // Garante que a quantidade está no intervalo válido
-        quantidade = Math.max(0, Math.min(quantidade, unidadesSangue.length));
+        quantidade = Math.max(0, Math.min(pote.getQuantidade(), unidadesSangue.length));
 
         for (int i = 0; i < unidadesSangue.length; i++) {
             if (i < quantidade) {
                 carregarImagem(unidadesSangue[i], caminhoRaiz + "/unidadepote.png");
             } else {
-                carregarImagem(unidadesSangue[i], null); // Remove imagem
+                carregarImagem(unidadesSangue[i], null);
             }
         }
-        repaint(); // Atualiza visualmente
-        revalidate(); // Atualiza o layout
     }
+    public Pote getPote(){
+        return pote;
+    }
+
 }

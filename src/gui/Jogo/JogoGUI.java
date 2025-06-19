@@ -8,6 +8,7 @@ import gui.Loja.LojaGUI;
 import gui.Menu.MenuGUI;
 import modelos.Jogo.Inventario;
 import modelos.Jogo.Jogo;
+import modelos.Jogo.Pote;
 
 public class JogoGUI extends JPanel {
     private final JanelaGUI app;
@@ -62,6 +63,7 @@ public class JogoGUI extends JPanel {
             background.add(cartasJogador[i]);
         }
 
+        // Cartas do inimigo
         cartasInimigo = new CartasPanel[2];
         for (int i = 0; i < 2; i++) {
             cartasInimigo[i] = new CartasPanel(jogo.getInimigo().getMao()[i]);
@@ -86,8 +88,14 @@ public class JogoGUI extends JPanel {
         mesa.setOpaque(false);
         background.add(mesa);
 
+        // Pote
+        pote = new PoteGUI(jogo.getPote());
+        Dimension poteSize = pote.getPreferredSize();
+        pote.setBounds(0, (tamanhoTela.height - poteSize.height) / 2, poteSize.width, poteSize.height);
+        background.add(pote);
+
         // Vida do jogador
-        jogadorHP = new VidaGUI(jogo.getJogador().getVida(), 1);
+        jogadorHP = new VidaGUI(jogo.getJogador().getVida(), 1, pote);
         Dimension vidaJogadorSize = jogadorHP.getPreferredSize();
         jogadorHP.setBounds(
                 tamanhoTela.width - vidaJogadorSize.width,
@@ -97,8 +105,8 @@ public class JogoGUI extends JPanel {
         );
         background.add(jogadorHP);
 
-        // Vida do adversário
-        inimigoHP = new VidaGUI(jogo.getJogador().getVida(), 2);
+        // Vida do inimigo
+        inimigoHP = new VidaGUI(jogo.getJogador().getVida(), 2, pote);
         Dimension vidaAdversarioSize = inimigoHP.getPreferredSize();
         inimigoHP.setBounds(0, 0, vidaAdversarioSize.width, vidaAdversarioSize.height);
         background.add(inimigoHP);
@@ -106,15 +114,9 @@ public class JogoGUI extends JPanel {
         // Contador de Round
         contadorDeRound = new RoundCounterGUI(jogo.getRound());
         Dimension contadorDeRoundSize = contadorDeRound.getPreferredSize();
-        contadorDeRound.setBounds((tamanhoTela.width - contadorDeRoundSize.width)/ 2, 0,  contadorDeRoundSize.width, contadorDeRoundSize.height);
+        contadorDeRound.setBounds((tamanhoTela.width - contadorDeRoundSize.width) / 2, 0,
+                contadorDeRoundSize.width, contadorDeRoundSize.height);
         background.add(contadorDeRound);
-
-        // Pote
-        pote = new PoteGUI(jogo.getPote());
-        Dimension poteSize = pote.getPreferredSize();
-        pote.setBounds(0, (tamanhoTela.height - poteSize.height)/2, poteSize.width, poteSize.height);
-        pote.adicionarPote(jogo.getPote().getQuantidade());
-        background.add(pote);
 
         // Botão Pause
         pause = new BotoesGUI("jogo/pause", 50, 50, 0);
@@ -155,6 +157,7 @@ public class JogoGUI extends JPanel {
         check.getBotao().addActionListener(e -> {
             jogo.getJogador().escolhaDaJogada(1);
             jogo.registrarEscolhaJogador(1);
+            //jogadorHP.perdeVida();
         });
 
         // Botão Fold
@@ -178,7 +181,7 @@ public class JogoGUI extends JPanel {
         });
 
         // Atualização automática a cada nova rodada
-        jogo.setOnNovaRodada(() -> SwingUtilities.invokeLater(() -> atualizarTudo()));
+        jogo.setOnNovaRodada(() -> SwingUtilities.invokeLater(this::atualizarTudo));
     }
 
     public void atualizarTudo() {
@@ -207,6 +210,7 @@ public class JogoGUI extends JPanel {
             background.add(cartasJogador[i]);
         }
 
+        // Adiciona as novas cartas do inimigo
         for (int i = 0; i < 2; i++) {
             cartasInimigo[i] = new CartasPanel(jogo.getInimigo().getMao()[i]);
             cartasInimigo[i].setBounds(
@@ -218,6 +222,7 @@ public class JogoGUI extends JPanel {
             background.add(cartasInimigo[i]);
         }
 
+        // Atualiza mesa
         mesa.atualizarMesa(jogo.getMesa());
 
         this.revalidate();

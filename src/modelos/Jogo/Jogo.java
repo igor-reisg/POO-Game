@@ -5,7 +5,7 @@ import java.util.*;
 import modelos.Cartas.*;
 
 public class Jogo {
-    private int rodada = 1;
+    private Round rodada;
     private int etapaRodada = 0;
 
     private Baralho baralho;
@@ -24,7 +24,8 @@ public class Jogo {
 
     private Runnable onNovaRodada;
 
-    public Jogo() {
+    public Jogo(){
+        rodada = new Round();
         jogador = new Jogador("Naka");
         inimigo = new Inimigo();
         pote = new Pote();
@@ -46,7 +47,7 @@ public class Jogo {
     private void novaRodada() {
 
         Timer timer = new Timer();
-        System.out.println("Rodada " + rodada++);
+        System.out.println("Rodada " + rodada.getRound());
         etapaRodada = 0;
 
         fimRodada = false;
@@ -115,9 +116,6 @@ public class Jogo {
             inimigoPronto = false;
         }
     }
-    public int getRound(){
-        return rodada;
-    }
 
     private void processarRodada() {
         if (jogadaJogador == 0) {
@@ -147,6 +145,7 @@ public class Jogo {
         }
     }
 
+    public Round getRound(){ return rodada; }
     public Jogador getJogador() { return jogador; }
     public Inimigo getInimigo() { return inimigo; }
     public Mesa getMesa() { return mesa; }

@@ -11,9 +11,14 @@ public class Pote {
         quantidade = 0;
     }
 
-    public void setQuantidade(int quantidade) {
+    public void adicionarQuantidade(int quantidade) {
         this.quantidade += quantidade;
     }
+
+    public void setQuantidadeAbsoluta(int quantidade) {
+        this.quantidade = quantidade;
+    }
+
     public int getQuantidade() {
         return quantidade;
     }
