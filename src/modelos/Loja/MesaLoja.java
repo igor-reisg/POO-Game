@@ -33,7 +33,7 @@ public class MesaLoja {
 
     public Coringa[] getCartas() {
         if (coringasMesa == null || coringasMesa.isEmpty()) {
-            gerarNovosCoringas(); // Garante que sempre haverá cartas
+            gerarNovosCoringas();
         }
         return coringasMesa.toArray(new Coringa[0]);
     }

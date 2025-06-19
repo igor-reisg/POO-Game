@@ -22,7 +22,8 @@ public class InventarioGUI extends JPanel {
     int altura = 950;
     Inventario inventario;
     CoringasGUI[] coringas;
-    String caminhoBackground = "/assets/images/mesaPrincipal/inventario.png";
+    private final String caminhoBackground = "/assets/images/inventario/inventario.png";
+    private final String caminhoMoeda = "/assets/images/inventario/moeda.png";
     private final String caminhoFonte = "/assets/fonts/RetroGaming.ttf";
     BotoesGUI fechar, ajuda;
     JLabel totalMoedas;
@@ -30,7 +31,8 @@ public class InventarioGUI extends JPanel {
     private Dimension tamanhoTela;
     private StaticBackgroundPanel panelInventario;
     private JLabel quantidadeCoringas;
-    private JLabel labelTextHolder;
+    private final JLabel labelTextHolder;
+    private JLabel labelMoeda;
 
     public InventarioGUI(Inventario inventario) {
         this.inventario = inventario;
@@ -58,11 +60,22 @@ public class InventarioGUI extends JPanel {
             System.out.println("Erro ao carregar fonte: " + e);
         }
 
+        //Label da Moeda inventario
+        labelMoeda = new JLabel();
+        URL url = getClass().getResource(caminhoMoeda);
+        if (url != null) {
+            ImageIcon original = new ImageIcon(url);
+            Image img = original.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+            labelMoeda.setIcon(new ImageIcon(img));
+        }
+        labelMoeda.setBounds(largura - 1490, altura - 87, 30, 30);
+        panelInventario.add(labelMoeda, Integer.valueOf(2));
+
         //Quantidade de moedas no inventário
-        totalMoedas = new JLabel("Moedas: $" + inventario.getMoedasInventarioString());
+        totalMoedas = new JLabel(inventario.getMoedasInventarioString());
         totalMoedas.setFont(fonte);
         totalMoedas.setForeground(new Color(40, 40, 40));
-        totalMoedas.setBounds(largura - 1490, altura - 120, 189, 95);
+        totalMoedas.setBounds(largura - 1450, altura - 120, 189, 95);
         panelInventario.add(totalMoedas, Integer.valueOf(2));
 
         //Quantidade máxima de Coringas e Quantidade de Coringas atuais

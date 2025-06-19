@@ -16,6 +16,9 @@ import modelos.Loja.Loja;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.net.URL;
+import java.util.Objects;
 
 public class LojaGUI extends JPanel {
     JanelaGUI app;
@@ -98,10 +101,11 @@ public class LojaGUI extends JPanel {
         // Botão 3 - Atualizar loja
         BotoesLoja[3].getBotao().addActionListener(e -> {
             if (loja.possivelAtualizarLoja()) {
-                loja.atualizarLoja();            // atualiza lógica
-                mesaLoja.gerarNovosCoringas();   // embaralha coringas
-                mesa.atualizarCartas();          // redesenha GUI
+                loja.atualizarLoja();
+                mesaLoja.gerarNovosCoringas();
+                mesa.atualizarCartas();
             } else {
+                BotoesLoja[3].getBotao().setEnabled(false); //TEM QUE ARRUMAR ESSA BOSTA, SE MUDAR A IMAGEM MANUALMENTE ESSA MERDA FICA BUGADA
                 System.out.println("Não é possível atualizar a loja");
             }
         });
