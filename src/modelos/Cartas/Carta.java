@@ -89,4 +89,10 @@ public class Carta {
     public int getLarguraOriginal() {
         return larguraOriginal;
     }
+
+    public boolean estaVirada() {
+        return !this.verso;
+    }
+
+
 }

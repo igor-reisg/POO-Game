@@ -20,11 +20,11 @@ public class PoteGUI extends JPanel {
         panelPote.setLayout(null);
         panelPote.setOpaque(false);
 
-        // Carrega e adiciona a imagem de fundo do pote
+
         carregarImagem(panelPote, caminhoRaiz + "/barrapote.png");
         add(panelPote);
 
-        // Cria e adiciona os 30 slots de sangue (vazios no início)
+
         for (int i = 29; i >= 0; i--) {
             unidadesSangue[i] = new JLabel();
             unidadesSangue[i].setBounds(
@@ -68,7 +68,8 @@ public class PoteGUI extends JPanel {
         }
     }
     public void adicionarPote(int quantidade) {
-        // Garante que a quantidade está no intervalo válido
+
+        pote.adicionarApostaJogador(quantidade);
         quantidade = Math.max(0, Math.min(pote.getQuantidade(), unidadesSangue.length));
 
         for (int i = 0; i < unidadesSangue.length; i++) {

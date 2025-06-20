@@ -32,9 +32,16 @@ public class Jogador {
         this.jogada = escolha;
 
         if(escolha == 1){
+            System.out.println("VOCE DEU CHECK");
             check();
-        } else {
+
+        } else if(escolha == 0){
+            System.out.println("VOCE FOLDOU");
             fold();
+        } else if( escolha == 2){
+            System.out.println("VOCE APOSTOU");
+
+
         }
     }
 
@@ -79,5 +86,7 @@ public class Jogador {
     public void setJogada(int jogada){
         this.jogada = jogada;
     }
-
+    public int getVidaAtual() {
+        return this.vida.getVida();
+    }
 }
