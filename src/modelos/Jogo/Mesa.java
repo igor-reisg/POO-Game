@@ -30,18 +30,19 @@ public class Mesa {
 //        timer.schedule(new TimerTask() { public void run() { cartas[4] = baralho.pegaCarta(); }}, 700);
 
     }
-
-    public void revelaCarta(){
-        cartas[cartasViradas].virarCarta();
-        cartasViradas++;
-    }
-
     public void revelaCarta(int numeroDaCarta){
 
 
         cartas[numeroDaCarta].virarCarta();
 
         cartasViradas++;
+    }
+
+    public void resetCartas(){
+        //Desvira as cartas anteriores
+        for(int i = 0; i < cartas.length; i++){
+            cartas[i].virarCarta();
+        }
     }
 
     public Carta[] getCartas(){

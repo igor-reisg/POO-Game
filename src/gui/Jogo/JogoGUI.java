@@ -96,7 +96,7 @@ public class JogoGUI extends JPanel {
         background.add(pote);
 
         // Vida do jogador
-        jogadorHP = new VidaGUI(jogo.getJogador().getVida(), 1, pote, jogo);
+        jogadorHP = new VidaGUI(jogo.getJogador().getVida(), 1, jogo.getPote(), jogo);
         Dimension vidaJogadorSize = jogadorHP.getPreferredSize();
         jogadorHP.setBounds(
                 tamanhoTela.width - vidaJogadorSize.width,
@@ -107,12 +107,11 @@ public class JogoGUI extends JPanel {
         background.add(jogadorHP);
 
         // Vida do inimigo
-        inimigoHP = new VidaGUI(jogo.getInimigo().getVida(), 2, pote, jogo);
+        inimigoHP = new VidaGUI(jogo.getInimigo().getVida(), 2, jogo.getPote(), jogo);
         Dimension vidaAdversarioSize = inimigoHP.getPreferredSize();
         inimigoHP.setBounds(0, 0, vidaAdversarioSize.width, vidaAdversarioSize.height);
         background.add(inimigoHP);
 
-        jogo.setVidaGUIs(jogadorHP, inimigoHP);
 
         // Contador de Round
         contadorDeRound = new RoundCounterGUI(jogo.getRound());

@@ -1,16 +1,19 @@
 package gui.Jogo;
 
 import modelos.Jogo.Jogo;
+import modelos.Jogo.Pote;
 import modelos.Jogo.Vida;
+import modelos.Jogo.VidaListener;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
+
+
 import java.net.URL;
 
-public class VidaGUI extends JPanel {
+public class VidaGUI extends JPanel implements VidaListener{
     private final JLabel labelVida;
-    private final PoteGUI poteGUI;
     private int largura;
     private int altura;
     private final int alturaUnidade = 72;
@@ -18,7 +21,9 @@ public class VidaGUI extends JPanel {
 
     private Jogo jogo;
     private Vida vida;
+    private final Pote pote;
     private JLabel[] vidaDiscreta;
+    private JLabel labelTexto;
     private Listener[] listeners;
     private final String caminhoVidaInimigo = "/assets/images/JogoHUB/unidadevida3.png";
     private final String caminhoVidaJogador = "/assets/images/JogoHUB/unidadevida2.png";
@@ -32,14 +37,34 @@ public class VidaGUI extends JPanel {
     private boolean vidaSelecionado = false;
     private final int tipoJogador; // 1 para jogador, 2 para inimigo
 
-    public VidaGUI(Vida vida, int tipoJogador, PoteGUI poteGUI, Jogo jogo) {
+    public VidaGUI(Vida vida, int tipoJogador, Pote pote, Jogo jogo) {
         this.vida = vida;
         this.jogo = jogo;
-        this.poteGUI = poteGUI;
+        this.pote = pote;
         this.tipoJogador = tipoJogador;
+        vida.adicionarListener(this);
         vidaAtual = vida.getVida() / 100;
         labelVida = new JLabel();
         labelVida.setLayout(null);
+
+        labelTexto = new JLabel("Texto ao passar o mouse", SwingConstants.CENTER);
+        labelTexto.setFont(new Font("Arial", Font.BOLD, 14));
+        labelTexto.setForeground(Color.WHITE);
+        labelTexto.setBounds(0, (altura / 2) - 10, largura, 20); // Centralizado
+        labelTexto.setVisible(false);
+        labelVida.add(labelTexto);
+        labelVida.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                labelTexto.setVisible(true);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                labelTexto.setVisible(false);
+            }
+        });
+        labelVida.setComponentZOrder(labelTexto, 0); // Índice 0 = topo
 
         carregarImagem(labelVida, "/assets/images/JogoHUB/barravida1.png");
         setDimensions();
@@ -61,7 +86,7 @@ public class VidaGUI extends JPanel {
 
             if (tipoJogador == 1) { // Jogador humano
                 if (i >= vidaTotal - vidaAtual) {
-                    vidaDiscreta[i].addMouseListener(listeners[i]);
+                    vidaDiscreta[i].addMouseListener(listeners[i]); // Adiciona listeners somente para o player
                     carregarImagem(vidaDiscreta[i], caminhoVidaJogador);
                 }
             } else { // Inimigo
@@ -73,46 +98,83 @@ public class VidaGUI extends JPanel {
     }
 
 
+    // Refaz a vida com o valor selecionado toda a vez que chamarem um valor da vida
+    @Override
+    public void vidaSelecionada(int quantidade) {
+        for (int i = 0; i < vidaTotal; i++) {
+            if(i < vidaTotal - vida.getVida() / 100){
+                carregarImagem(vidaDiscreta[i], null);
+            } else if(i < vidaTotal - vida.getVida() / 100 + quantidade / 100) {
+                carregarImagem(vidaDiscreta[i], caminhoVidaInimigoTransparente);
+            } else{
+                carregarImagem(vidaDiscreta[i], caminhoVidaInimigo);
+            }
+        }
+    }
+
+    // Refaz a vida em final de round
+    @Override
+    public void vidaAlterada(int novaVida) {
+        novaVida /= 100;
+        for (int i = 0; i < vidaTotal; i++) {
+            if (tipoJogador == 1) {
+                if (i >= vidaTotal - novaVida) {
+                    carregarImagem(vidaDiscreta[i], caminhoVidaJogador);
+                    listeners[i].funcional = true;
+                } else {
+                    carregarImagem(vidaDiscreta[i], null);
+                    listeners[i].funcional = false;
+                }
+            } else {
+                if (i >= vidaTotal - novaVida) {
+                    carregarImagem(vidaDiscreta[i], caminhoVidaInimigo);
+                } else {
+                    carregarImagem(vidaDiscreta[i], null);
+                }
+            }
+        }
+        vidaAtual = novaVida;
+    }
+
     private class Listener implements MouseListener {
         int index;
-
+        boolean funcional = true;
         public Listener(int index) {
             this.index = index;
         }
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (tipoJogador != 1) return; // Só jogador humano pode clicar
-
-            for(int i = vidaTotal - vidaAtual; i <= index; i++) {
+            int inicio = vidaTotal - vidaAtual;
+            for(int i = inicio ; i <= index ; i++) {
+                listeners[i].funcional = false;
                 carregarImagem(vidaDiscreta[i], caminhoVidaJogadorTransparente);
             }
 
-            vidaSelecionada = index - (vidaTotal - vidaAtual) + 1;
+            vidaSelecionada = index - inicio + 1;
             vidaSelecionado = true;
             apostar(vidaSelecionada);
         }
 
         @Override
         public void mouseEntered(MouseEvent e) {
-            if(vidaSelecionado || tipoJogador != 1) return;
+            if(vidaSelecionado) return;
 
-            for(int i = vidaTotal - vidaAtual; i <= index; i++) {
+            for(int i = vidaTotal - vida.getVida()/100 ; i <= index && listeners[i].funcional ; i++) {
                 carregarImagem(vidaDiscreta[i], caminhoVidaJogadorPressionada);
             }
-            if(index != vidaTotal - 1) {
+            if(index != vidaTotal - 1 && vidaTotal - vida.getVida()/100 <= index) {
                 carregarImagem(vidaDiscreta[index + 1], caminhoVidaJogadorPressionada);
             }
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-            if(vidaSelecionado || tipoJogador != 1) return;
-
-            for(int i = vidaTotal - vidaAtual; i <= index; i++) {
+            if(vidaSelecionado) return;
+            for(int i = vidaTotal - vida.getVida()/100 ; i <= index && listeners[i].funcional ; i++) {
                 carregarImagem(vidaDiscreta[i], caminhoVidaJogador);
             }
-            if(index != vidaTotal - 1) {
+            if(index != vidaTotal - 1 && vidaTotal - vida.getVida()/100 <= index) {
                 carregarImagem(vidaDiscreta[index + 1], caminhoVidaJogador);
             }
         }
@@ -160,7 +222,7 @@ public class VidaGUI extends JPanel {
         int valorAposta = unidades * 100;
 
         if (tipoJogador == 1) {
-            if (poteGUI.getPote().getQuantidade() > 0 && valorAposta == poteGUI.getPote().getQuantidade()) {
+            if (pote.getQuantidade() > 0 && valorAposta == pote.getQuantidade()) {
                 jogo.getJogador().escolhaDaJogada(1); // Call
                 jogo.registrarEscolhaJogador(1);
             } else {
@@ -169,60 +231,7 @@ public class VidaGUI extends JPanel {
             }
         }
 
-        poteGUI.adicionarPote(poteGUI.getPote().getQuantidade());
         confirmarAposta(unidades);
-    }
-
-    public void perderVida(int unidades) {
-        unidades = Math.max(0, unidades);
-        int inicio = vidaTotal - vidaAtual;
-        int fim = Math.min(inicio + unidades, vidaTotal);
-
-        for (int i = inicio; i < fim; i++) {
-            if (vidaDiscreta[i] != null) {
-                vidaDiscreta[i].removeMouseListener(listeners[i]);
-                carregarImagem(vidaDiscreta[i], null);
-            }
-        }
-
-        vidaAtual = Math.max(0, vidaAtual - unidades);
-        vida.setVida(vidaAtual * 100);
-        resetSelecao();
-    }
-
-    public void retornarVida(int unidades) {
-        unidades = Math.max(0, unidades);
-        int inicio = vidaTotal - vidaAtual - 1;
-        int fim = Math.max(inicio - unidades, -1);
-
-        for (int i = inicio; i > fim; i--) {
-            if (vidaDiscreta[i] != null) {
-                if (tipoJogador == 1) {
-                    vidaDiscreta[i].addMouseListener(listeners[i]);
-                }
-                String imagem = (tipoJogador == 1) ? caminhoVidaJogador : caminhoVidaInimigo;
-                carregarImagem(vidaDiscreta[i], imagem);
-            }
-        }
-
-        vidaAtual = Math.min(vidaTotal, vidaAtual + unidades);
-        vida.setVida(vidaAtual * 100);
-        resetSelecao();
-    }
-
-    public void mostrarAposta(int unidades) {
-        String imagemTransparente = (tipoJogador == 1) ?
-                caminhoVidaJogadorTransparente : caminhoVidaInimigoTransparente;
-
-        int inicio = vidaTotal - vidaAtual;
-        int fim = inicio + unidades;
-
-        for (int i = inicio; i < fim && i < vidaTotal; i++) {
-            carregarImagem(vidaDiscreta[i], imagemTransparente);
-            if (tipoJogador == 1) {
-                vidaDiscreta[i].removeMouseListener(listeners[i]);
-            }
-        }
     }
 
     public void confirmarAposta(int unidades) {
@@ -236,9 +245,11 @@ public class VidaGUI extends JPanel {
         vidaSelecionada = 0;
     }
 
+
     // Getters
     public int getVidaSelecionada() { return vidaSelecionada; }
     public int getLargura() { return largura; }
     public int getAltura() { return altura; }
     public int getVidaAtual() { return vidaAtual; }
 }
+

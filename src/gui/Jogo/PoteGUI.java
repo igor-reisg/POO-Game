@@ -1,11 +1,14 @@
 package gui.Jogo;
 
 import modelos.Jogo.Pote;
+import modelos.Jogo.PoteListener;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.net.URL;
 
-public class PoteGUI extends JPanel {
+public class PoteGUI extends JPanel implements PoteListener {
     private int largura;
     private int altura;
     private final Pote pote;
@@ -17,12 +20,14 @@ public class PoteGUI extends JPanel {
         this.pote = pote;
         setOpaque(false);
         setDimensions();
+        pote.adicionarListener(this);
         panelPote.setLayout(null);
         panelPote.setOpaque(false);
 
 
         carregarImagem(panelPote, caminhoRaiz + "/barrapote.png");
         add(panelPote);
+
 
 
         for (int i = 29; i >= 0; i--) {
@@ -36,7 +41,6 @@ public class PoteGUI extends JPanel {
             panelPote.add(unidadesSangue[i]);
         }
     }
-
     private void setDimensions() {
         try {
             URL urlImagem = getClass().getResource("/assets/images/JogoHUB/barrapote.png");
@@ -67,21 +71,21 @@ public class PoteGUI extends JPanel {
             System.out.println("Erro ao carregar a imagem do pote: " + e.getMessage());
         }
     }
-    public void adicionarPote(int quantidade) {
-
-        pote.adicionarApostaJogador(quantidade);
-        quantidade = Math.max(0, Math.min(pote.getQuantidade(), unidadesSangue.length));
-
-        for (int i = 0; i < unidadesSangue.length; i++) {
-            if (i < quantidade) {
-                carregarImagem(unidadesSangue[i], caminhoRaiz + "/unidadepote.png");
-            } else {
-                carregarImagem(unidadesSangue[i], null);
-            }
-        }
-    }
     public Pote getPote(){
         return pote;
     }
 
+    @Override
+    public void adicionarPote(int quantidade) {
+        for(int i = 0 ; i < quantidade / 100 ; i++) {
+            carregarImagem(unidadesSangue[i], caminhoRaiz + "/unidadepote.png");
+        }
+    }
+
+    @Override
+    public void resetarPote() {
+        for(int i = 0 ; i < unidadesSangue.length ; i++){
+            carregarImagem(unidadesSangue[i], null);
+        }
+    }
 }
