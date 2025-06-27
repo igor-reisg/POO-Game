@@ -12,15 +12,12 @@ import javax.swing.SwingUtilities;
 public class Jogo {
     private Round rodada;
     private int etapaRodada = 0;
-    private Vida vida;
     private Baralho baralho;
     private Pote pote;
     private Jogador jogador;
     private Inimigo inimigo;
     private Mesa mesa;
-    private VidaGUI vidaGUIJogador;
-    private VidaGUI vidaGUIInimigo;
-    private PoteGUI poteGUI;
+    private int moeda;
 
     private boolean jogadorPronto = false;
     private boolean inimigoPronto = false;
@@ -31,11 +28,6 @@ public class Jogo {
     private boolean fimRodada;
 
     private Runnable onNovaRodada;
-
-    public void setVidaGUIs(VidaGUI vidaGUIJogador, VidaGUI vidaGUIInimigo) {
-        this.vidaGUIJogador = vidaGUIJogador;
-        this.vidaGUIInimigo = vidaGUIInimigo;
-    }
 
 
     public Jogo(){
@@ -52,10 +44,11 @@ public class Jogo {
 
     private void iniciarJogo() {
         Random r = new Random();
-        int moeda = r.nextInt(2);
+        moeda = r.nextInt(2);
+
+        novaRodada();
         jogador.setBlind(moeda);
         inimigo.setBlind(1 - moeda);
-        novaRodada();
     }
 
     private void novaRodada() {
@@ -184,41 +177,27 @@ public class Jogo {
         int apostaInimigo = inimigo.calcularAposta(pote, mesa, etapaRodada);
         pote.adicionarApostaInimigo(apostaInimigo);
 
-        atualizarInterfaceApostas();
-    }
-
-    private void atualizarInterfaceApostas() {
-        SwingUtilities.invokeLater(() -> {
-
-            vidaGUIJogador.mostrarAposta(pote.getApostaJogador() / 100);
-            vidaGUIInimigo.mostrarAposta(pote.getApostaInimigo() / 100);
-
-            poteGUI.adicionarPote(pote.getQuantidade());
-        });
     }
 
     private void finalizarRodada(PokerLogica.Resultado resultado) {
-        if (vidaGUIJogador == null || vidaGUIInimigo == null) {
-            System.err.println("Erro: VidaGUIs não foram configuradas!");
-            return;
-        }
 
         switch (resultado) {
             case JOGADOR_VENCE:
-                vidaGUIJogador.retornarVida(pote.getApostaJogador() / 100);
-                vidaGUIInimigo.perderVida(pote.getApostaInimigo() / 100);
-                pote.transferirParaVencedor(true);
+
+                jogador.getVida().ganharVida(pote.getApostaJogador());
+                inimigo.getVida().perderVida(pote.getApostaInimigo());
+                //pote.transferirParaVencedor(true);
                 break;
 
             case INIMIGO_VENCE:
-                vidaGUIInimigo.retornarVida(pote.getApostaInimigo() / 100);
-                vidaGUIJogador.perderVida(pote.getApostaJogador() / 100);
-                pote.transferirParaVencedor(false);
+                jogador.getVida().perderVida(pote.getApostaJogador());
+                inimigo.getVida().ganharVida(pote.getApostaInimigo());
+                //pote.transferirParaVencedor(false);
                 break;
 
             case EMPATE:
-                vidaGUIJogador.retornarVida(pote.getApostaJogador() / 100);
-                vidaGUIInimigo.retornarVida(pote.getApostaInimigo() / 100);
+                inimigo.getVida().ganharVida(pote.getApostaInimigo());
+                jogador.getVida().ganharVida(pote.getApostaJogador());
                 break;
         }
 
@@ -227,7 +206,7 @@ public class Jogo {
             finalizarJogo(jogador.getVidaAtual() > 0);
             return;
         }
-
+        mesa.resetCartas();
         pote.resetPote();
     }
 
@@ -247,7 +226,7 @@ public class Jogo {
         System.out.println(jogadorVenceu ? "Você venceu o jogo!" : "Você perdeu o jogo!");
 
         // Encerra o jogo
-        System.exit(0);
+        System.out.println("Fim do jogo!");
         //Só pra debug, vou mudar depois
     }
 
@@ -257,11 +236,5 @@ public class Jogo {
     public Inimigo getInimigo() { return inimigo; }
     public Mesa getMesa() { return mesa; }
     public Pote getPote() { return pote; }
-    public Vida getVida() {
-        return this.vida;
-    }
 
-    public int getVidaAtual() {
-        return this.vida.getVida();
-    }
 }
