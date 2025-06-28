@@ -14,7 +14,7 @@ public class Inimigo {
     public Inimigo() {
         this.vida = new Vida(1500);
         this.mao = new Carta[2];
-        this.pokerIA = new PokerIA(10, 1, 100); //TESTEE
+        this.pokerIA = new PokerIA(9, 1, 0); //TESTEE
     }
 
     public void decidirJogada(Pote pote, Mesa mesa, int etapaRodada) {
@@ -28,13 +28,18 @@ public class Inimigo {
 
         if (this.jogada == 2) { // Se for raise
             int valorAumento = pokerIA.calcularValorAumento(vida.getVida(), pote.getQuantidade());
+            if(valorAumento % 50 == 0 && valorAumento % 100 != 0){
+                valorAumento = valorAumento - 50;
+            }
             System.out.println("INIMIGO APOSTOU " + valorAumento);
+            vida.selecionarVida(pote.getApostaInimigo() + valorAumento);
+            //vida.setVida(vida.getVida() - valorAumento);
             pote.adicionarApostaInimigo(valorAumento);
-            vida.setVida(vida.getVida() - valorAumento);
         }
         else if (this.jogada == 1 && pote.getQuantidade() > 0) { // Se for call
-            pote.adicionarApostaInimigo(pote.getQuantidade());
-            vida.setVida(vida.getVida() - pote.getQuantidade());
+            vida.selecionarVida(pote.getApostaJogador());
+            //vida.setVida(vida.getVida() - pote.getApostaJogador());
+            pote.adicionarApostaInimigo(pote.getApostaJogador());
             System.out.println("INIMIGO DEU CALL");
         }
     }

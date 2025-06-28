@@ -12,23 +12,29 @@
         }
 
         public void perderVida(int vida){
-            this.vida -= vida;
+            this.vida = this.vida - vida;
             this.vida = Math.max(this.vida, 0);
             for(VidaListener l : listeners){
-                l.vidaAlterada(this.vida);
+                l.vidaAlterada();
             }
         }
         public void ganharVida(int vida) {
-            this.vida += vida;
+            this.vida = this.vida + vida;
             this.vida = Math.min(this.vida, 1500);
             for(VidaListener l : listeners){
-                l.vidaAlterada(this.vida);
+                l.vidaAlterada();
             }
         }
 
         public void selecionarVida(int quantidade) {
             for(VidaListener l : listeners){
                 l.vidaSelecionada(quantidade);
+            }
+        }
+
+        public void alterarVisualVida(){
+            for(VidaListener l : listeners){
+                l.vidaAlterada();
             }
         }
 

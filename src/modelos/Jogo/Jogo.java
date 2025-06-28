@@ -87,8 +87,10 @@ public class Jogo {
         if (escolha == 1 && pote.getQuantidade() > 0) {
             jogadaJogador = 1; // Call
             int valorCall = pote.getQuantidade();
+            //jogador.getVida().setVida(jogador.getVida().getVida() - valorCall);
+            jogador.getVida().selecionarVida(pote.getApostaJogador() + valorCall);
+            jogador.getVida().setVida(jogador.getVida().getVida() -  valorCall);
             pote.adicionarApostaJogador(valorCall);
-            jogador.getVida().setVida(jogador.getVida().getVida() - valorCall);
         } else {
             jogadaJogador = escolha;
         }
@@ -99,7 +101,9 @@ public class Jogo {
     public void registrarEscolhaJogador(int escolha, int valor) {
         if (escolha == 2) { // Raise
             pote.adicionarApostaJogador(valor);
+            jogador.getVida().selecionarVida(valor);
             jogador.getVida().setVida(jogador.getVida().getVida() - valor);
+            //jogador.getVida().setVida(jogador.getVida().getVida() - valor);
         }
         jogadaJogador = escolha;
         jogadorPronto = true;
@@ -183,29 +187,33 @@ public class Jogo {
 
         switch (resultado) {
             case JOGADOR_VENCE:
-
-                jogador.getVida().ganharVida(pote.getApostaJogador());
-                inimigo.getVida().perderVida(pote.getApostaInimigo());
+                jogador.getVida().setVida(jogador.getVida().getVida() + pote.getApostaJogador());
+                inimigo.getVida().setVida(inimigo.getVida().getVida() - pote.getApostaInimigo());
+;
+                //jogador.getVida().ganharVida(pote.getApostaJogador());
+                //inimigo.getVida().perderVida(pote.getApostaInimigo());
                 //pote.transferirParaVencedor(true);
                 break;
 
             case INIMIGO_VENCE:
-                jogador.getVida().perderVida(pote.getApostaJogador());
-                inimigo.getVida().ganharVida(pote.getApostaInimigo());
+                inimigo.getVida().setVida(inimigo.getVida().getVida() + pote.getApostaInimigo());
                 //pote.transferirParaVencedor(false);
                 break;
 
             case EMPATE:
-                inimigo.getVida().ganharVida(pote.getApostaInimigo());
-                jogador.getVida().ganharVida(pote.getApostaJogador());
+                jogador.getVida().setVida(jogador.getVida().getVida() + pote.getApostaJogador());
+                inimigo.getVida().setVida(inimigo.getVida().getVida() +  pote.getApostaInimigo());
                 break;
         }
+        jogador.getVida().alterarVisualVida();
+        inimigo.getVida().alterarVisualVida();
 
         // Verifica se o jogo acabou
         if (verificarFimDeJogo()) {
             finalizarJogo(jogador.getVidaAtual() > 0);
             return;
         }
+        getRound().passaRound();
         mesa.resetCartas();
         pote.resetPote();
     }
