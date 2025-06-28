@@ -34,6 +34,21 @@ public class BackgroundPanel extends JPanel {
 
     }
 
+    public void setImagem(String novoCaminho) {
+        try {
+            this.img = ImageIO.read(Objects.requireNonNull(getClass().getResource(novoCaminho)));
+            repaint();
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar imagem de fundo: " + e.getMessage());
+            // Carrega uma imagem padrão se a específica falhar
+            try {
+                this.img = ImageIO.read(Objects.requireNonNull(getClass().getResource("/assets/images/background/pattern1.png")));
+            } catch (Exception ex) {
+                this.img = null;
+            }
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

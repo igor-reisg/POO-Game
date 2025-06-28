@@ -294,6 +294,24 @@ public class Jogo {
 
     private void verificarEtapa() {
 
+        if (!jogadorPronto || !inimigoPronto) return;
+
+        // Processa as jogadas atuais - se houver fold, já termina aqui
+        processarRodada();
+
+        // Se alguém foldou, não avança etapas - só prepara nova rodada
+        if (jogadaJogador == 0 || jogadaInimigo == 0) {
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    Thread.sleep(1000); // Pequeno delay para visualização
+                    novaRodada();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+            return;
+        }
+
         if (etapaRodada > 3) {
             System.err.println("[ERRO] Etapa inválida: " + etapaRodada);
             etapaRodada = 0;
@@ -332,20 +350,20 @@ public class Jogo {
     }
 
     private void processarRodada() {
-        // Verifica fold primeiro
+        // Se alguém foldou, termina a rodada imediatamente
         if (jogadaJogador == 0) {
-            System.out.println("Inimigo venceu (jogador foldou)!");
+            System.out.println("Jogador foldou - inimigo vence!");
             finalizarRodada(PokerLogica.Resultado.INIMIGO_VENCE);
-            SwingUtilities.invokeLater(this::novaRodada);
-            return;
-        } else if (jogadaInimigo == 0) {
-            System.out.println("Jogador venceu (inimigo foldou)!");
-            finalizarRodada(PokerLogica.Resultado.JOGADOR_VENCE);
-            SwingUtilities.invokeLater(this::novaRodada);
             return;
         }
 
-        // Se chegou até aqui, ninguém foldou
+        if (jogadaInimigo == 0) {
+            System.out.println("Inimigo foldou - jogador vence!");
+            finalizarRodada(PokerLogica.Resultado.JOGADOR_VENCE);
+            return;
+        }
+
+        // Se chegou até aqui e é o fim da rodada, compara as mãos
         if (fimRodada) {
             inimigo.revelaCarta(0);
             inimigo.revelaCarta(1);
@@ -357,7 +375,6 @@ public class Jogo {
             );
 
             finalizarRodada(resultado);
-            SwingUtilities.invokeLater(this::novaRodada);
         }
     }
 

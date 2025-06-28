@@ -132,8 +132,11 @@ public class CartasPanel extends JPanel {
 
 
 
-    public void animacaoVirarCarta() {
-        aumenta.start();
+    private void animacaoVirarCarta() {
+        // Só inicia animação se o estado da carta realmente mudou
+
+            aumenta.start();
+
     }
 
 

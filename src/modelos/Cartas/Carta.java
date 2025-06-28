@@ -55,16 +55,13 @@ public class Carta {
 
 
     public void virarCarta() {
-
-
         this.verso = !this.verso;
 
         if (listener != null) {
             listener.aoVirarCarta();
-            listener = null;
         }
-
     }
+
 
     public String getImagemCaminho() {
         if(verso) {
