@@ -7,58 +7,38 @@ import java.net.*;
 import java.awt.*;
 
 public class RoundCounterGUI extends JPanel {
-    private Round round;
-    private final String caminhoRaiz = "/assets/images/JogoHUB/roundcounter";
-    private final ImageIcon[] icon = new ImageIcon[3];
-    private final JLabel panelRound = new JLabel();
+    private final ImageIcon[] roundIcons;
+    private final JLabel iconLabel;
+    private int currentState = 0; // 0-3 (0=inimigo1, 1=inimigo2, 2=boss, 3=completo)
 
-    public RoundCounterGUI(Round round) {
-        this.round = round;
+    public RoundCounterGUI() {
+        setOpaque(false);
+        setLayout(new BorderLayout());
 
-        for (int i = 0; i < icon.length; i++) {
-            URL urlImagem = getClass().getResource(caminhoRaiz + "_" + (i + 1) + ".png");
-
-            if (urlImagem != null) {
-                ImageIcon tempIcon = new ImageIcon(urlImagem);
-                Image img = tempIcon.getImage();
-
-                int largura =(int) (img.getWidth(null) * 3);
-                int altura = (int) (img.getHeight(null) * 3);
-                Image imgEscalada = img.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
-
-                icon[i] = new ImageIcon(imgEscalada);
-            } else {
-                System.out.println("Imagem não encontrada: " + caminhoRaiz + "_" + (i + 1) + ".png");
-                icon[i] = null;
+        // Carrega os 4 estados do round counter
+        roundIcons = new ImageIcon[4];
+        for (int i = 0; i < 4; i++) {
+            URL url = getClass().getResource("/assets/images/JogoHUB/roundcounter_" + (i+1) + ".png");
+            if (url != null) {
+                ImageIcon icon = new ImageIcon(url);
+                // Redimensiona se necessário
+                Image img = icon.getImage().getScaledInstance(150, 50, Image.SCALE_SMOOTH);
+                roundIcons[i] = new ImageIcon(img);
             }
         }
 
-        // Define o primeiro ícone, se existir
-        if (icon[0] != null) {
-            panelRound.setIcon(icon[0]);
-        }
-
-        setOpaque(false);
-        setLayout(new BorderLayout());
-        add(panelRound, BorderLayout.CENTER);
-
+        iconLabel = new JLabel(roundIcons[0]);
+        add(iconLabel, BorderLayout.CENTER);
     }
 
-    public void changeRound() {
-        // Alterar quando tiver a lógica do jogo
-        round.passaRound();
-        if (round.getRound() - 1 < icon.length && icon[round.getRound() - 1] != null) {
-            panelRound.setIcon(icon[round.getRound() - 1]);
-        } else {
-            System.out.println("Round inválido ou imagem ausente: " + (round.getRound() - 1));
+    public void updateRoundState(int state) {
+        // 0 = primeiro inimigo, 1 = segundo inimigo, 2 = boss, 3 = fase completa
+        if (state >= 0 && state < roundIcons.length && roundIcons[state] != null) {
+            iconLabel.setIcon(roundIcons[state]);
         }
     }
 
-    public void resetRound() {
-        if (icon[0] != null) {
-            panelRound.setIcon(icon[0]);
-        }
+    public void reset() {
+        updateRoundState(0);
     }
-
-
 }

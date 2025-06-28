@@ -5,19 +5,28 @@ import modelos.Cartas.Carta;
 import modelos.Jogo.Mesa;
 
 public class Inimigo {
+    public PerfilInimigo perfil;
     private Vida vida;
     private int jogada;
     private Carta[] mao;
     private int blind;
     private PokerIA pokerIA;
 
-    public Inimigo() {
-        this.vida = new Vida(1500);
+    public Inimigo(PerfilInimigo perfil) {
+        this.perfil = perfil;
+        this.vida = new Vida(perfil.getVidaInicial());
         this.mao = new Carta[2];
-        this.pokerIA = new PokerIA(10, 1, 100); //TESTEE
+        this.pokerIA = new PokerIA(
+                perfil.getAgressividadeIA(),
+                perfil.getCautelaIA(),
+                perfil.getInteligenciaIA()
+        );
     }
 
     public void decidirJogada(Pote pote, Mesa mesa, int etapaRodada) {
+        System.out.println("\n[IA] Decidindo jogada...");
+        System.out.println("Vida: " + vida.getVida() + " | Pote: " + pote.getQuantidade());
+
         this.jogada = pokerIA.decidirJogada(
                 vida.getVida(),
                 pote.getQuantidade(),
@@ -26,17 +35,23 @@ public class Inimigo {
                 etapaRodada
         );
 
-        if (this.jogada == 2) { // Se for raise
-            int valorAumento = pokerIA.calcularValorAumento(vida.getVida(), pote.getQuantidade());
+        int valorAumento = 0;
+        if (this.jogada == 2) { // Raise
+            valorAumento = pokerIA.calcularValorAumento(vida.getVida(), pote.getQuantidade());
+            // Garantir que não aposta mais do que tem
+            valorAumento = Math.min(valorAumento, vida.getVida());
             System.out.println("INIMIGO APOSTOU " + valorAumento);
             pote.adicionarApostaInimigo(valorAumento);
             vida.setVida(vida.getVida() - valorAumento);
+        } else if (this.jogada == 1 && pote.getQuantidade() > 0) { // Call
+            int valorCall = Math.min(pote.getQuantidade(), vida.getVida());
+            System.out.println("INIMIGO DEU CALL " + valorCall);
+            pote.adicionarApostaInimigo(valorCall);
+            vida.setVida(vida.getVida() - valorCall);
         }
-        else if (this.jogada == 1 && pote.getQuantidade() > 0) { // Se for call
-            pote.adicionarApostaInimigo(pote.getQuantidade());
-            vida.setVida(vida.getVida() - pote.getQuantidade());
-            System.out.println("INIMIGO DEU CALL");
-        }
+
+        System.out.println("[IA] Decisão: " +
+                (jogada == 0 ? "FOLD" : jogada == 1 ? "CALL " + pote.getQuantidade() : "RAISE " + valorAumento));
     }
 
     public int calcularAposta(Pote pote, Mesa mesa, int etapaRodada) {
@@ -105,5 +120,9 @@ public class Inimigo {
 
     public int getVidaAtual() {
         return this.vida.getVida();
+    }
+
+    public PerfilInimigo getPerfil() {
+        return perfil;
     }
 }

@@ -10,6 +10,8 @@ import javax.swing.SwingUtilities;
 
 
 public class Jogo {
+    private List<PerfilInimigo> perfisInimigos;
+    private int inimigoAtualIndex = 0;
     private Round rodada;
     private int etapaRodada = 0;
     private Baralho baralho;
@@ -18,6 +20,8 @@ public class Jogo {
     private Inimigo inimigo;
     private Mesa mesa;
     private int moeda;
+    private int faseAtual = 1; // 1 a 5
+    private int inimigoNaFase = 0;
 
     private boolean jogadorPronto = false;
     private boolean inimigoPronto = false;
@@ -30,13 +34,146 @@ public class Jogo {
     private Runnable onNovaRodada;
 
 
-    public Jogo(){
+    public Jogo() {
+        carregarPerfisInimigos();
         rodada = new Round();
-        jogador = new Jogador("Naka");
-        inimigo = new Inimigo();
+        jogador = new Jogador("Nuka");
+        inimigo = new Inimigo(perfisInimigos.get(0)); // Primeiro inimigo
+        baralho = new Baralho();
         pote = new Pote();
         iniciarJogo();
     }
+
+    private void carregarPerfisInimigos() {
+        perfisInimigos = new ArrayList<>();
+        perfisInimigos.add(new PerfilInimigo(
+                "teste1",
+                "/assets/images/frames/framesEnemies/inimigo_1.png",
+                5, 5, 50, 1500, false, null
+        ));
+        perfisInimigos.add(new PerfilInimigo(
+                "teste2",
+                "/assets/images/frames/framesEnemies/inimigo_2.png",
+                7, 3, 70, 1500, false, null
+        ));
+
+        String[] imagensBossDavi = {
+                "/assets/images/frames/framesBoss/boss4_0.png", // vida cheia
+                "/assets/images/frames/framesBoss/boss4_1.png", // 2/3 vida
+                "/assets/images/frames/framesBoss/boss4_2.png"  // 1/3 vida
+        };
+
+        perfisInimigos.add(new PerfilInimigo(
+                "David, o ruim.",
+                "/assets/images/frames/framesBoss/boss4_0.png",
+                9, 2, 90, 1500, true, imagensBossDavi
+        ));
+
+        perfisInimigos.add(new PerfilInimigo(
+                "teste3",
+                "/assets/images/frames/framesEnemies/inimigo_4.png",
+                9, 2, 90, 1500, false, null
+        ));
+        perfisInimigos.add(new PerfilInimigo(
+                "teste4",
+                "/assets/images/frames/framesEnemies/inimigo_5.png",
+                9, 2, 90, 1500, false, null
+        ));
+
+        String[] imagensBossAndre = {
+                "/assets/images/frames/framesBoss/boss3_0.png", // vida cheia
+                "/assets/images/frames/framesBoss/boss3_1.png", // 2/3 vida
+                "/assets/images/frames/framesBoss/boss3_2.png"  // 1/3 vida
+        };
+
+        perfisInimigos.add(new PerfilInimigo(
+                "Andrei, o curioso.",
+                "/assets/images/frames/framesBoss/boss3_0.png",
+                9, 2, 90, 1500, true, imagensBossAndre
+        ));
+
+        perfisInimigos.add(new PerfilInimigo(
+                "teste5",
+                "/assets/images/frames/framesEnemies/inimigo_6.png",
+                9, 2, 90, 1500, false, null
+        ));
+        perfisInimigos.add(new PerfilInimigo(
+                "teste6",
+                "/assets/images/frames/framesEnemies/inimigo_7.png",
+                9, 2, 90, 1500, false, null
+        ));
+
+        String[] imagensBossTux = {
+                "/assets/images/frames/framesBoss/boss2_0.png", // vida cheia
+                "/assets/images/frames/framesBoss/boss2_1.png", // 2/3 vida
+                "/assets/images/frames/framesBoss/boss2_2.png"  // 1/3 vida
+        };
+
+        perfisInimigos.add(new PerfilInimigo(
+                "Truxs, o sumido",
+                "/assets/images/frames/framesBoss/boss2_0.png",
+                9, 2, 90, 1500, true, imagensBossTux
+        ));
+
+        perfisInimigos.add(new PerfilInimigo(
+                "teste7",
+                "/assets/images/frames/framesEnemies/inimigo_8.png",
+                9, 2, 90, 1500, false, null
+        ));
+        perfisInimigos.add(new PerfilInimigo(
+                "teste8",
+                "/assets/images/frames/framesEnemies/inimigo_9.png",
+                9, 2, 90, 1500, false, null
+        ));
+
+        String[] imagensBossJulio = {
+                "/assets/images/frames/framesBoss/boss1_0.png", // vida cheia
+                "/assets/images/frames/framesBoss/boss1_1.png", // 2/3 vida
+                "/assets/images/frames/framesBoss/boss1_2.png"  // 1/3 vida
+        };
+
+        perfisInimigos.add(new PerfilInimigo(
+                "Juliano, o sabio",
+                "/assets/images/frames/framesEnemies/boss1_0.png",
+                9, 2, 90, 1500, true, imagensBossJulio
+        ));
+        perfisInimigos.add(new PerfilInimigo(
+                "teste9",
+                "/assets/images/frames/framesEnemies/inimigo_10.png",
+                9, 2, 90, 1500, false, null
+        ));
+        perfisInimigos.add(new PerfilInimigo(
+                "teste10",
+                "/assets/images/frames/framesEnemies/inimigo_11.png",
+                9, 2, 90, 1500, false, null
+        ));
+
+        String[] imagensBossNaka = {
+                "/assets/images/frames/framesBoss/boss0_0.png", // vida cheia
+                "/assets/images/frames/framesBoss/boss0_1.png", // 2/3 vida
+                "/assets/images/frames/framesBoss/boss0_2.png"  // 1/3 vida
+        };
+
+        perfisInimigos.add(new PerfilInimigo(
+                "Niko, o goat",
+                "/assets/images/frames/framesBoss/boss0_0.png",
+                9, 2, 90, 1500, true, imagensBossNaka
+        ));
+
+    }
+
+    public void proximoInimigo() {
+        inimigoAtualIndex++;
+        if (inimigoAtualIndex < perfisInimigos.size()) {
+            inimigo = new Inimigo(perfisInimigos.get(inimigoAtualIndex));
+            novaRodada();
+        } else {
+            // Todos os inimigos foram derrotados
+            finalizarJogo(true);
+        }
+    }
+
+
 
     public void setOnNovaRodada(Runnable callback) {
         this.onNovaRodada = callback;
@@ -46,33 +183,52 @@ public class Jogo {
         Random r = new Random();
         moeda = r.nextInt(2);
 
-        novaRodada();
-        jogador.setBlind(moeda);
+        // Definir blinds
+        jogador.setBlind(moeda); // 0 = small blind, 1 = big blind
         inimigo.setBlind(1 - moeda);
+
+        novaRodada();
     }
 
+
     private void novaRodada() {
-
         Timer timer = new Timer();
-        System.out.println("Rodada " + rodada.getRound());
-        etapaRodada = 0;
 
-        fimRodada = false;
+        // 1. Inicializar baralho se necessário
+        if (baralho == null) {
+            baralho = new Baralho();
+        }
+        baralho.reiniciaBaralho();
 
+        // 2. Inicializar mesa se necessário
+        if (mesa == null) {
+            mesa = new Mesa(baralho);
+        } else {
+            mesa.resetCartas();
+        }
+
+        // 3. Limpar mãos
         jogador.limpaCartas();
         inimigo.limpaCartas();
 
-        baralho = new Baralho();
-        baralho.criaBaralho();
-        baralho.embaralhaBaralho();
-
-        mesa = new Mesa(baralho);
+        // 4. Distribuir cartas
         jogador.recebeCarta(baralho);
         inimigo.recebeCarta(baralho);
+
+        System.out.println("\n=== NOVA RODADA ===");
+        System.out.println("Jogador: " + jogador.getVidaAtual() + " HP | Inimigo: " +
+                inimigo.getVidaAtual() + " HP | Pote: " + pote.getQuantidade());
+
+        etapaRodada = 0;
+        fimRodada = false;
+
+        // Removi a duplicação de código que estava aqui
+        // (as linhas que recriavam o baralho e redistribuíam cartas novamente)
 
         timer.schedule(new TimerTask() { public void run() { jogador.revelaCarta(0); }}, 500);
         timer.schedule(new TimerTask() { public void run() { jogador.revelaCarta(1); }}, 700);
 
+        aplicarBlinds();
 
         jogadorPronto = false;
         inimigoPronto = false;
@@ -80,6 +236,29 @@ public class Jogo {
         if (onNovaRodada != null) {
             onNovaRodada.run();
         }
+    }
+
+    private void aplicarBlinds() {
+        int smallBlind = 100;
+        int bigBlind = 200;
+
+        if (jogador.getBlind() == 0) { // Jogador é small blind
+            pote.adicionarApostaJogador(smallBlind);
+            jogador.getVida().setVida(jogador.getVidaAtual() - smallBlind);
+
+            pote.adicionarApostaInimigo(bigBlind);
+            inimigo.getVida().setVida(inimigo.getVidaAtual() - bigBlind);
+        } else { // Jogador é big blind
+            pote.adicionarApostaJogador(bigBlind);
+            jogador.getVida().setVida(jogador.getVidaAtual() - bigBlind);
+
+            pote.adicionarApostaInimigo(smallBlind);
+            inimigo.getVida().setVida(inimigo.getVidaAtual() - smallBlind);
+        }
+
+        // Rotacionar blinds para próxima rodada
+        jogador.setBlind(1 - jogador.getBlind());
+        inimigo.setBlind(1 - inimigo.getBlind());
     }
 
     public void registrarEscolhaJogador(int escolha) {
@@ -114,6 +293,15 @@ public class Jogo {
     }
 
     private void verificarEtapa() {
+
+        if (etapaRodada > 3) {
+            System.err.println("[ERRO] Etapa inválida: " + etapaRodada);
+            etapaRodada = 0;
+            fimRodada = true;
+            processarRodada();
+            return;
+        }
+
         if (jogadorPronto && inimigoPronto) {
             processarRodada();
             etapaRodada++;
@@ -180,34 +368,84 @@ public class Jogo {
     }
 
     private void finalizarRodada(PokerLogica.Resultado resultado) {
+        System.out.println("\n=== RESULTADO DA RODADA ===");
+        System.out.println("Jogador: " + jogador.getVidaAtual() + " HP");
+        System.out.println("Inimigo: " + inimigo.getVidaAtual() + " HP");
+        System.out.println("Pote: " + pote.getQuantidade());
+
+        switch(resultado) {
+            case JOGADOR_VENCE:
+                System.out.println("Vitória do Jogador!");
+                break;
+            case INIMIGO_VENCE:
+                System.out.println("Vitória do Inimigo!");
+                break;
+            case EMPATE:
+                System.out.println("Empate!");
+                break;
+        }
 
         switch (resultado) {
             case JOGADOR_VENCE:
-
                 jogador.getVida().ganharVida(pote.getApostaJogador());
                 inimigo.getVida().perderVida(pote.getApostaInimigo());
-                //pote.transferirParaVencedor(true);
+
+                // Só verifica vitória contra o oponente quando a vida dele chega a zero
+                if (inimigo.getVidaAtual() <= 0) {
+                    mostrarProximoOponente();
+                }
                 break;
 
             case INIMIGO_VENCE:
                 jogador.getVida().perderVida(pote.getApostaJogador());
                 inimigo.getVida().ganharVida(pote.getApostaInimigo());
-                //pote.transferirParaVencedor(false);
                 break;
 
             case EMPATE:
-                inimigo.getVida().ganharVida(pote.getApostaInimigo());
-                jogador.getVida().ganharVida(pote.getApostaJogador());
+                // Reparte o pote igualmente
+                int metade = pote.getQuantidade() / 2;
+                jogador.getVida().ganharVida(metade);
+                inimigo.getVida().ganharVida(metade);
                 break;
         }
 
-        // Verifica se o jogo acabou
+        // Verifica se o jogo acabou (vida do jogador ou todos oponentes derrotados)
         if (verificarFimDeJogo()) {
             finalizarJogo(jogador.getVidaAtual() > 0);
             return;
         }
+
         mesa.resetCartas();
         pote.resetPote();
+    }
+
+    private void mostrarProximoOponente() {
+        if (onNovaRodada != null) {
+            onNovaRodada.run(); // Notifica a GUI para mostrar a tela de oponente derrotado
+        }
+    }
+
+    public boolean temProximoOponente() {
+        return inimigoAtualIndex < perfisInimigos.size() - 1;
+    }
+
+    public void avancarParaProximoOponente() {
+        inimigoNaFase++;
+        inimigoAtualIndex++;
+
+        if (inimigoNaFase >= 3) { // Passou da fase (2 normais + 1 boss)
+            inimigoNaFase = 0;
+            faseAtual++;
+
+            if (faseAtual > 5) {
+                // Jogo completo!
+                finalizarJogo(true);
+                return;
+            }
+        }
+
+        inimigo = new Inimigo(perfisInimigos.get(inimigoAtualIndex));
+        novaRodada();
     }
 
     private boolean verificarFimDeJogo() {
@@ -221,6 +459,17 @@ public class Jogo {
         return false;
     }
 
+    public void reiniciarFase() {
+        int inicioFase = (faseAtual - 1) * 3; // Cada fase tem 3 inimigos (2 normais + 1 boss)
+        inimigoAtualIndex = inicioFase;
+        inimigo = new Inimigo(perfisInimigos.get(inimigoAtualIndex));
+
+        // Resetar HP do jogador para o valor inicial ou outro lógica que preferir
+        jogador.getVida().setVida(1500);
+
+        novaRodada();
+    }
+
     private void finalizarJogo(boolean jogadorVenceu) {
 
         System.out.println(jogadorVenceu ? "Você venceu o jogo!" : "Você perdeu o jogo!");
@@ -230,11 +479,24 @@ public class Jogo {
         //Só pra debug, vou mudar depois
     }
 
+    public int getRoundState() {
+        if (inimigoNaFase == 0) return 0; // Primeiro inimigo (roundcounter_1)
+        if (inimigoNaFase == 1) return 1; // Segundo inimigo (roundcounter_2)
+        if (inimigo.getPerfil().isBoss()) return 2; // Boss (roundcounter_3)
+        return 3; // Completo (roundcounter_4) - não deve ocorrer normalmente
+    }
+
 
     public Round getRound(){ return rodada; }
     public Jogador getJogador() { return jogador; }
     public Inimigo getInimigo() { return inimigo; }
     public Mesa getMesa() { return mesa; }
     public Pote getPote() { return pote; }
+    public int getFaseAtual() {
+        return faseAtual;
+    }
 
+    public int getinimigoNaFase() {
+        return inimigoNaFase;
+    }
 }

@@ -6,6 +6,7 @@ import javax.swing.*;
 import gui.*;
 import gui.Loja.LojaGUI;
 import gui.Menu.MenuGUI;
+import modelos.Jogo.Boss;
 import modelos.Jogo.Inventario;
 import modelos.Jogo.Jogo;
 import modelos.Jogo.Pote;
@@ -24,8 +25,18 @@ public class JogoGUI extends JPanel {
     private final VidaGUI jogadorHP, inimigoHP;
     private final BotoesGUI pause, inicio, check, fold;
     private final Inventario inventario;
+    private JPanel painelOponenteDerrotado;
+    private JPanel painelDerrota;
 
     private final BackgroundPanel background;
+
+    private final String[] faseBackgrounds = {
+            "/assets/images/background/fase1_bg.png",
+            "/assets/images/background/fase2_bg.png",
+            "/assets/images/background/fase3_bg.png",
+            "/assets/images/background/fase4_bg.png",
+            "/assets/images/background/fase5_bg.png"
+    };
 
     public JogoGUI(JanelaGUI app, Jogo jogo) {
         this.app = app;
@@ -40,13 +51,18 @@ public class JogoGUI extends JPanel {
         add(background, BorderLayout.CENTER);
 
         // Ícone do jogador
-        jogadorIcon = new IconeGUI("/assets/images/frames/framesBoss/boss0_1.png", "Gabiel Maka");
+        jogadorIcon = new IconeGUI("/assets/images/frames/framesBoss/boss0_1.png", "Gabiel Maka", false, null);
         Dimension jogadorIconSize = jogadorIcon.getPreferredSize();
         jogadorIcon.setBounds(0, tamanhoTela.height - jogadorIconSize.height, jogadorIconSize.width, jogadorIconSize.height);
         background.add(jogadorIcon);
 
         // Ícone do adversário
-        inimigoIcon = new IconeGUI("/assets/images/frames/framesBoss/boss1_1.png", "Nulio Cisar");
+        inimigoIcon = new IconeGUI(
+                jogo.getInimigo().getPerfil().getImagemPath(),
+                jogo.getInimigo().getPerfil().getNome(),
+                jogo.getInimigo().getPerfil().isBoss(),
+                jogo.getInimigo().getPerfil().getImagensBoss()
+        );
         Dimension inimigoIconSize = inimigoIcon.getPreferredSize();
         inimigoIcon.setBounds(tamanhoTela.width - inimigoIconSize.width, 0, inimigoIconSize.width, inimigoIconSize.height);
         background.add(inimigoIcon);
@@ -76,6 +92,9 @@ public class JogoGUI extends JPanel {
             );
             background.add(cartasInimigo[i]);
         }
+
+        // Painel de oponente derrotado
+        criarPainelOponenteDerrotado();
 
         // Mesa
         mesa = new MesaGUI(jogo.getMesa());
@@ -112,9 +131,8 @@ public class JogoGUI extends JPanel {
         inimigoHP.setBounds(0, 0, vidaAdversarioSize.width, vidaAdversarioSize.height);
         background.add(inimigoHP);
 
-
         // Contador de Round
-        contadorDeRound = new RoundCounterGUI(jogo.getRound());
+        contadorDeRound = new RoundCounterGUI();
         Dimension contadorDeRoundSize = contadorDeRound.getPreferredSize();
         contadorDeRound.setBounds((tamanhoTela.width - contadorDeRoundSize.width) / 2, 0,
                 contadorDeRoundSize.width, contadorDeRoundSize.height);
@@ -184,7 +202,176 @@ public class JogoGUI extends JPanel {
         jogo.setOnNovaRodada(() -> SwingUtilities.invokeLater(this::atualizarTudo));
     }
 
+    private void criarPainelDerrota() {
+        painelDerrota = new JPanel(new GridBagLayout());
+        painelDerrota.setBackground(new Color(0, 0, 0, 200)); // Fundo semi-transparente
+        painelDerrota.setBounds(0, 0, tamanhoTela.width, tamanhoTela.height);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(20, 0, 20, 0);
+
+        // Título
+        JLabel titulo = new JLabel("DERROTA!", SwingConstants.CENTER);
+        titulo.setForeground(new Color(255, 50, 50));
+        titulo.setFont(new Font("Arial", Font.BOLD, 48));
+        painelDerrota.add(titulo, gbc);
+
+        // Mensagem
+        JLabel mensagem = new JLabel("Você perdeu toda sua vida...", SwingConstants.CENTER);
+        mensagem.setForeground(Color.WHITE);
+        mensagem.setFont(new Font("Arial", Font.PLAIN, 24));
+        painelDerrota.add(mensagem, gbc);
+
+        // Botão Tentar Novamente
+        JButton btnTentar = new JButton("TENTAR NOVAMENTE");
+        btnTentar.setFont(new Font("Arial", Font.BOLD, 24));
+        btnTentar.setBackground(new Color(70, 70, 70));
+        btnTentar.setForeground(Color.WHITE);
+        btnTentar.setFocusPainted(false);
+        btnTentar.setPreferredSize(new Dimension(300, 60));
+
+        btnTentar.addActionListener(e -> {
+            jogo.reiniciarFase();
+            background.remove(painelDerrota);
+            atualizarTudo();
+        });
+        painelDerrota.add(btnTentar, gbc);
+
+        // Botão Menu Principal
+        JButton btnMenu = new JButton("MENU PRINCIPAL");
+        btnMenu.setFont(new Font("Arial", Font.BOLD, 24));
+        btnMenu.setBackground(new Color(70, 70, 70));
+        btnMenu.setForeground(Color.WHITE);
+        btnMenu.setFocusPainted(false);
+        btnMenu.setPreferredSize(new Dimension(300, 60));
+
+        btnMenu.addActionListener(e -> {
+            app.trocarTela(new MenuGUI(app));
+        });
+        painelDerrota.add(btnMenu, gbc);
+    }
+
+    private void criarPainelOponenteDerrotado() {
+        painelOponenteDerrotado = new JPanel(new GridBagLayout());
+        painelOponenteDerrotado.setOpaque(false);
+        painelOponenteDerrotado.setBounds(0, 0, tamanhoTela.width, tamanhoTela.height);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 0, 10, 0);
+
+        // Mensagem de vitória
+        JLabel lblMensagem = new JLabel("Oponente Derrotado!", SwingConstants.CENTER);
+        lblMensagem.setForeground(Color.WHITE);
+        lblMensagem.setFont(new Font("Arial", Font.BOLD, 36));
+        painelOponenteDerrotado.add(lblMensagem, gbc);
+
+        // Botão de ação
+        JButton btnAcao = new JButton(jogo.temProximoOponente() ? "Próximo Oponente" : "Voltar ao Menu");
+        btnAcao.setFont(new Font("Arial", Font.BOLD, 24));
+        btnAcao.setPreferredSize(new Dimension(300, 60));
+
+        btnAcao.addActionListener(e -> {
+            if (jogo.temProximoOponente()) {
+                jogo.avancarParaProximoOponente();
+                atualizarInimigoGUI();
+            } else {
+                app.trocarTela(new MenuGUI(app));
+            }
+            background.remove(painelOponenteDerrotado);
+            background.revalidate();
+            background.repaint();
+        });
+
+        painelOponenteDerrotado.add(btnAcao, gbc);
+    }
+
+    private void mostrarTelaOponenteDerrotado() {
+        background.add(painelOponenteDerrotado);
+        background.setComponentZOrder(painelOponenteDerrotado, 0);
+        background.revalidate();
+        background.repaint();
+    }
+
+    private void atualizarInimigoGUI() {
+        inimigoIcon.setImagem(jogo.getInimigo().getPerfil().getImagemPath());
+        inimigoIcon.setNome(jogo.getInimigo().getPerfil().getNome());
+
+        // Atualiza estado do Boss se necessário
+        if (jogo.getInimigo() instanceof Boss) {
+            Boss boss = (Boss) jogo.getInimigo();
+            inimigoIcon.atualizarEstadoBoss(boss.getEstadoHP());
+
+            // Mostrar coringa do boss
+           //mostrarCoringaBoss(boss.getCoringa());
+        }
+
+        inimigoHP.vidaAlterada(jogo.getInimigo().getVidaAtual());
+        inimigoIcon.revalidate();
+        inimigoIcon.repaint();
+    }
+
+    private void atualizarContadorRodadas() {
+        int estado;
+        if (jogo.getInimigo().getPerfil().isBoss()) {
+            estado = 2; // Boss
+        } else if (jogo.getinimigoNaFase() == 0) {
+            estado = 0; // Primeiro inimigo
+        } else {
+            estado = 1; // Segundo inimigo
+        }
+        contadorDeRound.updateRoundState(estado);
+    }
+
+    private void atualizarRoundCounter() {
+        int estado = jogo.getRoundState();
+        contadorDeRound.updateRoundState(estado);
+    }
+
+    private void avancarParaProximoOponente() {
+        jogo.avancarParaProximoOponente();
+        atualizarRoundCounter();
+        atualizarInimigoGUI();
+    }
+
+    // Quando reiniciar após derrota:
+    private void reiniciarFase() {
+        jogo.reiniciarFase();
+        contadorDeRound.reset();
+        atualizarTudo();
+    }
+
+    private void mostrarTelaDerrota() {
+        if (painelDerrota == null) {
+            criarPainelDerrota();
+        }
+        background.add(painelDerrota);
+        background.setComponentZOrder(painelDerrota, 0);
+        background.revalidate();
+        background.repaint();
+    }
+
+
     public void atualizarTudo() {
+        // Verifica se o inimigo foi derrotado
+        if (jogo.getJogador().getVidaAtual() <= 0) {
+            mostrarTelaDerrota();
+            return;
+        }
+
+        // Verifica vitória sobre inimigo
+        if (jogo.getInimigo().getVidaAtual() <= 0) {
+            mostrarTelaOponenteDerrotado();
+            return;
+        }
+
+        // Atualiza elementos visuais
+        atualizarRoundCounter();
+        atualizarInimigoGUI();
+
         // Remove as cartas antigas
         for (CartasPanel cartaPanel : cartasJogador) {
             if (cartaPanel.getParent() == background) {

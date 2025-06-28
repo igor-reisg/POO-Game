@@ -77,7 +77,8 @@ public class PoteGUI extends JPanel implements PoteListener {
 
     @Override
     public void adicionarPote(int quantidade) {
-        for(int i = 0 ; i < quantidade / 100 ; i++) {
+        int unitsToShow = Math.min(quantidade / 100, unidadesSangue.length);
+        for(int i = 0; i < unitsToShow; i++) {
             carregarImagem(unidadesSangue[i], caminhoRaiz + "/unidadepote.png");
         }
     }

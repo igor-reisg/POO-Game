@@ -35,21 +35,24 @@ public class Baralho {
     }
 
     public Carta pegaCarta() {
-        if (cartasDisponiveis > 0) {
-            Carta carta = cartas[cartasUsadas];
-            cartasUsadas++;
-            cartasDisponiveis--;
-            return carta;
+        if (cartasDisponiveis <= 0) {
+            System.err.println("[ERRO CRÍTICO] Tentativa de pegar carta de baralho vazio!");
+            reiniciaBaralho();
         }
-        else {
-            System.out.println("Baralho vazio!");
-            return null;
-        }
+
+        Carta carta = cartas[cartasUsadas];
+        cartasUsadas++;
+        cartasDisponiveis--;
+
+        System.out.println("[DEBUG] Carta distribuída: " + carta.getValor() + " de " + carta.getNaipe());
+        return carta;
     }
 
     public void reiniciaBaralho() {
         criaBaralho();
         embaralhaBaralho();
+        cartasUsadas = 0;
+        cartasDisponiveis = 52;
     }
 
     public List<List<Carta>> distribuirCartasJogadores() {
@@ -78,4 +81,13 @@ public class Baralho {
         }
         return cartasMesa;
     }
+
+    public int getCartasDisponiveis() {
+        return cartasDisponiveis;
+    }
+
+    public int getCartasUsadas() {
+        return cartasUsadas;
+    }
 }
+

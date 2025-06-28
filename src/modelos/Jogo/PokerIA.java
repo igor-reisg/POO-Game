@@ -8,7 +8,6 @@ public class PokerIA {
     private int agressividade;  // 1-10 (1=passivo, 10=agressivo)
     private int cautela;        // 1-10 (1=arrojado, 10=cauteloso)
     private int inteligencia;   // 0-100 (nível de tomada de decisão inteligente)
-    private int adaptabilidade; // 1-10 (capacidade de ajustar estratégia)
     private Random random;
     private Map<String, Integer> historicoJogadas;
     private int estiloJogo;     // 0=TAG, 1=LAG, 2=Nit, 3=Fish
@@ -27,7 +26,6 @@ public class PokerIA {
         this.random = new Random();
         this.historicoJogadas = new HashMap<>();
         this.estiloJogo = determinarEstiloJogo();
-        this.adaptabilidade = calcularAdaptabilidade();
         inicializarHistorico();
     }
 
@@ -48,134 +46,76 @@ public class PokerIA {
         return FISH;
     }
 
-    private int calcularAdaptabilidade() {
-        // Jogadores mais inteligentes são mais adaptáveis (5-10)
-        // Jogadores menos inteligentes são mais previsíveis (1-5)
-        int base = (int)(inteligencia / 15.0);
-        return Math.max(1, Math.min(10, base + random.nextInt(3)));
-    }
-
     public int decidirJogada(int vidaAtual, int apostaAtual, Mesa mesa, Carta[] mao, int etapaRodada) {
         List<Carta> cartasVisiveis = getCartasVisiveis(mesa);
         int forcaMao = avaliarForcaMao(mao, cartasVisiveis, etapaRodada);
 
-        // A inteligência determina a chance de tomar a melhor decisão possível
-        double chanceDecisaoOtima = 0.3 + (inteligencia / 100.0 * 0.7);
+        // Situação especial: se não há aposta pendente, não pode foldar
+        boolean podeCheckSemRisco = apostaAtual == 0;
 
-        // Fator de adaptação baseado no histórico
-        double fatorAdaptacao = calcularFatorAdaptacao();
-
-        // Probabilidade base ajustada pela adaptabilidade
-        double probBase = calcularProbabilidadeBase(forcaMao, etapaRodada) * fatorAdaptacao;
-        this.ultimaProbabilidade = probBase;
-
-        // Decisão final
-        int decisao;
-        if (random.nextDouble() < chanceDecisaoOtima) {
-            decisao = tomarDecisaoOtima(vidaAtual, apostaAtual, forcaMao, probBase);
+        if (podeCheckSemRisco) {
+            return decidirAcaoSemAposta(forcaMao);
         } else {
-            decisao = tomarDecisaoEstilo(vidaAtual, apostaAtual, forcaMao);
-        }
-
-        // Atualizar histórico
-        registrarJogada(decisao, forcaMao, apostaAtual > 0);
-        return decisao;
-    }
-
-    private double calcularFatorAdaptacao() {
-        // Jogadores adaptáveis ajustam mais seu estilo baseado no histórico
-        double fator = 1.0;
-        int totalJogadas = historicoJogadas.values().stream().mapToInt(Integer::intValue).sum();
-
-        if (totalJogadas > 10) {
-            double taxaFold = historicoJogadas.get("fold") / (double) totalJogadas;
-            double taxaRaise = historicoJogadas.get("raise") / (double) totalJogadas;
-
-            // Ajustar agressividade baseado no histórico
-            if (taxaFold > 0.4) fator *= 1.1; // Está foldando muito, aumenta agressividade
-            if (taxaRaise > 0.6) fator *= 0.9; // Está aumentando muito, reduz agressividade
-        }
-
-        return Math.max(0.7, Math.min(1.3, fator));
-    }
-
-    private double calcularProbabilidadeBase(int forcaMao, int etapaRodada) {
-        double fatorAgressivo = agressividade / 10.0;
-        double fatorCautela = cautela / 10.0;
-        double aleatoriedade = (random.nextDouble() - 0.5) * 0.2;
-
-        // Probabilidade base ajustada pela força da mão
-        double probBase = (fatorAgressivo * 0.6) - (fatorCautela * 0.4) + aleatoriedade;
-        probBase += (forcaMao - 50) / 100.0;
-
-        // Ajuste por etapa da rodada
-        switch(etapaRodada) {
-            case 0: probBase -= 0.1; break; // Pré-flop
-            case 1: probBase -= 0.05; break; // Flop
-            case 3: probBase += 0.1; break;  // River
-        }
-
-        return Math.max(0, Math.min(1, probBase));
-    }
-
-    private int tomarDecisaoOtima(int vidaAtual, int apostaAtual, int forcaMao, double probBase) {
-        // Decisão baseada em probabilidades e força da mão
-        double razaoPote = apostaAtual > 0 ? (vidaAtual / (double)apostaAtual) : 1;
-
-        if (vidaAtual < apostaAtual) {
-            return 0; // Fold forçado
-        }
-
-        // Chance de bluff (inversamente proporcional à cautela)
-        boolean isBluff = forcaMao < 40 && random.nextDouble() > (cautela / 10.0);
-
-        if (apostaAtual == 0) { // Pode check ou raise
-            if (probBase > 0.5 + (agressividade/20.0) || isBluff) {
-                return 2; // Raise
-            }
-            return 1; // Check
-        } else { // Precisa pagar para continuar
-            if (probBase > 0.6 + (agressividade/20.0) || (isBluff && random.nextDouble() > 0.7)) {
-                return 2; // Raise
-            }
-            if (probBase > 0.3 - (cautela/30.0)) {
-                return 1; // Call
-            }
-            return 0; // Fold
+            return decidirAcaoComAposta(vidaAtual, apostaAtual, forcaMao);
         }
     }
 
-    private int tomarDecisaoEstilo(int vidaAtual, int apostaAtual, int forcaMao) {
-        // Decisão baseada no estilo de jogo
-        double rand = random.nextDouble();
-        double ajusteForca = forcaMao / 100.0;
+    private int decidirAcaoSemAposta(int forcaMao) {
+        // Nunca foldar quando pode checkar
+        double chanceRaise = calcularChanceRaise(forcaMao);
 
-        switch(estiloJogo) {
-            case TAG: // Tight-Aggressive
-                if (rand < 0.1 + ajusteForca * 0.3) return 0;
-                if (rand < 0.8 + ajusteForca * 0.5) return 2;
-                return 1;
-
-            case LAG: // Loose-Aggressive
-                if (rand < 0.2) return 0;
-                if (rand < 0.9 - ajusteForca * 0.2) return 2;
-                return 1;
-
-            case NIT: // Nit (ultra conservador)
-                if (rand < 0.6 - ajusteForca * 0.4) return 0;
-                if (rand < 0.8) return 1;
-                return 2;
-
-            default: // Fish (aleatório)
-                if (rand < 0.4) return 0;
-                if (rand < 0.7) return 1;
-                return 2;
+        if (random.nextDouble() < chanceRaise) {
+            registrarJogada(2, forcaMao, false);
+            return 2; // Raise
         }
+        registrarJogada(1, forcaMao, false);
+        return 1; // Check
+    }
+
+    private int decidirAcaoComAposta(int vidaAtual, int apostaAtual, int forcaMao) {
+        // Decisão quando há aposta para call
+        double chanceCall = calcularChanceCall(forcaMao, apostaAtual, vidaAtual);
+        double chanceRaise = calcularChanceRaiseComAposta(forcaMao);
+
+        double roll = random.nextDouble();
+
+        if (roll < chanceRaise) {
+            registrarJogada(2, forcaMao, true);
+            return 2; // Raise
+        } else if (roll < chanceCall + chanceRaise) {
+            registrarJogada(1, forcaMao, true);
+            return 1; // Call
+        }
+        registrarJogada(0, forcaMao, true);
+        return 0; // Fold
+    }
+
+    private double calcularChanceRaise(int forcaMao) {
+        double base = forcaMao / 100.0;
+        double fatorAgressivo = agressividade / 15.0; // Aumentei o impacto da agressividade
+        return Math.min(0.3 + (base * 0.7) + fatorAgressivo, 0.9); // Aumentei o limite máximo
+    }
+
+    private double calcularChanceCall(int forcaMao, int apostaAtual, int vidaAtual) {
+        double base = forcaMao / 100.0;
+        double razaoPote = vidaAtual > 0 ? apostaAtual / (double)vidaAtual : 0;
+        double fatorCautela = cautela / 25.0; // Ajuste mais sensível
+
+        // Chance mínima de call reduzida para evitar calls muito fáceis
+        return Math.max(0.1, base - (razaoPote * 0.7) + fatorCautela);
+    }
+
+    private double calcularChanceRaiseComAposta(int forcaMao) {
+        double base = forcaMao / 100.0;
+        double fatorAgressivo = agressividade / 25.0;
+        return Math.min(0.2 + (base * 0.5) + fatorAgressivo, 0.6);
     }
 
     private void registrarJogada(int decisao, int forcaMao, boolean teveAposta) {
         String key;
-        boolean isBluff = forcaMao < 40 && decisao == 2;
+        boolean isBluff = forcaMao < (50 - (agressividade * 2) + (inteligencia / 5))
+                && decisao == 2
+                && random.nextDouble() < (agressividade / 15.0);
 
         switch(decisao) {
             case 0: key = "fold"; break;
@@ -191,18 +131,32 @@ public class PokerIA {
     }
 
     public int calcularValorAumento(int vidaAtual, int apostaAtual) {
-        // Base + ajuste por agressividade + aleatoriedade controlada por inteligência
-        int base = 100 + ((agressividade - 5) * 20);
-        int variacao = (int)((random.nextDouble() - 0.5) * 50 * (1 - (inteligencia/100.0)));
-        int maxPossivel = vidaAtual - apostaAtual;
+        // Garantir que não temos valores negativos
+        vidaAtual = Math.max(0, vidaAtual);
+        apostaAtual = Math.max(0, apostaAtual);
 
-        // Jogadores inteligentes fazem aumentos mais precisos
-        if (inteligencia > 70) {
-            base = (int)(base * 0.8); // Aumentos menores mas mais frequentes
-        }
+        // Valor base ajustado pela agressividade (100-300)
+        int base = 100 + (agressividade * 20);
 
-        base = Math.min(base + variacao, maxPossivel);
-        return Math.max(50, (base / 50) * 50); // Arredonda para múltiplos de 50
+        // Aleatoriedade controlada pela inteligência
+        int variacao = (int)(random.nextDouble() * 100 * (1 - (inteligencia/100.0)));
+
+        // Limite máximo que pode apostar
+        int maxPossivel = vidaAtual;
+
+        // Cálculo do valor com limites
+        int valorAposta = Math.min(base + variacao, maxPossivel);
+
+        // Garantir múltiplo de 100 e mínimo de 100
+        valorAposta = Math.max(100, (valorAposta / 100) * 100);
+
+        System.out.println("[DEBUG IA] Calculo aposta: " +
+                "base=" + base +
+                ", var=" + variacao +
+                ", max=" + maxPossivel +
+                ", final=" + valorAposta);
+
+        return valorAposta;
     }
 
     private List<Carta> getCartasVisiveis(Mesa mesa) {
@@ -297,7 +251,9 @@ public class PokerIA {
     }
 
     public double getTaxaBluff() {
-        return historicoJogadas.get("bluff") / (double) Math.max(1, historicoJogadas.get("raise"));
+        int raises = historicoJogadas.getOrDefault("raise", 1);
+        int bluffs = historicoJogadas.getOrDefault("bluff", 0);
+        return bluffs / (double) raises;
     }
 
     public String getEstatisticas() {
@@ -318,14 +274,12 @@ public class PokerIA {
         return ultimaProbabilidade;
     }
 
-    // Métodos para debug
     public void debugIA() {
         System.out.println("=== Perfil IA ===");
         System.out.println("Tipo: " + getPerfil());
         System.out.println("Agressividade: " + agressividade + "/10");
         System.out.println("Cautela: " + cautela + "/10");
         System.out.println("Inteligência: " + inteligencia + "/100");
-        System.out.println("Adaptabilidade: " + adaptabilidade + "/10");
         System.out.println("Estatísticas: " + getEstatisticas());
         System.out.println("Última Probabilidade: " + (ultimaProbabilidade * 100) + "%");
     }
