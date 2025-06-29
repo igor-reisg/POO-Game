@@ -23,8 +23,10 @@ public class Jogo {
     private int faseAtual = 1; // 1 a 5
     private int inimigoNaFase = 0;
 
+    private boolean guiPronta = false;
     private boolean jogadorPronto = false;
     private boolean inimigoPronto = false;
+
 
     private int jogadaJogador;
     private int jogadaInimigo;
@@ -41,7 +43,6 @@ public class Jogo {
         inimigo = new Inimigo(perfisInimigos.get(0)); // Primeiro inimigo
         baralho = new Baralho();
         pote = new Pote();
-        iniciarJogo();
     }
 
     private void carregarPerfisInimigos() {
@@ -179,7 +180,14 @@ public class Jogo {
         this.onNovaRodada = callback;
     }
 
+    public void notificarGUIpronta() {
+        this.guiPronta = true;
+        this.iniciarJogo(); // Só inicia o jogo depois que a GUI estiver pronta
+    }
+
     private void iniciarJogo() {
+
+
         Random r = new Random();
         moeda = r.nextInt(2);
 
@@ -216,8 +224,8 @@ public class Jogo {
         inimigo.recebeCarta(baralho);
 
         System.out.println("\n=== NOVA RODADA ===");
-        System.out.println("Jogador: " + jogador.getVidaAtual() + " HP | Inimigo: " +
-                inimigo.getVidaAtual() + " HP | Pote: " + pote.getQuantidade());
+        System.out.println("Jogador: " + jogador.getVida().getVida() + " HP | Inimigo: " +
+                inimigo.getVida().getVida() + " HP | Pote: " + pote.getQuantidade());
 
         etapaRodada = 0;
         fimRodada = false;
@@ -242,21 +250,29 @@ public class Jogo {
         int smallBlind = 100;
         int bigBlind = 200;
 
-        if (jogador.getBlind() == 0) { // Jogador é small blind
+        if (jogador.getBlind() == 0) {
+            // Jogador é small blind
+            jogador.getVida().selecionarVida(smallBlind);
+            jogador.getVida().setVida(jogador.getVida().getVida() - smallBlind);
             pote.adicionarApostaJogador(smallBlind);
-            jogador.getVida().setVida(jogador.getVidaAtual() - smallBlind);
 
+            // Inimigo é big blind
+            inimigo.getVida().selecionarVida(bigBlind);
+            inimigo.getVida().setVida(inimigo.getVida().getVida() - bigBlind);
             pote.adicionarApostaInimigo(bigBlind);
-            inimigo.getVida().setVida(inimigo.getVidaAtual() - bigBlind);
-        } else { // Jogador é big blind
+        } else {
+            // Jogador é big blind
+            jogador.getVida().selecionarVida(bigBlind);
+            jogador.getVida().setVida(jogador.getVida().getVida() - bigBlind);
             pote.adicionarApostaJogador(bigBlind);
-            jogador.getVida().setVida(jogador.getVidaAtual() - bigBlind);
 
+            // Inimigo é small blind
+            inimigo.getVida().selecionarVida(smallBlind);
+            inimigo.getVida().setVida(inimigo.getVida().getVida() - smallBlind);
             pote.adicionarApostaInimigo(smallBlind);
-            inimigo.getVida().setVida(inimigo.getVidaAtual() - smallBlind);
         }
 
-        // Rotacionar blinds para próxima rodada
+        // Rotacionar blinds
         jogador.setBlind(1 - jogador.getBlind());
         inimigo.setBlind(1 - inimigo.getBlind());
     }
@@ -267,6 +283,8 @@ public class Jogo {
             jogadaJogador = 1; // Call
             int valorCall = pote.getQuantidade();
             pote.adicionarApostaJogador(valorCall);
+            System.out.println("penis");
+            jogador.getVida().selecionarVida(pote.getApostaInimigo());
             jogador.getVida().setVida(jogador.getVida().getVida() - valorCall);
         } else {
             jogadaJogador = escolha;
@@ -277,8 +295,9 @@ public class Jogo {
 
     public void registrarEscolhaJogador(int escolha, int valor) {
         if (escolha == 2) { // Raise
-            pote.adicionarApostaJogador(valor);
+            jogador.getVida().selecionarVida( valor);
             jogador.getVida().setVida(jogador.getVida().getVida() - valor);
+            pote.adicionarApostaJogador(valor);
         }
         jogadaJogador = escolha;
         jogadorPronto = true;
@@ -369,8 +388,8 @@ public class Jogo {
 
     private void finalizarRodada(PokerLogica.Resultado resultado) {
         System.out.println("\n=== RESULTADO DA RODADA ===");
-        System.out.println("Jogador: " + jogador.getVidaAtual() + " HP");
-        System.out.println("Inimigo: " + inimigo.getVidaAtual() + " HP");
+        System.out.println("Jogador: " + jogador.getVida().getVida() + " HP");
+        System.out.println("Inimigo: " + inimigo.getVida().getVida() + " HP");
         System.out.println("Pote: " + pote.getQuantidade());
 
         switch(resultado) {
@@ -387,27 +406,24 @@ public class Jogo {
 
         switch (resultado) {
             case JOGADOR_VENCE:
-                jogador.getVida().ganharVida(pote.getApostaJogador());
-                inimigo.getVida().perderVida(pote.getApostaInimigo());
-
-                // Só verifica vitória contra o oponente quando a vida dele chega a zero
-                if (inimigo.getVidaAtual() <= 0) {
-                    mostrarProximoOponente();
-                }
+                jogador.getVida().setVida(jogador.getVida().getVida() + pote.getApostaJogador());
+                //pote.transferirParaVencedor(true);
                 break;
 
             case INIMIGO_VENCE:
-                jogador.getVida().perderVida(pote.getApostaJogador());
-                inimigo.getVida().ganharVida(pote.getApostaInimigo());
+                inimigo.getVida().setVida(inimigo.getVida().getVida() + pote.getApostaInimigo());
+                //pote.transferirParaVencedor(false);
                 break;
 
             case EMPATE:
-                // Reparte o pote igualmente
-                int metade = pote.getQuantidade() / 2;
-                jogador.getVida().ganharVida(metade);
-                inimigo.getVida().ganharVida(metade);
+                jogador.getVida().setVida(jogador.getVida().getVida() + pote.getApostaJogador());
+                inimigo.getVida().setVida(inimigo.getVida().getVida() +  pote.getApostaInimigo());
                 break;
         }
+        jogador.getVida().alterarVisualVida();
+        inimigo.getVida().alterarVisualVida();
+
+
 
         // Verifica se o jogo acabou (vida do jogador ou todos oponentes derrotados)
         if (verificarFimDeJogo()) {

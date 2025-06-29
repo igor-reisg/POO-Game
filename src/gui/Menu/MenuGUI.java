@@ -9,59 +9,91 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class MenuGUI extends JPanel implements ActionListener {
-    JanelaGUI app;
+    private final JanelaGUI app;
     private final String caminhoBackground = "/assets/images/background/pattern2.png";
-    BotoesGUI[] BotoesMenu;
-    JogoGUI telaJogo;
+    private BotoesGUI[] BotoesMenu;
+    private JogoGUI jogoGUI;
+    private CreditosGUI creditosGUI;
 
     public MenuGUI(JanelaGUI app) {
         this.app = app;
-        telaJogo =  new JogoGUI(app, new Jogo());
-        //CRIAÇÃO DO LOGO DO MENU
+        this.jogoGUI = null;
+        this.creditosGUI = null;
+
+        setLayout(new BorderLayout());
+        inicializarComponentes();
+    }
+
+    private void inicializarComponentes() {
+        // Criação do logo
         LogoMenu logo = new LogoMenu();
         logo.setPreferredSize(new Dimension(1100, 800));
         logo.setLayout(null);
-
-        //CRIAÇÃO DOS BOTÕES DO MENU
-        BotoesMenu = new BotoesGUI[5];
-        for (int i = 0; i < BotoesMenu.length; i++) {
-            if (i < 3)
-                BotoesMenu[i] = new BotoesGUI("menu/", 95, 189, i);
-            else
-                BotoesMenu[i] = new BotoesGUI("menu/", 66, 66, i);
-        }
-
-        JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 50));
-        for (int i = 0; i < 3; i++) {
-            panelInferior.add(BotoesMenu[i].getBotao());
-            BotoesMenu[i].getBotao().addActionListener(this);
-        }
-
-        JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 20));
-        for (int i = 3; i < 5; i++) {
-            panelSuperior.add(BotoesMenu[i].getBotao());
-            BotoesMenu[i].getBotao().addActionListener(this);
-        }
-
-        //Panel menu
-        JPanel menuPainel = new JPanel(new BorderLayout());
-        menuPainel.add(panelInferior, BorderLayout.SOUTH);
-        menuPainel.add(panelSuperior, BorderLayout.NORTH);
-        menuPainel.add(logo, BorderLayout.CENTER);
-
-        //Deixa tudo invisivel alem dos botoes/carta teste, pra mostrar o background
-        panelInferior.setOpaque(false);
-        panelSuperior.setOpaque(false);
-        menuPainel.setOpaque(false);
         logo.setOpaque(false);
 
-        //Tem que adicionar
+        // Criação dos botões
+        BotoesMenu = new BotoesGUI[5];
+        for (int i = 0; i < BotoesMenu.length; i++) {
+            BotoesMenu[i] = new BotoesGUI("menu/", i < 3 ? 95 : 66, i < 3 ? 189 : 66, i);
+            BotoesMenu[i].getBotao().addActionListener(this);
+        }
+
+        // Painel inferior (botões principais)
+        JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 50));
+        panelInferior.setOpaque(false);
+        for (int i = 0; i < 3; i++) {
+            panelInferior.add(BotoesMenu[i].getBotao());
+        }
+
+        // Painel superior (botões auxiliares)
+        JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 20));
+        panelSuperior.setOpaque(false);
+        for (int i = 3; i < 5; i++) {
+            panelSuperior.add(BotoesMenu[i].getBotao());
+        }
+
+        // Painel principal do menu
+        JPanel menuPainel = new JPanel(new BorderLayout());
+        menuPainel.setOpaque(false);
+        menuPainel.add(panelSuperior, BorderLayout.NORTH);
+        menuPainel.add(logo, BorderLayout.CENTER);
+        menuPainel.add(panelInferior, BorderLayout.SOUTH);
+
+        // Background
         BackgroundPanel background = new BackgroundPanel(caminhoBackground);
         background.add(menuPainel, BorderLayout.CENTER);
 
-        setLayout(new BorderLayout());
         add(background, BorderLayout.CENTER);
-        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == BotoesMenu[0].getBotao()) {
+            if (jogoGUI == null) {
+                jogoGUI = new JogoGUI(app, new Jogo());
+            }
+            app.trocarTela(jogoGUI);
+        }
+        else if (e.getSource() == BotoesMenu[1].getBotao()) {
+            mostrarPainelOpcoes();
+        }
+        else if (e.getSource() == BotoesMenu[2].getBotao()) {
+            if (creditosGUI == null) {
+                creditosGUI = new CreditosGUI(app);
+            }
+            app.trocarTela(creditosGUI);
+        }
+        else if (e.getSource() == BotoesMenu[3].getBotao()) {
+            JOptionPane.showMessageDialog(this, "Ajuda - Instruções do jogo");
+        }
+        else if (e.getSource() == BotoesMenu[4].getBotao()) {
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Deseja realmente sair do jogo?", "Sair",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        }
     }
 
     private void mostrarPainelOpcoes() {
@@ -69,32 +101,12 @@ public class MenuGUI extends JPanel implements ActionListener {
         painelOpcoes.setLayout(new BorderLayout());
 
         JButton botaoVoltar = new JButton("Voltar");
+        botaoVoltar.addActionListener(e -> app.getGlassPane().setVisible(false));
+
         painelOpcoes.add(botaoVoltar, BorderLayout.SOUTH);
-        botaoVoltar.addActionListener(e -> {
-            app.getGlassPane().setVisible(false);
-        });
 
         TransparenteGUI transparente = new TransparenteGUI(painelOpcoes);
         app.setGlassPane(transparente);
         transparente.setVisible(true);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == BotoesMenu[0].getBotao()) {
-            app.trocarTela(telaJogo);
-        }
-        else if (e.getSource() == BotoesMenu[1].getBotao()) {
-            mostrarPainelOpcoes();
-        }
-        else if (e.getSource() == BotoesMenu[2].getBotao()) {
-            app.trocarTela(new CreditosGUI(app));
-        }
-        else if (e.getSource() == BotoesMenu[3].getBotao()) {
-            System.out.println("Ajuda");
-        }
-        else if (e.getSource() == BotoesMenu[4].getBotao()) {
-            System.exit(0);
-        }
     }
 }

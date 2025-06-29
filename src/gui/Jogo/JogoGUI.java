@@ -50,12 +50,30 @@ public class JogoGUI extends JPanel {
         background.setLayout(null);
         add(background, BorderLayout.CENTER);
 
+        // Vida do jogador
+        jogadorHP = new VidaGUI(jogo.getJogador().getVida(), 1, jogo.getPote(), jogo);
+        Dimension vidaJogadorSize = jogadorHP.getPreferredSize();
+        jogadorHP.setBounds(
+                tamanhoTela.width - vidaJogadorSize.width,
+                tamanhoTela.height - vidaJogadorSize.height - 100,
+                vidaJogadorSize.width,
+                vidaJogadorSize.height
+        );
+        background.add(jogadorHP);
+
+        // Vida do inimigo
+        inimigoHP = new VidaGUI(jogo.getInimigo().getVida(), 2, jogo.getPote(), jogo);
+        Dimension vidaAdversarioSize = inimigoHP.getPreferredSize();
+        inimigoHP.setBounds(0, 0, vidaAdversarioSize.width, vidaAdversarioSize.height);
+        background.add(inimigoHP);
+        jogo.notificarGUIpronta();
+
+
         // Ícone do jogador
         jogadorIcon = new IconeGUI("/assets/images/frames/framesBoss/boss0_1.png", "Gabiel Maka", false, null);
         Dimension jogadorIconSize = jogadorIcon.getPreferredSize();
         jogadorIcon.setBounds(0, tamanhoTela.height - jogadorIconSize.height, jogadorIconSize.width, jogadorIconSize.height);
         background.add(jogadorIcon);
-
         // Ícone do adversário
         inimigoIcon = new IconeGUI(
                 jogo.getInimigo().getPerfil().getImagemPath(),
@@ -113,23 +131,6 @@ public class JogoGUI extends JPanel {
         Dimension poteSize = pote.getPreferredSize();
         pote.setBounds(0, (tamanhoTela.height - poteSize.height) / 2, poteSize.width, poteSize.height);
         background.add(pote);
-
-        // Vida do jogador
-        jogadorHP = new VidaGUI(jogo.getJogador().getVida(), 1, jogo.getPote(), jogo);
-        Dimension vidaJogadorSize = jogadorHP.getPreferredSize();
-        jogadorHP.setBounds(
-                tamanhoTela.width - vidaJogadorSize.width,
-                tamanhoTela.height - vidaJogadorSize.height - 100,
-                vidaJogadorSize.width,
-                vidaJogadorSize.height
-        );
-        background.add(jogadorHP);
-
-        // Vida do inimigo
-        inimigoHP = new VidaGUI(jogo.getInimigo().getVida(), 2, jogo.getPote(), jogo);
-        Dimension vidaAdversarioSize = inimigoHP.getPreferredSize();
-        inimigoHP.setBounds(0, 0, vidaAdversarioSize.width, vidaAdversarioSize.height);
-        background.add(inimigoHP);
 
         // Contador de Round
         contadorDeRound = new RoundCounterGUI();
@@ -309,7 +310,7 @@ public class JogoGUI extends JPanel {
            //mostrarCoringaBoss(boss.getCoringa());
         }
 
-        inimigoHP.vidaAlterada(jogo.getInimigo().getVidaAtual());
+        //inimigoHP.vidaAlterada(jogo.getInimigo().getVidaAtual());
         inimigoIcon.revalidate();
         inimigoIcon.repaint();
     }
@@ -353,7 +354,6 @@ public class JogoGUI extends JPanel {
         background.revalidate();
         background.repaint();
     }
-
 
     public void atualizarTudo() {
         // Verifica se o inimigo foi derrotado

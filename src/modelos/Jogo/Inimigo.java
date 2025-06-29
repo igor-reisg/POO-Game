@@ -41,13 +41,15 @@ public class Inimigo {
             // Garantir que não aposta mais do que tem
             valorAumento = Math.min(valorAumento, vida.getVida());
             System.out.println("INIMIGO APOSTOU " + valorAumento);
-            pote.adicionarApostaInimigo(valorAumento);
+            vida.selecionarVida( valorAumento);
             vida.setVida(vida.getVida() - valorAumento);
+            pote.adicionarApostaInimigo(valorAumento);
         } else if (this.jogada == 1 && pote.getQuantidade() > 0) { // Call
             int valorCall = Math.min(pote.getQuantidade(), vida.getVida());
             System.out.println("INIMIGO DEU CALL " + valorCall);
-            pote.adicionarApostaInimigo(valorCall);
+            vida.selecionarVida(valorCall);
             vida.setVida(vida.getVida() - valorCall);
+            pote.adicionarApostaInimigo(valorCall);
         }
 
         System.out.println("[IA] Decisão: " +
