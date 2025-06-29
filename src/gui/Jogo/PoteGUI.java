@@ -34,7 +34,7 @@ public class PoteGUI extends JPanel implements PoteListener {
             unidadesSangue[i] = new JLabel();
             unidadesSangue[i].setBounds(
                     3,
-                      altura - 16 - (i+1) * 14,
+                    altura - 16 - (i+1) * 14,
                     75,
                     26);
             carregarImagem(unidadesSangue[i], null); // Começa vazio
@@ -77,8 +77,7 @@ public class PoteGUI extends JPanel implements PoteListener {
 
     @Override
     public void adicionarPote(int quantidade) {
-        int unitsToShow = Math.min(quantidade / 100, unidadesSangue.length);
-        for(int i = 0; i < unitsToShow; i++) {
+        for(int i = 0 ; i < quantidade / 100 ; i++) {
             carregarImagem(unidadesSangue[i], caminhoRaiz + "/unidadepote.png");
         }
     }
