@@ -50,18 +50,18 @@ public class PokerIA {
         List<Carta> cartasVisiveis = getCartasVisiveis(mesa);
         int forcaMao = avaliarForcaMao(mao, cartasVisiveis, etapaRodada);
 
-        // Situação especial: se não há aposta pendente, não pode foldar
-        boolean podeCheckSemRisco = apostaAtual == 0;
-
-        if (podeCheckSemRisco) {
+        // Se não há aposta pendente, só pode check ou raise
+        if (apostaAtual == 0) {
             return decidirAcaoSemAposta(forcaMao);
-        } else {
+        }
+        // Se há aposta pendente (jogador apostou primeiro), decide entre fold, call ou raise
+        else {
             return decidirAcaoComAposta(vidaAtual, apostaAtual, forcaMao);
         }
     }
 
     private int decidirAcaoSemAposta(int forcaMao) {
-        // Nunca foldar quando pode checkar
+        // Nunca foldar quando é a primeira a jogar
         double chanceRaise = calcularChanceRaise(forcaMao);
 
         if (random.nextDouble() < chanceRaise) {
@@ -92,17 +92,20 @@ public class PokerIA {
 
     private double calcularChanceRaise(int forcaMao) {
         double base = forcaMao / 100.0;
-        double fatorAgressivo = agressividade / 15.0; // Aumentei o impacto da agressividade
-        return Math.min(0.3 + (base * 0.7) + fatorAgressivo, 0.9); // Aumentei o limite máximo
+        double fatorAgressivo = agressividade / 12.0; // Ajustado para ser mais balanceado
+
+        // Chance base + fator da mão + fator agressividade
+        return Math.min(0.4 + (base * 0.5) + fatorAgressivo, 0.85);
     }
 
     private double calcularChanceCall(int forcaMao, int apostaAtual, int vidaAtual) {
         double base = forcaMao / 100.0;
         double razaoPote = vidaAtual > 0 ? apostaAtual / (double)vidaAtual : 0;
-        double fatorCautela = cautela / 25.0; // Ajuste mais sensível
+        double fatorCautela = cautela / 20.0;
 
-        // Chance mínima de call reduzida para evitar calls muito fáceis
-        return Math.max(0.1, base - (razaoPote * 0.7) + fatorCautela);
+        // Chance mínima de call aumenta com força da mão e cautela
+        // Diminui com a razão pote/vida
+        return Math.max(0.15, base * (1 - razaoPote * 0.5) + fatorCautela);
     }
 
     private double calcularChanceRaiseComAposta(int forcaMao) {
@@ -274,13 +277,5 @@ public class PokerIA {
         return ultimaProbabilidade;
     }
 
-    public void debugIA() {
-        System.out.println("=== Perfil IA ===");
-        System.out.println("Tipo: " + getPerfil());
-        System.out.println("Agressividade: " + agressividade + "/10");
-        System.out.println("Cautela: " + cautela + "/10");
-        System.out.println("Inteligência: " + inteligencia + "/100");
-        System.out.println("Estatísticas: " + getEstatisticas());
-        System.out.println("Última Probabilidade: " + (ultimaProbabilidade * 100) + "%");
-    }
+
 }

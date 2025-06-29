@@ -31,11 +31,11 @@ public class JogoGUI extends JPanel {
     private final BackgroundPanel background;
 
     private final String[] faseBackgrounds = {
-            "/assets/images/background/fase1_bg.png",
-            "/assets/images/background/fase2_bg.png",
-            "/assets/images/background/fase3_bg.png",
-            "/assets/images/background/fase4_bg.png",
-            "/assets/images/background/fase5_bg.png"
+            "/assets/images/background/pattern1.png",
+            "/assets/images/background/pattern2.png",
+            "/assets/images/background/pattern3.png",
+            "/assets/images/background/pattern4.png",
+            "/assets/images/background/pattern5.png"
     };
 
     public JogoGUI(JanelaGUI app, Jogo jogo) {
@@ -49,6 +49,7 @@ public class JogoGUI extends JPanel {
         background = new BackgroundPanel("/assets/images/background/pattern1.png");
         background.setLayout(null);
         add(background, BorderLayout.CENTER);
+        atualizarBackgroundPorFase();
 
         // Vida do jogador
         jogadorHP = new VidaGUI(jogo.getJogador().getVida(), 1, jogo.getPote(), jogo);
@@ -176,9 +177,19 @@ public class JogoGUI extends JPanel {
         background.add(check);
 
         check.getBotao().addActionListener(e -> {
-            jogo.getJogador().escolhaDaJogada(1);
-            jogo.registrarEscolhaJogador(1);
+            if (jogo.getPote().getQuantidade() > 0) {
+                // Se houver aposta, trata como call
+                jogo.getJogador().escolhaDaJogada(1);
+                jogo.registrarEscolhaJogador(1);
+            } else {
+                // Se não houver aposta, trata como check
+                jogo.getJogador().escolhaDaJogada(1);
+                jogo.registrarEscolhaJogador(1);
+            }
         });
+
+
+
 
         // Botão Fold
         fold = new BotoesGUI("jogo/fold", 84, 42, 0);
@@ -336,6 +347,7 @@ public class JogoGUI extends JPanel {
         jogo.avancarParaProximoOponente();
         atualizarRoundCounter();
         atualizarInimigoGUI();
+        atualizarBackgroundPorFase();
     }
 
     // Quando reiniciar após derrota:
@@ -371,6 +383,7 @@ public class JogoGUI extends JPanel {
         // Atualiza elementos visuais
         atualizarRoundCounter();
         atualizarInimigoGUI();
+        atualizarBotoesAposta();
 
         // Remove as cartas antigas
         for (CartasPanel cartaPanel : cartasJogador) {
@@ -388,6 +401,7 @@ public class JogoGUI extends JPanel {
         // Adiciona as novas cartas do jogador
         for (int i = 0; i < 2; i++) {
             cartasJogador[i] = new CartasPanel(jogo.getJogador().getMao()[i]);
+
             cartasJogador[i].setBounds(
                     jogadorIcon.getWidth() + cartasJogador[i].getWidth() * (1 + i) + 20,
                     tamanhoTela.height - cartasJogador[i].getHeight(),
@@ -415,4 +429,31 @@ public class JogoGUI extends JPanel {
         this.revalidate();
         this.repaint();
     }
+
+    public void atualizarBotoesAposta() {
+        if (jogo.getPote().getQuantidade() > 0) {
+            // Muda para botão de call
+            check.setCaminhoBotao("jogo/call");
+            check.getBotao().setIcon(new ImageIcon(getClass().getResource("/assets/images/botoes/jogo/call0_0.png")));
+            check.getBotao().setRolloverIcon(new ImageIcon(getClass().getResource("/assets/images/botoes/jogo/call0_1.png")));
+            check.getBotao().setPressedIcon(new ImageIcon(getClass().getResource("/assets/images/botoes/jogo/call0_2.png")));
+        } else {
+            // Volta para botão de check
+            check.setCaminhoBotao("jogo/check");
+            check.getBotao().setIcon(new ImageIcon(getClass().getResource("/assets/images/botoes/jogo/check0_0.png")));
+            check.getBotao().setRolloverIcon(new ImageIcon(getClass().getResource("/assets/images/botoes/jogo/check0_1.png")));
+            check.getBotao().setPressedIcon(new ImageIcon(getClass().getResource("/assets/images/botoes/jogo/check0_2.png")));
+            // Configure os ícones originais do check
+        }
+        check.revalidate();
+        check.repaint();
+    }
+
+    private void atualizarBackgroundPorFase() {
+        int fase = jogo.getFaseAtual() - 1; // Convertendo para índice 0-based
+        if (fase >= 0 && fase < faseBackgrounds.length) {
+            background.setImagem(faseBackgrounds[fase]);
+        }
+    }
+
 }

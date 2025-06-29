@@ -41,6 +41,12 @@ public class BotoesGUI extends JPanel{
         return botao;
     }
 
+    public void setCaminhoBotao(String novoCaminho) {
+        this.caminhoBotao = "/assets/images/botoes/" + novoCaminho;
+        // Recria o botão com as novas imagens
+        this.botao = criarBotao();
+    }
+
     public JButton getBotao() {
         if (botao == null) {
             botao = criarBotao();
