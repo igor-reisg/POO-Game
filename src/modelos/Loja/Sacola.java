@@ -7,34 +7,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Sacola {
-    private int qtdCoringas;
-    List<Coringa> coringasSacola;
+    private List<Coringa> coringasSacola;
     private int precoTotal;
 
     public Sacola() {
-        qtdCoringas = 0;
-        precoTotal = 0;
-        coringasSacola = new ArrayList<>();
+        this.coringasSacola = new ArrayList<>();
+        this.precoTotal = 0;
+    }
 
-        for (Coringa coringa : coringasSacola) {
-            precoTotal += coringa.getPreco();
+    // Adiciona um coringa e atualiza o preço total
+    public void adicionarCoringaSacola(Coringa coringa) {
+        coringasSacola.add(coringa);
+        precoTotal += coringa.getPreco();
+    }
+
+    // Remove um coringa e atualiza o preço total
+    public void removerCoringaSacola(Coringa coringa) {
+        if (coringasSacola.remove(coringa)) {
+            precoTotal -= coringa.getPreco();
         }
     }
 
-    public boolean possivelComprar() {
-        return true;
+    // Limpa a sacola e zera o preço
+    public void limparSacola() {
+        coringasSacola.clear();
+        precoTotal = 0;
     }
 
-    public void adicionarCoringaSacola(Coringa coringa) {
-        coringasSacola.add(coringa);
-    }
-
-    public void contagemCoringas() {
-        qtdCoringas++;
+    public List<Coringa> getCoringasSacola() {
+        return coringasSacola;
     }
 
     public int getQtdCoringas() {
-        return qtdCoringas;
+        return coringasSacola.size();
     }
 
     public int getPrecoTotal() {

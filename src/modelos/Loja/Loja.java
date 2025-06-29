@@ -3,20 +3,30 @@ package modelos.Loja;
 import modelos.Jogo.Inventario;
 
 public class Loja {
-    Inventario inventario;
-    boolean atualizado = false;
-    int precoAtualizar;
+    private Inventario inventario;
+    private boolean atualizado;
+    private int precoAtualizar;
 
     public Loja(Inventario inventario) {
         this.inventario = inventario;
-        precoAtualizar = 2;
+        this.atualizado = false;
+        this.precoAtualizar = 2;
+    }
+
+    public boolean possivelComprar(Sacola sacola) {
+        boolean temDinheiro = inventario.getMoedasInventario() >= sacola.getPrecoTotal();
+        boolean temEspaco = (inventario.getQtdCoringas() + sacola.getQtdCoringas()) <= inventario.getMaxCoringas();
+        return temDinheiro && temEspaco;
+    }
+
+    public void comprarItens(Sacola sacola) {
+        inventario.usarMoedas(sacola.getPrecoTotal());
+        inventario.adicionarCoringas(sacola.getCoringasSacola());
+        sacola.limparSacola();
     }
 
     public boolean possivelAtualizarLoja() {
-        if (inventario.getMoedasInventario() >= precoAtualizar && !atualizado) {
-            return true;
-        }
-        return false;
+        return inventario.getMoedasInventario() >= precoAtualizar && !atualizado;
     }
 
     public void atualizarLoja() {
@@ -25,4 +35,7 @@ public class Loja {
         atualizado = true;
     }
 
+    public void novaRodada() {
+        atualizado = false;
+    }
 }

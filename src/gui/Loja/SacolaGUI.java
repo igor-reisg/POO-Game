@@ -40,7 +40,12 @@ public class SacolaGUI extends JPanel {
         textPrice.setBounds(100, 50, 300, 50);
         labelSacola.add(textPrice);
 
+        atualizarPreco();
         add(labelSacola);
+    }
+
+    public void atualizarPreco() {
+        textPrice.setText("Valor: " + sacola.getPrecoTotal());
     }
 
     private void carregarImagem() {

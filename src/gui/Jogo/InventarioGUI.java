@@ -10,10 +10,7 @@ import modelos.Loja.MesaLoja;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.*;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -106,11 +103,7 @@ public class InventarioGUI extends JPanel {
         panelInventario.add(ajuda.getBotao());
 
         //Gerar coringas que tem no inventario
-        coringas = new CoringasGUI[inventario.listarCoringas().size()];
-        for (int i = 0; i < inventario.listarCoringas().size(); i++) {
-            Coringa coringa = inventario.listarCoringas().get(i);
-            coringas[i] = new CoringasGUI(coringa, 100 + i * 200, 100, 120, 180);
-        }
+        gerarCoringasInventario();
 
         add(panelInventario);
         setVisible(false);
@@ -134,5 +127,72 @@ public class InventarioGUI extends JPanel {
             Image img = original.getImage().getScaledInstance(200, 100, Image.SCALE_SMOOTH);
             labelTextHolder.setIcon(new ImageIcon(img));
         }
+    }
+
+    public void atualizarDisplay() {
+        totalMoedas.setText(inventario.getMoedasInventarioString());
+        quantidadeCoringas.setText("(" + inventario.getQtdCoringas() + "/" + inventario.getMaxCoringas() + ")");
+
+        // Remove coringas antigos da tela
+        for (Component comp : panelInventario.getComponents()) {
+            if (comp instanceof CoringasGUI) {
+                panelInventario.remove(comp);
+            }
+        }
+
+        // Gera os novos coringas do inventário
+        gerarCoringasInventario();
+
+        revalidate();
+        repaint();
+    }
+
+    private void gerarCoringasInventario() {
+        coringas = new CoringasGUI[inventario.listarCoringas().size()];
+        for (int i = 0; i < inventario.listarCoringas().size(); i++) {
+            Coringa coringa = inventario.listarCoringas().get(i);
+            coringas[i] = new CoringasGUI(coringa, 100 + i * 200, 100, 120, 180);
+
+            // Adiciona listener para vender
+            coringas[i].addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    animacaoVenda((JComponent) e.getSource(), () -> {
+                        inventario.venderCoringa(coringa);
+                        atualizarDisplay();
+                    });
+                }
+            });
+            panelInventario.add(coringas[i]);
+        }
+    }
+
+    private void animacaoVenda(JComponent comp, Runnable aoTerminar) {
+        int fps = 60;
+        int duracaoMs = 300;
+        int frames = duracaoMs * fps / 1000;
+        Dimension tamanhoOriginal = comp.getSize();
+
+        Timer timer = new Timer(1000 / fps, null);
+        final int[] frame = {0};
+
+        timer.addActionListener(e -> {
+            frame[0]++;
+            float t = 1.0f - (frame[0] / (float) frames);
+
+            int newWidth = (int) (tamanhoOriginal.width * t);
+            int newHeight = (int) (tamanhoOriginal.height * t);
+
+            comp.setSize(newWidth, newHeight);
+            comp.revalidate();
+            comp.getParent().repaint();
+
+            if (frame[0] >= frames) {
+                timer.stop();
+                comp.setVisible(false);
+                aoTerminar.run();
+            }
+        });
+        timer.start();
     }
 }

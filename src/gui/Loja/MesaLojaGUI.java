@@ -5,6 +5,8 @@ import modelos.Cartas.Coringa;
 import modelos.Loja.MesaLoja;
 import modelos.Loja.Sacola;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -18,10 +20,15 @@ public class MesaLojaGUI extends JPanel {
     MesaLoja mesa;
     CoringasGUI[] coringasMesa;
     private Sacola sacola;
+    private SacolaGUI sacolaGUI;
+    private List<CoringasGUI> coringasSacola;
 
-    public MesaLojaGUI(MesaLoja mesa, Sacola sacola) {
+    public MesaLojaGUI(MesaLoja mesa, Sacola sacola, SacolaGUI sacolaGUI) {
         this.mesa = mesa;
         this.sacola = sacola;
+        this.sacolaGUI = sacolaGUI;
+        this.coringasSacola = new ArrayList<>();
+
         labelMesa = new JLabel();
         setMinimumSize(new Dimension(largura, altura));
         labelMesa.setLayout(null);
@@ -71,16 +78,26 @@ public class MesaLojaGUI extends JPanel {
 
             //PRESSIONA MOUSE NO CORINGA DA LOJA. VAI PARA A SACOLA E FAZ MUITAS COISAS BEM IMPORTANTES MESMO
             panelCoringa.addMouseListener(new MouseAdapter() {
+                private boolean movido = false;
+
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    JComponent coringa = (JComponent) e.getSource();
+                    if (movido) return; // Se já foi movido não faz nada
+                    JComponent coringaComponent = (JComponent) e.getSource();
                     Point destino = new Point(1550, 200);
-                    moverCoringaSacola(coringa, destino);
-                    sacola.contagemCoringas(); //POR QUE TA SOMANDO 2 ??????????????????????????????????????
-                    sacola.adicionarCoringaSacola(coringasMesa[finalI].getCoringaStats());
-                    System.out.println("Quantidade de coringa sacola: " + sacola.getQtdCoringas());
+
+                    sacola.adicionarCoringaSacola(carta);
+                    coringasSacola.add(panelCoringa);
+                    sacolaGUI.atualizarPreco();
+
+                    moverCoringaSacola(coringaComponent, destino);
+
+                    System.out.println("Coringa adicionado. Total: " + sacola.getQtdCoringas() + ", Preço: " + sacola.getPrecoTotal());
+                    movido = true;
                 }
             });
+
+            labelMesa.add(panelCoringa, Integer.valueOf(4));
 
             labelMesa.add(panelCoringa, Integer.valueOf(4));
         }
@@ -111,6 +128,15 @@ public class MesaLojaGUI extends JPanel {
         });
 
         timer.start();
+    }
+
+    public void removerCartasCompradas() {
+        for (CoringasGUI coringaGUI : coringasSacola) {
+            labelMesa.remove(coringaGUI);
+        }
+        coringasSacola.clear();
+        labelMesa.revalidate();
+        labelMesa.repaint();
     }
 
     private void carregarImagem() {

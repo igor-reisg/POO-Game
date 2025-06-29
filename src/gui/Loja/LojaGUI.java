@@ -30,11 +30,14 @@ public class LojaGUI extends JPanel {
     private Loja loja;
     private MesaLoja mesaLoja;
     private Sacola sacola;
+    private LojaGUI lojaGUI;
 
     public LojaGUI(JanelaGUI app, Inventario inventario, Loja loja) {
         this.app = app;
         this.loja = loja;
         this.mesaLoja = new MesaLoja();
+        this.sacola = new Sacola();
+
         tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
         int larguraTela = tamanhoTela.width;
         int alturaTela = tamanhoTela.height;
@@ -53,7 +56,6 @@ public class LojaGUI extends JPanel {
         layeredPane.add(background, Integer.valueOf(0));
 
         //Sacola
-        sacola = new Sacola();
         sacolaGUI = new SacolaGUI(sacola);
         Dimension sacolaSize = sacolaGUI.getPreferredSize();
         sacolaGUI.setBounds((larguraTela - sacolaSize.width - 30), (alturaTela - sacolaSize.height - 135), sacolaSize.width, sacolaSize.height);
@@ -61,7 +63,7 @@ public class LojaGUI extends JPanel {
         background.add(sacolaGUI, Integer.valueOf(0));
 
         // Mesa com Coringas
-        mesa = new MesaLojaGUI(mesaLoja, sacola);
+        mesa = new MesaLojaGUI(mesaLoja, sacola, sacolaGUI);
         Dimension mesaSize = mesa.getPreferredSize();
         int posX = (larguraTela - mesaSize.width) / 2;
         int posY = (alturaTela - mesaSize.height) / 2;
@@ -90,6 +92,22 @@ public class LojaGUI extends JPanel {
         botaoLoja.setBounds(larguraTela - 440, alturaTela - 110, 189, 95);
         layeredPane.add(botaoLoja, Integer.valueOf(1));
 
+        // Botão 0 - Comprar Coringas da Sacola
+        BotoesLoja[0].getBotao().addActionListener(e -> {
+            if (loja.possivelComprar(sacola)) {
+                loja.comprarItens(sacola);
+                System.out.println("Compra realizada com sucesso!");
+
+                sacolaGUI.atualizarPreco();
+                inventarioGUI.atualizarDisplay();
+
+                mesa.removerCartasCompradas();
+
+            } else {
+                System.out.println("Não foi possível comprar. Verifique seu dinheiro ou espaço no inventário.");
+            }
+        });
+
         // Botão 1 - Avançar jogo (pode ajustar depois para rodadas reais)
         BotoesLoja[1].getBotao().addActionListener(e -> app.trocarTela(new JogoGUI(app, new Jogo())));
 
@@ -105,9 +123,11 @@ public class LojaGUI extends JPanel {
                 loja.atualizarLoja();
                 mesaLoja.gerarNovosCoringas();
                 mesa.atualizarCartas();
-            } else {
-                BotoesLoja[3].getBotao().setEnabled(false); //TEM QUE ARRUMAR ESSA BOSTA, SE MUDAR A IMAGEM MANUALMENTE FICA BUGADO
-                System.out.println("Não é possível atualizar a loja");
+                inventarioGUI.atualizarDisplay();
+                System.out.println("Loja atualizada!");
+            }
+            else {
+                System.out.println("Dinheiro insuficiente ou loja já atualizada nesta rodada.");
             }
         });
 
