@@ -3,7 +3,7 @@ package modelos.Loja;
 import modelos.Jogo.Inventario;
 
 public class Loja {
-    private Inventario inventario;
+    private final Inventario inventario;
     private boolean atualizado;
     private int precoAtualizar;
 
@@ -33,9 +33,5 @@ public class Loja {
         inventario.usarMoedas(precoAtualizar);
         precoAtualizar += 2;
         atualizado = true;
-    }
-
-    public void novaRodada() {
-        atualizado = false;
     }
 }

@@ -12,7 +12,7 @@ public class SacolaGUI extends JPanel {
     private Font fonte;
     private final String caminhoFonte = "/assets/fonts/RetroGaming.ttf";
     Sacola sacola;
-    private JLabel labelSacola; //TA DANDO BO PQ É JLABEL, TENTEI TROCAR MAS NAO FUNFA (O CERTO É SER JPANEL OU O BACKGROUNDPANEL)
+    private JLabel labelSacola;
     int largura = 1613;
     int altura = 936;
     private JLabel textPrice;

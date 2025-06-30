@@ -31,6 +31,7 @@ public class LojaGUI extends JPanel {
     private MesaLoja mesaLoja;
     private Sacola sacola;
     private LojaGUI lojaGUI;
+    private JLabel placaLabel;
 
     public LojaGUI(JanelaGUI app, Inventario inventario, Loja loja) {
         this.app = app;
@@ -61,6 +62,12 @@ public class LojaGUI extends JPanel {
         sacolaGUI.setBounds((larguraTela - sacolaSize.width - 30), (alturaTela - sacolaSize.height - 135), sacolaSize.width, sacolaSize.height);
         sacolaGUI.setOpaque(false);
         background.add(sacolaGUI, Integer.valueOf(0));
+
+        //Placa loja
+        placaLabel = new JLabel();
+        carregarImagem();
+        placaLabel.setBounds(larguraTela - 440, alturaTela - 300, 168, 132);
+        background.add(placaLabel, Integer.valueOf(1));
 
         // Mesa com Coringas
         mesa = new MesaLojaGUI(mesaLoja, sacola, sacolaGUI);
@@ -132,6 +139,16 @@ public class LojaGUI extends JPanel {
         });
 
         setVisible(true);
+    }
+
+    private void carregarImagem() {
+        String caminhoImagem = "/assets/images/mesaPrincipal/placaloja.png";
+        URL url = getClass().getResource(caminhoImagem);
+        if (url != null) {
+            ImageIcon original = new ImageIcon(url);
+            Image img = original.getImage().getScaledInstance(168, 132, Image.SCALE_SMOOTH);
+            placaLabel.setIcon(new ImageIcon(img));
+        }
     }
 
     public SacolaGUI getSacolaGUI() {
