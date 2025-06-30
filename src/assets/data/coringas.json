@@ -71,6 +71,87 @@
       "xp": 0,
       "level": 1,
       "imagemCaminho" : "/assets/images/cartas/coringas/morangot.png"
+    },
+    {
+      "nome": "CORINGA CONQUISTA",
+      "descricao": "teste descricao",
+      "raridade": "teste raridade",
+      "preco": 100,
+      "xp": 0,
+      "level": 1,
+      "imagemCaminho" : "/assets/images/cartas/coringas/conquista.png"
+    },
+    {
+      "nome": "CORINGA CONTICOLA",
+      "descricao": "teste descricao",
+      "raridade": "teste raridade",
+      "preco": 100,
+      "xp": 0,
+      "level": 1,
+      "imagemCaminho" : "/assets/images/cartas/coringas/conticola.png"
+    },
+    {
+      "nome": "CORINGA GOLPE ZERO",
+      "descricao": "teste descricao",
+      "raridade": "teste raridade",
+      "preco": 100,
+      "xp": 0,
+      "level": 1,
+      "imagemCaminho" : "/assets/images/cartas/coringas/golpezero.png"
+    },
+    {
+      "nome": "CORINGA IT",
+      "descricao": "teste descricao",
+      "raridade": "teste raridade",
+      "preco": 100,
+      "xp": 0,
+      "level": 1,
+      "imagemCaminho" : "/assets/images/cartas/coringas/it.png"
+    },
+    {
+      "nome": "CORINGA PICHU",
+      "descricao": "teste descricao",
+      "raridade": "teste raridade",
+      "preco": 100,
+      "xp": 0,
+      "level": 1,
+      "imagemCaminho" : "/assets/images/cartas/coringas/pichu.png"
+    },
+    {
+      "nome": "CORINGA SHREK",
+      "descricao": "teste descricao",
+      "raridade": "teste raridade",
+      "preco": 100,
+      "xp": 0,
+      "level": 1,
+      "imagemCaminho" : "/assets/images/cartas/coringas/shrek.png"
+    },
+    {
+      "nome": "CORINGA TAUBAIANA",
+      "descricao": "teste descricao",
+      "raridade": "teste raridade",
+      "preco": 100,
+      "xp": 0,
+      "level": 1,
+      "imagemCaminho" : "/assets/images/cartas/coringas/taubaiana.png"
+    },
+    {
+      "nome": "CORINGA TRANSURB",
+      "descricao": "teste descricao",
+      "raridade": "teste raridade",
+      "preco": 100,
+      "xp": 0,
+      "level": 1,
+      "imagemCaminho" : "/assets/images/cartas/coringas/transurb.png"
+    },
+    {
+      "nome": "CORINGA VINHO",
+      "descricao": "teste descricao",
+      "raridade": "teste raridade",
+      "preco": 100,
+      "xp": 0,
+      "level": 1,
+      "imagemCaminho" : "/assets/images/cartas/coringas/vinho.png"
     }
   ]
 }

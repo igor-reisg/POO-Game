@@ -2,7 +2,13 @@ package gui;
 
 import gui.Menu.MenuGUI;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.swing.*;
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.AWTEventListener;
 import java.awt.event.MouseEvent;
@@ -12,11 +18,13 @@ public class JanelaGUI extends JFrame {
     private Cursor cursorClique;
     private Cursor cursorNormal;
     private JPanel telaAtual;
+    private Clip musicaFundo;
 
     public JanelaGUI() {
         super("Fold Or Fight");
         configurarJanela();
         configurarCursor();
+        tocarMusicaFundo();
         iniciarMenuPrincipal();
     }
 
@@ -46,6 +54,26 @@ public class JanelaGUI extends JFrame {
 
     private void iniciarMenuPrincipal() {
         trocarTela(new MenuGUI(this));
+    }
+
+    private void tocarMusicaFundo() {
+        try {
+            URL url = getClass().getResource("/assets/sons/Ace-of-Showdown.wav");
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+            musicaFundo = AudioSystem.getClip();
+            musicaFundo.open(audioIn);
+            musicaFundo.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception ignored) { }
+    }
+
+    public void setVolumeMusica(float volumePercentual) {
+        try {
+            if (musicaFundo != null && musicaFundo.isOpen()) {
+                FloatControl gainControl = (FloatControl) musicaFundo.getControl(FloatControl.Type.MASTER_GAIN);
+                float dB = (float) (Math.log10(Math.max(volumePercentual, 0.0001)) * 20);
+                gainControl.setValue(dB);
+            }
+        } catch (Exception ignored) {}
     }
 
     private Cursor carregarCursor(String caminhoImagem, Point hotspot, String nomeCursor) {

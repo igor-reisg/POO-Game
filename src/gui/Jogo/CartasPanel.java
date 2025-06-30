@@ -4,6 +4,8 @@ import modelos.Cartas.Carta;
 import modelos.Jogo.Jogo;
 
 import javax.swing.*;
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
@@ -11,7 +13,7 @@ import java.net.*;
 public class CartasPanel extends JPanel {
     private final Carta carta;
     private final JLabel labelCarta;
-
+    private AudioClip som;
     private Timer aumenta;
     private Timer diminui;
 
@@ -35,6 +37,7 @@ public class CartasPanel extends JPanel {
             @Override
             public void aoVirarCarta() {
                 animacaoVirarCarta();
+                somCarta();
             }
         });
     }
@@ -134,12 +137,14 @@ public class CartasPanel extends JPanel {
 
     private void animacaoVirarCarta() {
         // Só inicia animação se o estado da carta realmente mudou
-
             aumenta.start();
-
     }
 
-
-
-
+    private void somCarta() {
+        try {
+            URL url = getClass().getResource("/assets/sons/card.wav");
+            som = Applet.newAudioClip(url);
+            som.play();
+        } catch (Exception ignored) {}
+    }
 }
