@@ -6,8 +6,6 @@ public class Coringa {
     private final String raridade;
     private final String nome;
     private final String descricao;
-    private final int xp;
-    private final int level;
     private boolean verso = false;
 
     public Coringa() {
@@ -16,15 +14,11 @@ public class Coringa {
         this.raridade = null;
         this.nome = null;
         this.descricao = null;
-        this.xp = 0;
-        this.level = 0;
     }
 
-    public Coringa(String nome, String descricao, String raridade, int preco, int xp, int level, String imagemCaminho) {
+    public Coringa(String nome, String descricao, String raridade, int preco, String imagemCaminho) {
         this.preco = preco;
         this.raridade = raridade;
-        this.xp = xp;
-        this.level = level;
         this.nome = nome;
         this.descricao = descricao;
         this.imagemCaminho = imagemCaminho;
@@ -44,14 +38,6 @@ public class Coringa {
 
     public String getDescricao() {
         return descricao;
-    }
-
-    public int getXp() {
-        return xp;
-    }
-
-    public int getLevel() {
-        return level;
     }
 
     public String getImagemCaminho() {

@@ -1,156 +1,122 @@
 {
   "coringas" : [
     {
-      "nome": "CORINGA NAKA",
+      "nome": "Niko, o Travado",
       "descricao": "teste descricao",
-      "raridade": "teste raridade",
+      "raridade": "",
       "preco": 100,
-      "xp": 0,
-      "level": 1,
       "imagemCaminho" : "/assets/images/cartas/coringas/coringaboss_0.png"
     },
     {
-      "nome": "CORINGA JULIO CESAR",
+      "nome": "Juliano, o Sabido",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,
-      "xp": 0,
-      "level": 1,
       "imagemCaminho" : "/assets/images/cartas/coringas/coringaboss_1.png"
     },
     {
-      "nome": "CORINGA TUX",
+      "nome": "Truxs, o Sumido",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,
-      "xp": 0,
-      "level": 1,
       "imagemCaminho" : "/assets/images/cartas/coringas/coringaboss_2.png"
     },
     {
-      "nome": "CORINGA ANDRE",
+      "nome": "Andrei, o Curioso",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,
-      "xp": 0,
-      "level": 1,
       "imagemCaminho" : "/assets/images/cartas/coringas/coringaboss_3.png"
     },
     {
-      "nome": "CORINGA DAVIZAO",
+      "nome": "David, o Ruim",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,
-      "xp": 0,
-      "level": 1,
       "imagemCaminho" : "/assets/images/cartas/coringas/coringaboss_4.png"
     },
     {
-      "nome": "CORINGA DIABO",
-      "descricao": "teste descricao",
-      "raridade": "teste raridade",
-      "preco": 100,
-      "xp": 0,
-      "level": 1,
+      "nome": "Diabo Cabeçudo",
+      "descricao": "Uma carta de paus com valor acima de 10 será considerada como a maior carta",
+      "raridade": "Raro",
+      "preco": 8,
       "imagemCaminho" : "/assets/images/cartas/coringas/diabo.png"
     },
     {
-      "nome": "CORINGA LABSICC",
+      "nome": "Labsicc",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,
-      "xp": 0,
-      "level": 1,
       "imagemCaminho" : "/assets/images/cartas/coringas/labsicc.png"
     },
     {
-      "nome": "CORINGA MORANGAO",
+      "nome": "Morangão",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,
-      "xp": 0,
-      "level": 1,
       "imagemCaminho" : "/assets/images/cartas/coringas/morangot.png"
     },
     {
-      "nome": "CORINGA CONQUISTA",
+      "nome": "Conquista",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
-      "preco": 100,
-      "xp": 0,
-      "level": 1,
+      "preco": 5,
       "imagemCaminho" : "/assets/images/cartas/coringas/conquista.png"
     },
     {
-      "nome": "CORINGA CONTICOLA",
+      "nome": "Conticola",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
-      "preco": 100,
-      "xp": 0,
-      "level": 1,
+      "preco": 5,
       "imagemCaminho" : "/assets/images/cartas/coringas/conticola.png"
     },
     {
-      "nome": "CORINGA GOLPE ZERO",
+      "nome": "Golpe Zero",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,
-      "xp": 0,
-      "level": 1,
       "imagemCaminho" : "/assets/images/cartas/coringas/golpezero.png"
     },
     {
-      "nome": "CORINGA IT",
+      "nome": "It",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
-      "preco": 100,
-      "xp": 0,
-      "level": 1,
+      "preco": 5,
       "imagemCaminho" : "/assets/images/cartas/coringas/it.png"
     },
     {
-      "nome": "CORINGA PICHU",
+      "nome": "Pichu",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,
-      "xp": 0,
-      "level": 1,
       "imagemCaminho" : "/assets/images/cartas/coringas/pichu.png"
     },
     {
-      "nome": "CORINGA SHREK",
+      "nome": "Shrek",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,
-      "xp": 0,
-      "level": 1,
       "imagemCaminho" : "/assets/images/cartas/coringas/shrek.png"
     },
     {
-      "nome": "CORINGA TAUBAIANA",
+      "nome": "Taubaiana",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
-      "preco": 100,
-      "xp": 0,
-      "level": 1,
+      "preco": 5,
       "imagemCaminho" : "/assets/images/cartas/coringas/taubaiana.png"
     },
     {
-      "nome": "CORINGA TRANSURB",
+      "nome": "Transurb",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,
-      "xp": 0,
-      "level": 1,
       "imagemCaminho" : "/assets/images/cartas/coringas/transurb.png"
     },
     {
-      "nome": "CORINGA VINHO",
+      "nome": "Cena do Crime",
       "descricao": "teste descricao",
       "raridade": "teste raridade",
       "preco": 100,
-      "xp": 0,
-      "level": 1,
       "imagemCaminho" : "/assets/images/cartas/coringas/vinho.png"
     }
   ]

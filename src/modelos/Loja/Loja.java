@@ -26,7 +26,7 @@ public class Loja {
     }
 
     public boolean possivelAtualizarLoja() {
-        return inventario.getMoedasInventario() >= precoAtualizar && !atualizado;
+        return inventario.getMoedasInventario() >= precoAtualizar;
     }
 
     public void atualizarLoja() {

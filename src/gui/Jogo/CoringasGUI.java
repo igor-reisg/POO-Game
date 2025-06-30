@@ -55,16 +55,17 @@ public class CoringasGUI extends JPanel {
         }
 
         //Informações das características do coringa
-        JLabel infos = new JLabel("<html><b>Nome: </b>" + coringa.getNome() +
-                                       "<br><b>Descrição: </b>" + coringa.getDescricao() +
-                                       "<br><b>Raridade: </b>" + coringa.getRaridade() +
-                                       "<br><b>Preço: </b>" + coringa.getPreco() +
-                                       "<br><b>XP: </b>" + coringa.getXp() +
-                                       "<br><b>Level: </b>" + coringa.getLevel() + "</html>");
+        String htmlTexto = "<html>" +
+                "<table style='line-height:1.2; font-size:24pt;'>" +
+                "<tr><td valign='top'><b>Nome:</b></td><td>" + coringa.getNome() + "</td></tr>" +
+                "<tr><td valign='top'><b>Descrição:</b></td><td>" + coringa.getDescricao() + "</td></tr>" +
+                "<tr><td valign='top'><b>Raridade:</b></td><td>" + coringa.getRaridade() + "</td></tr>" +
+                "<tr><td valign='top'><b>Preço:</b></td><td>" + coringa.getPreco() + "</td></tr>" +
+                "</table></html>";
 
+        JLabel infos = new JLabel(htmlTexto);
         infos.setForeground(new Color(40, 40, 40));
-        infos.setSize(infos.getPreferredSize());
-        infos.setFont(fonte);
+        infos.setFont(fonte.deriveFont(24f));
         infos.setBounds(10, 10, (largura * 2) - 20, altura - 20);
         previewPanel.add(infos, JLayeredPane.PALETTE_LAYER);
 
