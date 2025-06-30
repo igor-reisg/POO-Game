@@ -192,9 +192,10 @@ public class Jogo {
         moeda = r.nextInt(2);
 
         // Definir blinds
-        jogador.setBlind(moeda); // 0 = small blind, 1 = big blind
-        inimigo.setBlind(1 - moeda);
-
+        //jogador.setBlind(moeda); // 0 = small blind, 1 = big blind
+        //inimigo.setBlind(1 - moeda);
+        jogador.setBlind(1);
+        jogador.setBlind(0);
         novaRodada();
     }
 
@@ -280,11 +281,13 @@ public class Jogo {
     public void registrarEscolhaJogador(int escolha) {
         // Se houver aposta no pote e jogador der check, trata como call
         if (escolha == 1 && pote.getQuantidade() > 0) {
-            jogadaJogador = 1; // Call
-            int valorCall = pote.getQuantidade();
+            jogadaJogador = 1;// Call
+            int valorCall = pote.getUltimaApostaInimigo();
+            if(pote.getHistoricoApostaJogador().size() == 1){
+                valorCall = pote.getUltimaApostaInimigo() - pote.getUltimaApostaJogador();
+            }
             pote.adicionarApostaJogador(valorCall);
-            System.out.println("penis");
-            jogador.getVida().selecionarVida(pote.getApostaInimigo());
+            jogador.getVida().selecionarVida(valorCall);
             jogador.getVida().setVida(jogador.getVida().getVida() - valorCall);
         } else {
             jogadaJogador = escolha;

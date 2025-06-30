@@ -56,7 +56,7 @@ public class VidaGUI extends JPanel implements VidaListener{
             listeners[i] = new Listener(i);
 
             vidaDiscreta[i].setBounds(
-                    largura - larguraUnidade - 27 * i - 3,
+                    largura - larguraUnidade - 27 * i - 4,
                     4,
                     larguraUnidade,
                     alturaUnidade

@@ -44,8 +44,9 @@ public class Inimigo {
             vida.selecionarVida( valorAumento);
             vida.setVida(vida.getVida() - valorAumento);
             pote.adicionarApostaInimigo(valorAumento);
+
         } else if (this.jogada == 1 && pote.getQuantidade() > 0) { // Call
-            int valorCall = Math.min(pote.getQuantidade(), vida.getVida());
+            int valorCall = Math.min(pote.getUltimaApostaJogador(), vida.getVida());
             System.out.println("INIMIGO DEU CALL " + valorCall);
             vida.selecionarVida(valorCall);
             vida.setVida(vida.getVida() - valorCall);

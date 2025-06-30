@@ -67,6 +67,13 @@ public class JogoGUI extends JPanel {
         Dimension vidaAdversarioSize = inimigoHP.getPreferredSize();
         inimigoHP.setBounds(0, 0, vidaAdversarioSize.width, vidaAdversarioSize.height);
         background.add(inimigoHP);
+
+        // Pote
+        pote = new PoteGUI(jogo.getPote());
+        Dimension poteSize = pote.getPreferredSize();
+        pote.setBounds(0, (tamanhoTela.height - poteSize.height) / 2, poteSize.width, poteSize.height);
+        background.add(pote);
+
         jogo.notificarGUIpronta();
 
 
@@ -127,11 +134,6 @@ public class JogoGUI extends JPanel {
         mesa.setOpaque(false);
         background.add(mesa);
 
-        // Pote
-        pote = new PoteGUI(jogo.getPote());
-        Dimension poteSize = pote.getPreferredSize();
-        pote.setBounds(0, (tamanhoTela.height - poteSize.height) / 2, poteSize.width, poteSize.height);
-        background.add(pote);
 
         // Contador de Round
         contadorDeRound = new RoundCounterGUI();
@@ -163,6 +165,7 @@ public class JogoGUI extends JPanel {
 
         // Botão Check
         check = new BotoesGUI("jogo/check", 84, 42, 0);
+
         check.setEscalaX(5);
         check.setEscalaY(1.3);
         check.setBotao(check.getBotao());
@@ -179,7 +182,7 @@ public class JogoGUI extends JPanel {
         check.getBotao().addActionListener(e -> {
             if (jogo.getPote().getQuantidade() > 0) {
                 // Se houver aposta, trata como call
-                jogo.getJogador().escolhaDaJogada(1);
+                    jogo.getJogador().escolhaDaJogada(1);
                 jogo.registrarEscolhaJogador(1);
             } else {
                 // Se não houver aposta, trata como check

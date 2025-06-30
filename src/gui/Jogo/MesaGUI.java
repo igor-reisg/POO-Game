@@ -39,8 +39,8 @@ public class MesaGUI extends JPanel{
             if (urlImagem != null) {
                 ImageIcon imagem = new ImageIcon(urlImagem);
                 Image img = imagem.getImage();
-                largura = (int) (img.getWidth(null) * 1.1);
-                altura = (int) (img.getHeight(null) * 1.1);
+                largura = (int) (img.getWidth(null) * 1.4);
+                altura = (int) (img.getHeight(null) * 1.4);
                 Image imagemRedimensionada = img.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
                 labelMesa.setIcon(new ImageIcon(imagemRedimensionada));
             }
