@@ -17,6 +17,7 @@ public class CoringasGUI extends JPanel {
     private String TextHolderImagem = "/assets/images/cartas/hover/hover0.png";
     private final String caminhoFonte = "/assets/fonts/RetroGaming.ttf";
     private Font fonte;
+    private boolean hoverEnabled = true;
 
     public CoringasGUI(Coringa coringa, int posX, int posY, int largura, int altura) {
         this.coringa = coringa;
@@ -72,25 +73,27 @@ public class CoringasGUI extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                Window window = SwingUtilities.getWindowAncestor(CoringasGUI.this);
-                if (window instanceof JFrame) {
-                    JLayeredPane layered = ((JFrame) window).getLayeredPane();
+                if (hoverEnabled) {
+                    Window window = SwingUtilities.getWindowAncestor(CoringasGUI.this);
+                    if (window instanceof JFrame) {
+                        JLayeredPane layered = ((JFrame) window).getLayeredPane();
 
-                    if (previewPanel.getParent() != layered) {
-                        layered.add(previewPanel, JLayeredPane.PALETTE_LAYER);
+                        if (previewPanel.getParent() != layered) {
+                            layered.add(previewPanel, JLayeredPane.PALETTE_LAYER);
+                        }
+
+                        previewPanel.setLocation(getX() + largura + 10, getY());
+                        previewPanel.setVisible(true);
+                        layered.repaint();
                     }
-
-                    previewPanel.setLocation(getX() + largura + 10, getY());
-                    previewPanel.setVisible(true);
-                    layered.repaint();
-                } else {
-                    System.out.println("Window ancestor is not JFrame or not found.");
                 }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                previewPanel.setVisible(false);
+                if (hoverEnabled) {
+                    previewPanel.setVisible(false);
+                }
             }
         });
     }
@@ -100,6 +103,13 @@ public class CoringasGUI extends JPanel {
         super.paintComponent(g);
         if (imgCoringa2 != null) {
             imgCoringa2.paintIcon(this, g, 0, 0);
+        }
+    }
+
+    public void setHoverEnabled(boolean enabled) {
+        this.hoverEnabled = enabled;
+        if (!enabled && previewPanel.isVisible()) {
+            previewPanel.setVisible(false);
         }
     }
 

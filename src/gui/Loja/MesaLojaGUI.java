@@ -103,6 +103,14 @@ public class MesaLojaGUI extends JPanel {
         }
     }
 
+    public void setHoverEnabled(boolean enabled) {
+        if (coringasMesa != null) {
+            for (CoringasGUI coringaGUI : coringasMesa) {
+                coringaGUI.setHoverEnabled(enabled);
+            }
+        }
+    }
+
     private void moverCoringaSacola(JComponent comp, Point destino) {
         Point origem = comp.getLocation();
         int fps = 60;
