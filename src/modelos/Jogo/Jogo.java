@@ -6,11 +6,13 @@ import java.util.*;
 import gui.Jogo.VidaGUI;
 import gui.Jogo.PoteGUI;
 import modelos.Cartas.*;
+import gui.Jogo.JogoGUI;
 import javax.swing.SwingUtilities;
 
 
 public class Jogo {
     private List<PerfilInimigo> perfisInimigos;
+    private JogoGUI jogoGUI;
     private int inimigoAtualIndex = 0;
     private Round rodada;
     private int etapaRodada = 0;
@@ -34,6 +36,10 @@ public class Jogo {
     private boolean fimRodada;
 
     private Runnable onNovaRodada;
+
+    public void setJogoGUI(JogoGUI jogoGUI) {
+        this.jogoGUI = jogoGUI;
+    }
 
 
     public Jogo(int faseAtual) {
@@ -370,16 +376,13 @@ public class Jogo {
     }
 
     private void processarRodada() {
-        // Se alguém foldou, termina a rodada imediatamente
-        if (jogadaJogador == 0) {
-            System.out.println("Jogador foldou - inimigo vence!");
-            finalizarRodada(PokerLogica.Resultado.INIMIGO_VENCE);
-            return;
-        }
+        // Se alguém foldou, termina a rodada imediatamente sem mostrar mensagem
+        if (jogadaJogador == 0 || jogadaInimigo == 0) {
+            PokerLogica.Resultado resultado = (jogadaJogador == 0) ?
+                    PokerLogica.Resultado.INIMIGO_VENCE :
+                    PokerLogica.Resultado.JOGADOR_VENCE;
 
-        if (jogadaInimigo == 0) {
-            System.out.println("Inimigo foldou - jogador vence!");
-            finalizarRodada(PokerLogica.Resultado.JOGADOR_VENCE);
+            finalizarRodada(resultado);
             return;
         }
 
@@ -410,53 +413,117 @@ public class Jogo {
         System.out.println("Inimigo: " + inimigo.getVida().getVida() + " HP");
         System.out.println("Pote: " + pote.getQuantidade());
 
-        switch(resultado) {
-            case JOGADOR_VENCE:
-                System.out.println("Vitória do Jogador!");
-                break;
-            case INIMIGO_VENCE:
-                System.out.println("Vitória do Inimigo!");
-                break;
-            case EMPATE:
-                System.out.println("Empate!");
-                break;
-        }
+        // Avalia as mãos para mostrar a jogada
+        List<Carta> cartasJogador = Arrays.asList(jogador.getMao());
+        List<Carta> cartasInimigo = Arrays.asList(inimigo.getMao());
+        List<Carta> cartasMesa = Arrays.asList(mesa.getCartas());
 
-        switch (resultado) {
-            case JOGADOR_VENCE:
-                jogador.getVida().setVida(jogador.getVida().getVida() + pote.getApostaJogador());
-                //pote.transferirParaVencedor(true);
-                break;
+        PokerLogica.MaoAvaliacao avaliacaoJogador = PokerLogica.avaliarMao(cartasJogador);
+        PokerLogica.MaoAvaliacao avaliacaoInimigo = PokerLogica.avaliarMao(cartasInimigo);
 
-            case INIMIGO_VENCE:
-                inimigo.getVida().setVida(inimigo.getVida().getVida() + pote.getApostaInimigo());
-                //pote.transferirParaVencedor(false);
-                break;
+        if (fimRodada && jogoGUI != null) {
+            SwingUtilities.invokeLater(() -> {
+                switch(resultado) {
+                    case JOGADOR_VENCE:
+                        int forcaJogador = determinarForcaMaoParaImagem(avaliacaoJogador.forca);
+                        jogoGUI.mostrarMensagemJogada(true, forcaJogador);
+                        break;
 
-            case EMPATE:
-                jogador.getVida().setVida(jogador.getVida().getVida() + pote.getApostaJogador());
-                inimigo.getVida().setVida(inimigo.getVida().getVida() +  pote.getApostaInimigo());
-                break;
-        }
-        jogador.getVida().alterarVisualVida();
-        inimigo.getVida().alterarVisualVida();
+                    case INIMIGO_VENCE:
+                        int forcaInimigo = determinarForcaMaoParaImagem(avaliacaoInimigo.forca);
+                        jogoGUI.mostrarMensagemJogada(false, forcaInimigo);
+                        break;
 
+                    case EMPATE:
+                        int forcaJ = determinarForcaMaoParaImagem(avaliacaoJogador.forca);
+                        int forcaI = determinarForcaMaoParaImagem(avaliacaoInimigo.forca);
+                        jogoGUI.mostrarMensagemJogada(true, forcaJ);
 
-
-        // Verifica se o jogo acabou (vida do jogador ou todos oponentes derrotados)
-        if (verificarFimDeJogo()) {
-            finalizarJogo(jogador.getVidaAtual() > 0);
-            return;
-        }
-
-        mesa.resetCartas();
-        pote.resetPote();
-    }
+                        Timer timer = new Timer();
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                SwingUtilities.invokeLater(() -> {
+                                    jogoGUI.mostrarMensagemJogada(false, forcaI);
+                                });
+                            }
+                        }, 1500);
+                        break;
+                }
+            });
+        }}
 
     private void mostrarProximoOponente() {
         if (onNovaRodada != null) {
             onNovaRodada.run(); // Notifica a GUI para mostrar a tela de oponente derrotado
         }
+    }
+
+    private void prepararNovaRodada() {
+        if (verificarFimDeJogo()) {
+            finalizarJogo(jogador.getVidaAtual() > 0);
+            return;
+        }
+
+        // Resetar estado antes de nova rodada
+        mesa.resetCartas();
+        pote.resetPote();
+
+        // Agendar nova rodada com pequeno delay
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                SwingUtilities.invokeLater(() -> {
+                    // Distribui novas cartas apenas uma vez
+                    baralho.reiniciaBaralho();
+                    jogador.limpaCartas();
+                    inimigo.limpaCartas();
+                    jogador.recebeCarta(baralho);
+                    inimigo.recebeCarta(baralho);
+
+                    // Atualiza GUI
+                    if (onNovaRodada != null) {
+                        onNovaRodada.run();
+                    }
+
+                    // Revela cartas do jogador com delay
+                    new Timer().schedule(new TimerTask() {
+                        public void run() {
+                            SwingUtilities.invokeLater(() -> jogador.revelaCarta(0));
+                        }
+                    }, 500);
+
+                    new Timer().schedule(new TimerTask() {
+                        public void run() {
+                            SwingUtilities.invokeLater(() -> jogador.revelaCarta(1));
+                        }
+                    }, 700);
+
+                    aplicarBlinds();
+                });
+            }
+        }, 1000); // Delay após mensagem
+    }
+
+    private void continuarAposMensagem() {
+        // Verifica se o jogo acabou
+        if (verificarFimDeJogo()) {
+            finalizarJogo(jogador.getVidaAtual() > 0);
+            return;
+        }
+
+        // Prepara nova rodada após um pequeno delay
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                SwingUtilities.invokeLater(() -> {
+                    mesa.resetCartas();
+                    pote.resetPote();
+                    novaRodada();
+                });
+            }
+        }, 1000); // Pequeno delay antes de começar nova rodada
     }
 
     public boolean temProximoOponente() {
@@ -467,6 +534,9 @@ public class Jogo {
         inimigoNaFase++;
         inimigoAtualIndex++;
 
+        // Resetar o pote ao mudar de oponente
+        pote.resetPote();
+
         jogador.getVida().setVida(1500);
         inimigo.getVida().setVida(1500);
 
@@ -474,7 +544,6 @@ public class Jogo {
             faseAtual++;
 
             if (faseAtual > 5) {
-                // Jogo completo!
                 finalizarJogo(true);
                 return;
             }
@@ -521,6 +590,18 @@ public class Jogo {
         if (inimigoNaFase == 2) return 1; // Segundo inimigo (roundcounter_2)
         if (inimigo.getPerfil().isBoss()) return 3; // Boss (roundcounter_3)
         return 3; // Completo (roundcounter_4) - não deve ocorrer normalmente
+    }
+
+    private int determinarForcaMaoParaImagem(int forca) {
+        if (forca >= 800) return 8;      // Straight Flush
+        if (forca >= 700) return 7;      // Quadra
+        if (forca >= 600) return 6;      // Full House
+        if (forca >= 500) return 5;      // Flush
+        if (forca >= 400) return 4;      // Straight
+        if (forca >= 300) return 3;      // Trinca
+        if (forca >= 200) return 2;      // Dois Pares
+        if (forca >= 100) return 1;      // Um Par
+        return 0;                        // Carta Alta
     }
 
 

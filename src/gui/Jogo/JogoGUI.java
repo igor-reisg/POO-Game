@@ -2,7 +2,8 @@ package gui.Jogo;
 
 import java.awt.*;
 import javax.swing.*;
-
+import java.util.Timer;
+import java.util.TimerTask;
 import gui.*;
 import gui.Loja.LojaGUI;
 import gui.Menu.MenuGUI;
@@ -43,6 +44,7 @@ public class JogoGUI extends JPanel {
     public JogoGUI(JanelaGUI app, Jogo jogo, String personagem, String nome) {
         this.app = app;
         this.jogo = jogo;
+        jogo.setJogoGUI(this);
         this.personagem = personagem;
         this.nome = nome;
         this.tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
@@ -156,15 +158,6 @@ public class JogoGUI extends JPanel {
         background.add(pause);
 
         inventario = new Inventario();
-        app.trocarTela(new LojaGUI(
-                app,
-                inventario,
-                new Loja(inventario),
-                jogo.getinimigoNaFase(),
-                jogo,  // instância atual do jogo
-                this.personagem,
-                this.nome
-        ));
 
         // Botão Início
         inicio = new BotoesGUI("jogo/pause", 50, 50, 0);
@@ -284,30 +277,35 @@ public class JogoGUI extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 0, 10, 0);
 
-        // Mensagem de vitória
         JLabel lblMensagem = new JLabel("Oponente Derrotado!", SwingConstants.CENTER);
         lblMensagem.setForeground(Color.WHITE);
         lblMensagem.setFont(new Font("Arial", Font.BOLD, 36));
         painelOponenteDerrotado.add(lblMensagem, gbc);
 
-        // Botão de ação
-        JButton btnAcao = new JButton(jogo.temProximoOponente() ? "Próximo Oponente" : "Voltar ao Menu");
+        // Texto diferente para boss
+        String textoBotao;
+        if (jogo.getInimigo().getPerfil().isBoss()) {
+            textoBotao = "Ir para Loja";
+        } else {
+            textoBotao = jogo.temProximoOponente() ? "Próximo Oponente" : "Voltar ao Menu";
+        }
+
+        JButton btnAcao = new JButton(textoBotao);
         btnAcao.setFont(new Font("Arial", Font.BOLD, 24));
         btnAcao.setPreferredSize(new Dimension(300, 60));
 
         btnAcao.addActionListener(e -> {
-            if((jogo.getinimigoNaFase())%3 == 0){
+            if (jogo.getInimigo().getPerfil().isBoss()) {
                 app.trocarTela(new LojaGUI(
                         app,
                         inventario,
                         new Loja(inventario),
                         jogo.getinimigoNaFase(),
-                        jogo,  // instância atual do jogo
+                        jogo,
                         this.personagem,
                         this.nome
                 ));
-            }
-            if (jogo.temProximoOponente()) {
+            } else if (jogo.temProximoOponente()) {
                 jogo.avancarParaProximoOponente();
                 atualizarInimigoGUI();
             } else {
@@ -326,6 +324,53 @@ public class JogoGUI extends JPanel {
         background.setComponentZOrder(painelOponenteDerrotado, 0);
         background.revalidate();
         background.repaint();
+    }
+
+    public void mostrarMensagemJogada(boolean jogadorVenceu, int forcaMao) {
+        // Cria um painel sobreposto sem fundo
+        JPanel painelJogada = new JPanel(new GridBagLayout());
+        painelJogada.setOpaque(false); // Remove o fundo
+        painelJogada.setBounds(0, 0, tamanhoTela.width, tamanhoTela.height);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(10, 0, 10, 0);
+
+        // Adiciona a imagem do jogador/inimigo
+        String jogadorPath = "/assets/images/jogadas/" + (jogadorVenceu ? "jogador.png" : "inimigo.png");
+        JLabel lblJogador = new JLabel(new ImageIcon(getClass().getResource(jogadorPath)));
+        painelJogada.add(lblJogador, gbc);
+
+        // Determina qual imagem da jogada mostrar
+        String[] jogadas = {
+                "1cartaalta.png", "2umpar.png", "3doispares.png", "4trinca.png",
+                "5sequencia.png", "6flush.png", "7fullhouse.png", "8quadra.png", "9straightflush.png"
+        };
+
+        String jogadaPath = "/assets/images/jogadas/" + jogadas[forcaMao];
+        JLabel lblJogada = new JLabel(new ImageIcon(getClass().getResource(jogadaPath)));
+
+        painelJogada.add(lblJogada, gbc);
+
+        // Adiciona o painel à tela
+        background.add(painelJogada);
+        background.setComponentZOrder(painelJogada, 0);
+        background.revalidate();
+        background.repaint();
+
+        // Remove após 3 segundos
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                SwingUtilities.invokeLater(() -> {
+                    background.remove(painelJogada);
+                    background.revalidate();
+                    background.repaint();
+                });
+            }
+        }, 3000);
     }
 
     private void atualizarInimigoGUI() {

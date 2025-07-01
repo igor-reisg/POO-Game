@@ -126,7 +126,9 @@ public class LojaGUI extends JPanel {
 
         // Botão 1 - Avançar jogo (pode ajustar depois para rodadas reais)
         BotoesLoja[1].getBotao().addActionListener(e -> {
+
             app.trocarTela(new JogoGUI(app, jogoExistente, personagem, nome));
+
         });
 
         // Botão 2 - Mostrar Inventário
