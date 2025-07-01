@@ -84,8 +84,9 @@ public class JogoGUI extends JPanel {
         // Ícone do jogador
         jogadorIcon = new IconeGUI(personagem, nome, false, null);
         Dimension jogadorIconSize = jogadorIcon.getPreferredSize();
-        jogadorIcon.setBounds(0, tamanhoTela.height - jogadorIconSize.height, jogadorIconSize.width, jogadorIconSize.height);
+        jogadorIcon.setBounds(0, tamanhoTela.height - jogadorIconSize.height, (jogadorIconSize.width), (jogadorIconSize.height));
         background.add(jogadorIcon);
+
         // Ícone do adversário
         inimigoIcon = new IconeGUI(
                 jogo.getInimigo().getPerfil().getImagemPath(),

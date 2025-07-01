@@ -9,7 +9,7 @@ import java.net.URL;
 public class IconeGUI extends JPanel {
 
     private static final int MARGIN_LEFT = 0;   // Ajuste horizontal
-    private static final int MARGIN_TOP = 10;    // Ajuste vertical
+    private static final int MARGIN_TOP = 0;    // Ajuste vertical
     private static final int NAME_OFFSET = 0;
     private final JLabel frameLabel;    // Frame exterior (container)
     private final JLabel avatarLabel;   // Ícone interior
@@ -20,8 +20,8 @@ public class IconeGUI extends JPanel {
     // Margens e padding do design original
     private static final int PADDING_TOP = 10;
     private static final int PADDING_LEFT = 10;
-    private static final int AVATAR_WIDTH = 170;
-    private static final int AVATAR_HEIGHT = 120;
+    private static final int AVATAR_WIDTH = 170+100;
+    private static final int AVATAR_HEIGHT = 120+100;
     private static final int NAME_HEIGHT = 20;
 
     public IconeGUI(String avatarPath, String nome, boolean isBoss, String[] bossStates) {
