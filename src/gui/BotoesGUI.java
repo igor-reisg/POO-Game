@@ -6,11 +6,13 @@ import java.util.*;
 
 public class BotoesGUI extends JPanel{
     private String caminhoBotao = "/assets/images/botoes/";
+    private String caminhoInventario = "/assets/images/inventario/inventario.png";
     private final int largura;
     private final int altura;
     private final ImageIcon[] imagens;
     private final int numeroBotao;
     private JButton botao;
+    private JLabel fundo;
     private double escalaX;
     private double escalaY;
 
@@ -56,6 +58,7 @@ public class BotoesGUI extends JPanel{
     public void setBotao(JButton botao) {
         this.botao = botao;
     }
+    public String getCaminho(){ return caminhoBotao; }
     public void setEscalaX(double escalaX){
         this.escalaX = escalaX;
     }

@@ -27,6 +27,8 @@ public class JogoGUI extends JPanel {
     private final Inventario inventario;
     private JPanel painelOponenteDerrotado;
     private JPanel painelDerrota;
+    private String personagem;
+    private String nome;
 
     private final BackgroundPanel background;
 
@@ -38,9 +40,11 @@ public class JogoGUI extends JPanel {
             "/assets/images/background/pattern5.png"
     };
 
-    public JogoGUI(JanelaGUI app, Jogo jogo) {
+    public JogoGUI(JanelaGUI app, Jogo jogo, String personagem, String nome) {
         this.app = app;
         this.jogo = jogo;
+        this.personagem = personagem;
+        this.nome = nome;
         this.tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
 
         setLayout(new BorderLayout());
@@ -78,7 +82,7 @@ public class JogoGUI extends JPanel {
 
 
         // Ícone do jogador
-        jogadorIcon = new IconeGUI("/assets/images/frames/framesBoss/boss0_1.png", "Gabiel Maka", false, null);
+        jogadorIcon = new IconeGUI(personagem, nome, false, null);
         Dimension jogadorIconSize = jogadorIcon.getPreferredSize();
         jogadorIcon.setBounds(0, tamanhoTela.height - jogadorIconSize.height, jogadorIconSize.width, jogadorIconSize.height);
         background.add(jogadorIcon);
@@ -151,7 +155,15 @@ public class JogoGUI extends JPanel {
         background.add(pause);
 
         inventario = new Inventario();
-        pause.getBotao().addActionListener(e -> app.trocarTela(new LojaGUI(app, inventario, new Loja(inventario))));
+        app.trocarTela(new LojaGUI(
+                app,
+                inventario,
+                new Loja(inventario),
+                jogo.getinimigoNaFase(),
+                jogo,  // instância atual do jogo
+                this.personagem,
+                this.nome
+        ));
 
         // Botão Início
         inicio = new BotoesGUI("jogo/pause", 50, 50, 0);
@@ -290,6 +302,17 @@ public class JogoGUI extends JPanel {
         btnAcao.setPreferredSize(new Dimension(300, 60));
 
         btnAcao.addActionListener(e -> {
+            if((jogo.getinimigoNaFase())%3 == 0){
+                app.trocarTela(new LojaGUI(
+                        app,
+                        inventario,
+                        new Loja(inventario),
+                        jogo.getinimigoNaFase(),
+                        jogo,  // instância atual do jogo
+                        this.personagem,
+                        this.nome
+                ));
+            }
             if (jogo.temProximoOponente()) {
                 jogo.avancarParaProximoOponente();
                 atualizarInimigoGUI();
@@ -458,5 +481,13 @@ public class JogoGUI extends JPanel {
             background.setImagem(faseBackgrounds[fase]);
         }
     }
+
+
+    public String getImagem(){ return personagem;}
+    public String getNome(){ return nome;}
+    public String getPersonagem() {
+        return personagem;
+    }
+
 
 }

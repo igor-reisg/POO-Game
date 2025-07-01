@@ -87,6 +87,9 @@ public class Inimigo {
 
     public void setVida(int vida) {
         this.vida.setVida(vida);
+        if (this instanceof Boss) {
+            ((Boss) this).atualizarEstadoHP();
+        }
     }
 
     public Carta[] getMao() {

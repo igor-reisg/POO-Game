@@ -2,6 +2,7 @@ package gui.Menu;
 
 import gui.*;
 import gui.Jogo.*;
+import modelos.Jogo.CriarPersona;
 import modelos.Jogo.Jogo;
 
 import javax.swing.*;
@@ -12,12 +13,12 @@ public class MenuGUI extends JPanel implements ActionListener {
     private final JanelaGUI app;
     private final String caminhoBackground = "/assets/images/background/pattern2.png";
     private BotoesGUI[] BotoesMenu;
-    private JogoGUI jogoGUI;
+    private CriarPersona CriarPersona;
     private CreditosGUI creditosGUI;
 
     public MenuGUI(JanelaGUI app) {
         this.app = app;
-        this.jogoGUI = null;
+
         this.creditosGUI = null;
 
         setLayout(new BorderLayout());
@@ -69,10 +70,10 @@ public class MenuGUI extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == BotoesMenu[0].getBotao()) {
-            if (jogoGUI == null) {
-                jogoGUI = new JogoGUI(app, new Jogo());
+            if (CriarPersona == null) {
+                CriarPersona = new CriarPersona(app);
             }
-            app.trocarTela(jogoGUI);
+            app.trocarTela(CriarPersona);
         }
         else if (e.getSource() == BotoesMenu[1].getBotao()) {
             mostrarPainelOpcoes();

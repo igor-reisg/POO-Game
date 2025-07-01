@@ -66,4 +66,8 @@ public class JanelaGUI extends JFrame {
         revalidate();
         repaint();
     }
+
+    public Object getTelaAtual() {
+        return telaAtual;
+    }
 }

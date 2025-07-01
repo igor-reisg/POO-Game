@@ -21,7 +21,7 @@ public class Jogo {
     private Mesa mesa;
     private int moeda;
     private int faseAtual = 1; // 1 a 5
-    private int inimigoNaFase = 0;
+    private int inimigoNaFase = 1;
 
     private boolean guiPronta = false;
     private boolean jogadorPronto = false;
@@ -36,11 +36,16 @@ public class Jogo {
     private Runnable onNovaRodada;
 
 
-    public Jogo() {
+    public Jogo(int faseAtual) {
         carregarPerfisInimigos();
         rodada = new Round();
-        jogador = new Jogador("Nuka");
-        inimigo = new Inimigo(perfisInimigos.get(0)); // Primeiro inimigo
+        jogador = new Jogador(null);
+        if(faseAtual != 1){
+            inimigo = new Inimigo(perfisInimigos.get(inimigoNaFase));
+        } else {
+            inimigo = new Inimigo(perfisInimigos.get(0));
+        }
+  // Primeiro inimigo
         baralho = new Baralho();
         pote = new Pote();
     }
@@ -134,7 +139,7 @@ public class Jogo {
         };
 
         perfisInimigos.add(new PerfilInimigo(
-                "Juliano, o sabio",
+                "Juliano, o sabido",
                 "/assets/images/frames/framesEnemies/boss1_0.png",
                 9, 2, 90, 1500, true, imagensBossJulio
         ));
@@ -156,7 +161,7 @@ public class Jogo {
         };
 
         perfisInimigos.add(new PerfilInimigo(
-                "Niko, o goat",
+                "Niko, o travado",
                 "/assets/images/frames/framesBoss/boss0_0.png",
                 9, 2, 90, 1500, true, imagensBossNaka
         ));
@@ -187,15 +192,11 @@ public class Jogo {
 
     private void iniciarJogo() {
 
-
         Random r = new Random();
         moeda = r.nextInt(2);
 
-        // Definir blinds
-        //jogador.setBlind(moeda); // 0 = small blind, 1 = big blind
-        //inimigo.setBlind(1 - moeda);
-        jogador.setBlind(1);
-        jogador.setBlind(0);
+        jogador.setBlind(moeda);
+        jogador.setBlind(1-moeda);
         novaRodada();
     }
 
@@ -230,9 +231,6 @@ public class Jogo {
 
         etapaRodada = 0;
         fimRodada = false;
-
-        // Removi a duplicação de código que estava aqui
-        // (as linhas que recriavam o baralho e redistribuíam cartas novamente)
 
         timer.schedule(new TimerTask() { public void run() { jogador.revelaCarta(0); }}, 500);
         timer.schedule(new TimerTask() { public void run() { jogador.revelaCarta(1); }}, 700);
@@ -469,8 +467,10 @@ public class Jogo {
         inimigoNaFase++;
         inimigoAtualIndex++;
 
-        if (inimigoNaFase >= 3) { // Passou da fase (2 normais + 1 boss)
-            inimigoNaFase = 0;
+        jogador.getVida().setVida(1500);
+        inimigo.getVida().setVida(1500);
+
+        if (inimigoNaFase > 3) { // Passou da fase (2 normais + 1 boss)
             faseAtual++;
 
             if (faseAtual > 5) {
@@ -504,6 +504,7 @@ public class Jogo {
         jogador.getVida().setVida(1500);
 
         novaRodada();
+        inimigo.getVida().setVida(1500);
     }
 
     private void finalizarJogo(boolean jogadorVenceu) {
