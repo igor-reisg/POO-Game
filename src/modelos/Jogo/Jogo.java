@@ -278,23 +278,23 @@ public class Jogo {
 
     public void registrarEscolhaJogador(int escolha) {
         // Se houver aposta no pote e jogador der check, trata como call
-        if (escolha == 1 && pote.getQuantidade() > 0) {
-            jogadaJogador = 1;// Call
-            int valorCall = pote.getUltimaApostaInimigo();
-            if(pote.getHistoricoApostaJogador().size() == 1){
-                valorCall = pote.getUltimaApostaInimigo() - pote.getUltimaApostaJogador();
-            }
+        if (escolha == 1 ){ // Call
+            jogadaJogador = 1;
+            int valorCall = pote.getUltimaApostaInimigo() - pote.getUltimaApostaJogador();
+            jogador.getVida().selecionarVida(valorCall + pote.getApostaJogador());
             pote.adicionarApostaJogador(valorCall);
-            jogador.getVida().selecionarVida(valorCall);
+            pote.adicionarApostaJogador(0); // Indica que o valor nao aumentou por parte do jogador, mas apenas completou
             jogador.getVida().setVida(jogador.getVida().getVida() - valorCall);
-        } else {
-            jogadaJogador = escolha;
+            if(valorCall == 0){
+                System.out.println("Jogador deu check");
+            } else{
+                System.out.println("Jogador deu call: " + valorCall);
+            }
         }
         jogadorPronto = true;
         registrarEscolhaInimigo();
     }
-
-    public void registrarEscolhaJogador(int escolha, int valor) {
+  public void registrarEscolhaJogador(int escolha, int valor) {
         if (escolha == 2) { // Raise
             jogador.getVida().selecionarVida( valor);
             jogador.getVida().setVida(jogador.getVida().getVida() - valor);
