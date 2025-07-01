@@ -2,12 +2,17 @@ package gui.Menu;
 
 import gui.*;
 import gui.Jogo.*;
+import gui.Loja.LojaGUI;
 import modelos.Jogo.CriarPersona;
 import modelos.Jogo.Jogo;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Objects;
 
 public class MenuGUI extends JPanel implements ActionListener {
     private final JanelaGUI app;
@@ -15,6 +20,11 @@ public class MenuGUI extends JPanel implements ActionListener {
     private BotoesGUI[] BotoesMenu;
     private CriarPersona CriarPersona;
     private CreditosGUI creditosGUI;
+    private Font fonte;
+    private final String caminhoFonte = "/assets/fonts/RetroGaming.ttf";
+    BotoesGUI fechar;
+    private BotoesGUI botaoMute;
+    private boolean somLigado = true;
 
     public MenuGUI(JanelaGUI app) {
         this.app = app;
@@ -98,42 +108,161 @@ public class MenuGUI extends JPanel implements ActionListener {
     }
 
     private void mostrarPainelOpcoes() {
-        StaticBackgroundPanel painelOpcoes = new StaticBackgroundPanel(caminhoBackground, 1280, 720);
-        painelOpcoes.setLayout(new BorderLayout());
+        // 1. Configuração inicial
+        configurarAparenciaDoSlider();
 
-        // Painel central com slider
-        JPanel painelCentral = new JPanel();
-        painelCentral.setLayout(new BoxLayout(painelCentral, BoxLayout.Y_AXIS));
-        painelCentral.setOpaque(false);
+        // 2. Carrega a fonte
+        try {
+            InputStream caminho = getClass().getResourceAsStream(caminhoFonte);
+            fonte = Font.createFont(Font.TRUETYPE_FONT, caminho).deriveFont(20f);
+        } catch (Exception e) {
+            fonte = new Font("Arial", Font.PLAIN, 20);
+            System.out.println("Erro ao carregar fonte: " + e);
+        }
 
-        JLabel labelVolume = new JLabel("Volume da música de fundo");
-        labelVolume.setAlignmentX(Component.CENTER_ALIGNMENT);
-        labelVolume.setForeground(Color.WHITE); // ou outra cor visível no fundo
+        // 3. Painel principal com fundo
+        JPanel painelOpcoes = new JPanel() {
+            private Image backgroundImage;
 
-        JSlider sliderVolume = new JSlider(0, 100, 100); // volume de 0 a 100%
-        sliderVolume.setAlignmentX(Component.CENTER_ALIGNMENT);
-        sliderVolume.setOpaque(false);
-        sliderVolume.setMaximumSize(new Dimension(300, 50));
-        sliderVolume.addChangeListener(e -> {
-            float volume = sliderVolume.getValue() / 100f; // converter para 0.0 a 1.0
-            app.setVolumeMusica(volume);
-        });
+            {
+                // Carrega a imagem no bloco de inicialização
+                try {
+                    URL imageUrl = getClass().getResource("/assets/images/inventario/inventario.png");
+                    if (imageUrl != null) {
+                        backgroundImage = new ImageIcon(imageUrl).getImage();
+                    } else {
+                        System.err.println("Imagem não encontrada!");
+                    }
+                } catch (Exception e) {
+                    System.err.println("Erro ao carregar imagem: " + e.getMessage());
+                }
+            }
 
-        JButton botaoVoltar = new JButton("Voltar");
-        botaoVoltar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botaoVoltar.addActionListener(e -> app.getGlassPane().setVisible(false));
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (backgroundImage != null) {
+                    g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+                }
+            }
+        };
 
-        painelCentral.add(Box.createVerticalStrut(80));
-        painelCentral.add(labelVolume);
-        painelCentral.add(Box.createVerticalStrut(10));
-        painelCentral.add(sliderVolume);
-        painelCentral.add(Box.createVerticalStrut(30));
-        painelCentral.add(botaoVoltar);
+        painelOpcoes.setLayout(null);
+        painelOpcoes.setPreferredSize(new Dimension(900, 600));
+        painelOpcoes.setOpaque(false);
 
-        painelOpcoes.add(painelCentral, BorderLayout.CENTER);
+        // 4. Componentes
+        JLabel labelVolume = new JLabel("Volume Música");
+        labelVolume.setFont(fonte);
+        labelVolume.setForeground(new Color (40, 40, 40));
+        labelVolume.setBounds(350, 100, 300, 30);
 
+        JSlider sliderVolume = criarSliderComImagens();
+        sliderVolume.setBounds(300, 150, 300, 50);
+
+        //Botão voltar do inventário
+        fechar = new BotoesGUI("opcoes/", 50, 50, 2);
+        fechar.getBotao().addActionListener(e -> app.getGlassPane().setVisible(false));
+        fechar.getBotao().setBounds(800, 50, 50, 50);
+
+        //Botao de Mutar musica
+        JLabel labelMuteMusica = new JLabel("Mute Música");
+        labelMuteMusica.setFont(fonte);
+        labelMuteMusica.setForeground(new Color (40, 40, 40));
+        labelMuteMusica.setBounds(365, 300, 300, 30);
+
+        criarBotaoMute(painelOpcoes);
+
+        // 5. Adiciona componentes
+        painelOpcoes.add(labelVolume);
+        painelOpcoes.add(labelMuteMusica);
+        painelOpcoes.add(sliderVolume);
+        painelOpcoes.add(fechar.getBotao());
+        painelOpcoes.add(botaoMute.getBotao());
+
+        // 6. Mostra o painel
         TransparenteGUI transparente = new TransparenteGUI(painelOpcoes);
         app.setGlassPane(transparente);
         transparente.setVisible(true);
+    }
+
+    private void criarBotaoMute(JPanel painelContainer) {
+        String caminhoBase = somLigado ? "opcoes/som_ligado/" : "opcoes/som_desligado/";
+
+        botaoMute = new BotoesGUI(caminhoBase, 60, 60, 1);
+
+        botaoMute.getBotao().addActionListener(e -> {
+            somLigado = !somLigado;
+            app.setVolumeMusica(somLigado ? 1.0f : 0.0f);
+            atualizarBotaoMute(painelContainer);
+        });
+
+        botaoMute.getBotao().setBounds(410, 350, 60, 60);
+        painelContainer.add(botaoMute.getBotao());
+    }
+
+    private void atualizarBotaoMute(JPanel painelContainer) {
+        String novoCaminho = somLigado ? "opcoes/som_ligado/" : "opcoes/som_desligado/";
+
+        painelContainer.remove(botaoMute.getBotao());
+        botaoMute = new BotoesGUI(novoCaminho, 60, 60, 1);
+        botaoMute.getBotao().addActionListener(e -> {
+            somLigado = !somLigado;
+            app.setVolumeMusica(somLigado ? 1.0f : 0.0f);
+            atualizarBotaoMute(painelContainer);
+        });
+        botaoMute.getBotao().setBounds(410, 350, 60, 60);
+        painelContainer.add(botaoMute.getBotao());
+        painelContainer.revalidate();
+        painelContainer.repaint();
+    }
+
+    private void configurarAparenciaDoSlider() {
+        try {
+            Image thumbImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("/assets/images/botoes/opcoes/deslizebotao.png")));
+            Image trackImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("/assets/images/botoes/opcoes/barrasom.png")));
+
+            ImageIcon thumbIcon = new ImageIcon(thumbImg);
+            ImageIcon trackIcon = new ImageIcon(trackImg);
+
+            UIManager.put("Slider.horizontalThumbIcon", thumbIcon);
+            UIManager.put("Slider.horizontalTrackIcon", trackIcon);
+            UIManager.put("Slider.thumbSize", new Dimension(thumbIcon.getIconWidth(), thumbIcon.getIconHeight()));
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar imagens do slider: " + e.getMessage());
+            UIManager.put("Slider.horizontalThumbIcon", UIManager.get("Slider.horizontalThumbIcon"));
+            UIManager.put("Slider.horizontalTrackIcon", UIManager.get("Slider.horizontalTrackIcon"));
+        }
+    }
+
+    private JSlider criarSliderComImagens() {
+        final int LARGURA_SLIDER = 300;
+        final int ALTURA_SLIDER = 50;
+        final int ALTURA_TRACK = 6;
+        final int TAMANHO_THUMB = 20;
+
+        JSlider slider = new JSlider(0, 100, 100) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Image track = new ImageIcon(Objects.requireNonNull(getClass().getResource("/assets/images/botoes/opcoes/barrasom.png"))).getImage();
+                int yTrack = (getHeight() - ALTURA_TRACK) / 2;
+                g.drawImage(track, 0, yTrack, getWidth(), ALTURA_TRACK, null);
+
+                Image thumb = new ImageIcon(Objects.requireNonNull(getClass().getResource("/assets/images/botoes/opcoes/deslizebotao.png"))).getImage();
+                int xThumb = (int) ((getWidth() - TAMANHO_THUMB) * ((double)getValue() / (getMaximum() - getMinimum())));
+                int yThumb = (getHeight() - TAMANHO_THUMB) / 2;
+                g.drawImage(thumb, xThumb, yThumb, TAMANHO_THUMB, TAMANHO_THUMB, null);
+            }
+        };
+
+        slider.setBounds(200, 200, LARGURA_SLIDER, ALTURA_SLIDER);
+        slider.setOpaque(false);
+
+        slider.addChangeListener(e -> {
+            slider.repaint();
+            app.setVolumeMusica(slider.getValue() / 100f);
+        });
+
+        return slider;
     }
 }
