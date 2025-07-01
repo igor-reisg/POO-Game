@@ -57,7 +57,7 @@ public class CoringasGUI extends JPanel {
 
         //Informações das características do coringa
         String htmlTexto = "<html>" +
-                "<table style='line-height:1.2; font-size:24pt;'>" +
+                "<table style='font-family:" + fonte.getFamily() + ";font-size:24pt;color:#282828;line-height:1.2'>" +
                 "<tr><td valign='top'><b>Nome:</b></td><td>" + coringa.getNome() + "</td></tr>" +
                 "<tr><td valign='top'><b>Descrição:</b></td><td>" + coringa.getDescricao() + "</td></tr>" +
                 "<tr><td valign='top'><b>Raridade:</b></td><td>" + coringa.getRaridade() + "</td></tr>" +
@@ -65,7 +65,6 @@ public class CoringasGUI extends JPanel {
                 "</table></html>";
 
         JLabel infos = new JLabel(htmlTexto);
-        infos.setForeground(new Color(40, 40, 40));
         infos.setFont(fonte.deriveFont(24f));
         infos.setBounds(10, 10, (largura * 2) - 20, altura - 20);
         previewPanel.add(infos, JLayeredPane.PALETTE_LAYER);

@@ -19,12 +19,19 @@ public class Boss extends Inimigo {
     public void atualizarEstadoHP() {
         double porcentagemVida = (double)getVidaAtual() / perfil.getVidaInicial();
 
+        int novoEstado;
         if (porcentagemVida <= 1.0/3) {
-            estadoHP = 2;
+            novoEstado = 2;
         } else if (porcentagemVida <= 2.0/3) {
-            estadoHP = 1;
+            novoEstado = 1;
         } else {
-            estadoHP = 0;
+            novoEstado = 0;
+        }
+
+        if (novoEstado != estadoHP) {
+            estadoHP = novoEstado;
+            // Notificar GUI para atualizar sprite
+            getVida().alterarVisualVida();
         }
     }
 

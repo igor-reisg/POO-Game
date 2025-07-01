@@ -21,7 +21,7 @@ public class Jogo {
     private Mesa mesa;
     private int moeda;
     private int faseAtual = 1; // 1 a 5
-    private int inimigoNaFase = 0;
+    private int inimigoNaFase = 1;
 
     private boolean guiPronta = false;
     private boolean jogadorPronto = false;
@@ -36,11 +36,16 @@ public class Jogo {
     private Runnable onNovaRodada;
 
 
-    public Jogo() {
+    public Jogo(int faseAtual) {
         carregarPerfisInimigos();
         rodada = new Round();
-        jogador = new Jogador("Nuka");
-        inimigo = new Inimigo(perfisInimigos.get(0)); // Primeiro inimigo
+        jogador = new Jogador(null);
+        if(faseAtual != 1){
+            inimigo = new Inimigo(perfisInimigos.get(inimigoNaFase));
+        } else {
+            inimigo = new Inimigo(perfisInimigos.get(0));
+        }
+  // Primeiro inimigo
         baralho = new Baralho();
         pote = new Pote();
     }
@@ -134,7 +139,7 @@ public class Jogo {
         };
 
         perfisInimigos.add(new PerfilInimigo(
-                "Juliano, o sabio",
+                "Juliano, o sabido",
                 "/assets/images/frames/framesEnemies/boss1_0.png",
                 9, 2, 90, 1500, true, imagensBossJulio
         ));
@@ -156,7 +161,7 @@ public class Jogo {
         };
 
         perfisInimigos.add(new PerfilInimigo(
-                "Niko, o goat",
+                "Niko, o travado",
                 "/assets/images/frames/framesBoss/boss0_0.png",
                 9, 2, 90, 1500, true, imagensBossNaka
         ));
@@ -187,14 +192,11 @@ public class Jogo {
 
     private void iniciarJogo() {
 
-
         Random r = new Random();
         moeda = r.nextInt(2);
 
-        // Definir blinds
-        jogador.setBlind(moeda); // 0 = small blind, 1 = big blind
-        inimigo.setBlind(1 - moeda);
-
+        jogador.setBlind(moeda);
+        jogador.setBlind(1-moeda);
         novaRodada();
     }
 
@@ -214,8 +216,6 @@ public class Jogo {
         } else {
             mesa.resetCartas();
         }
-
-
 
         // 3. Limpar mãos
         jogador.limpaCartas();
@@ -269,8 +269,6 @@ public class Jogo {
             inimigo.getVida().selecionarVida(smallBlind);
             inimigo.getVida().setVida(inimigo.getVida().getVida() - smallBlind);
             pote.adicionarApostaInimigo(smallBlind);
-            inimigo.decidirJogada(pote, mesa, etapaRodada);
-
         }
 
         // Rotacionar blinds
@@ -280,18 +278,17 @@ public class Jogo {
 
     public void registrarEscolhaJogador(int escolha) {
         // Se houver aposta no pote e jogador der check, trata como call
-        if (escolha == 1 ){ // Call
-            jogadaJogador = 1;
-            int valorCall = pote.getUltimaApostaInimigo() - pote.getUltimaApostaJogador();
-            jogador.getVida().selecionarVida(valorCall + pote.getApostaJogador());
-            pote.adicionarApostaJogador(valorCall);
-            pote.adicionarApostaJogador(0); // Indica que o valor nao aumentou por parte do jogador, mas apenas completou
-            jogador.getVida().setVida(jogador.getVida().getVida() - valorCall);
-            if(valorCall == 0){
-                System.out.println("Jogador deu check");
-            } else{
-                System.out.println("Jogador deu call: " + valorCall);
+        if (escolha == 1 && pote.getQuantidade() > 0) {
+            jogadaJogador = 1;// Call
+            int valorCall = pote.getUltimaApostaInimigo();
+            if(pote.getHistoricoApostaJogador().size() == 1){
+                valorCall = pote.getUltimaApostaInimigo() - pote.getUltimaApostaJogador();
             }
+            pote.adicionarApostaJogador(valorCall);
+            jogador.getVida().selecionarVida(valorCall);
+            jogador.getVida().setVida(jogador.getVida().getVida() - valorCall);
+        } else {
+            jogadaJogador = escolha;
         }
         jogadorPronto = true;
         registrarEscolhaInimigo();
@@ -299,13 +296,9 @@ public class Jogo {
 
     public void registrarEscolhaJogador(int escolha, int valor) {
         if (escolha == 2) { // Raise
-            pote.adicionarApostaJogador(valor);
             jogador.getVida().selecionarVida( valor);
             jogador.getVida().setVida(jogador.getVida().getVida() - valor);
-
-            System.out.println("Jogador de raise");
-            System.out.println("Valor do raise: " + valor);
-
+            pote.adicionarApostaJogador(valor);
         }
         jogadaJogador = escolha;
         jogadorPronto = true;
@@ -474,8 +467,10 @@ public class Jogo {
         inimigoNaFase++;
         inimigoAtualIndex++;
 
-        if (inimigoNaFase >= 3) { // Passou da fase (2 normais + 1 boss)
-            inimigoNaFase = 0;
+        jogador.getVida().setVida(1500);
+        inimigo.getVida().setVida(1500);
+
+        if (inimigoNaFase > 3) { // Passou da fase (2 normais + 1 boss)
             faseAtual++;
 
             if (faseAtual > 5) {
@@ -506,9 +501,10 @@ public class Jogo {
         inimigo = new Inimigo(perfisInimigos.get(inimigoAtualIndex));
 
         // Resetar HP do jogador para o valor inicial ou outro lógica que preferir
-        jogador.getVida().resetVida();
-        inimigo.getVida().resetVida();
+        jogador.getVida().setVida(1500);
+
         novaRodada();
+        inimigo.getVida().setVida(1500);
     }
 
     private void finalizarJogo(boolean jogadorVenceu) {
@@ -521,9 +517,9 @@ public class Jogo {
     }
 
     public int getRoundState() {
-        if (inimigoNaFase == 0) return 0; // Primeiro inimigo (roundcounter_1)
-        if (inimigoNaFase == 1) return 1; // Segundo inimigo (roundcounter_2)
-        if (inimigo.getPerfil().isBoss()) return 2; // Boss (roundcounter_3)
+        if (inimigoNaFase == 1) return 0; // Primeiro inimigo (roundcounter_1)
+        if (inimigoNaFase == 2) return 1; // Segundo inimigo (roundcounter_2)
+        if (inimigo.getPerfil().isBoss()) return 3; // Boss (roundcounter_3)
         return 3; // Completo (roundcounter_4) - não deve ocorrer normalmente
     }
 

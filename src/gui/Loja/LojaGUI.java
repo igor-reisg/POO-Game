@@ -21,6 +21,9 @@ import java.net.URL;
 import java.util.Objects;
 
 public class LojaGUI extends JPanel {
+    private final String personagem;  // Adicione estas variáveis
+    private final String nome;
+    private final Jogo jogoExistente;
     JanelaGUI app;
     BotoesGUI[] BotoesLoja;
     String caminhoBackground = "/assets/images/background/pattern2.png";
@@ -28,14 +31,20 @@ public class LojaGUI extends JPanel {
     private MesaLojaGUI mesa;
     private SacolaGUI sacolaGUI;
     private Loja loja;
+    private final int inimigoAtual;
     private MesaLoja mesaLoja;
     private Sacola sacola;
     private LojaGUI lojaGUI;
     private JLabel placaLabel;
 
-    public LojaGUI(JanelaGUI app, Inventario inventario, Loja loja) {
+    public LojaGUI(JanelaGUI app, Inventario inventario, Loja loja, int inimigoAtual, Jogo jogoExistente, String personagem, String nome) {
+        
         this.app = app;
         this.loja = loja;
+        this.personagem = personagem;
+        this.nome = nome;
+        this.inimigoAtual = inimigoAtual;
+        this.jogoExistente = jogoExistente;
         this.mesaLoja = new MesaLoja();
         this.sacola = new Sacola();
 
@@ -116,7 +125,9 @@ public class LojaGUI extends JPanel {
         });
 
         // Botão 1 - Avançar jogo (pode ajustar depois para rodadas reais)
-        BotoesLoja[1].getBotao().addActionListener(e -> app.trocarTela(new JogoGUI(app, new Jogo())));
+        BotoesLoja[1].getBotao().addActionListener(e -> {
+            app.trocarTela(new JogoGUI(app, jogoExistente, personagem, nome));
+        });
 
         // Botão 2 - Mostrar Inventário
         BotoesLoja[2].getBotao().addActionListener(e -> {
