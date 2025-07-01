@@ -56,12 +56,12 @@
     private void carregarPerfisInimigos() {
         perfisInimigos = new ArrayList<>();
         perfisInimigos.add(new PerfilInimigo(
-                "teste1",
+                "Joao Palmeirense",
                 "/assets/images/frames/framesEnemies/inimigo_1.png",
                 5, 5, 50, 1500, false, null
         ));
         perfisInimigos.add(new PerfilInimigo(
-                "teste2",
+                "Keeko Lindo",
                 "/assets/images/frames/framesEnemies/inimigo_2.png",
                 7, 3, 70, 1500, false, null
         ));
@@ -79,13 +79,13 @@
         ));
 
         perfisInimigos.add(new PerfilInimigo(
-                "teste3",
-                "/assets/images/frames/framesEnemies/inimigo_4.png",
+                "Ossamo Makoto",
+                "/assets/images/frames/framesEnemies/inimigo_3.png",
                 9, 2, 90, 1500, false, null
         ));
         perfisInimigos.add(new PerfilInimigo(
-                "teste4",
-                "/assets/images/frames/framesEnemies/inimigo_5.png",
+                "Tina Repentina",
+                "/assets/images/frames/framesEnemies/inimigo_4.png",
                 9, 2, 90, 1500, false, null
         ));
 
@@ -102,13 +102,13 @@
         ));
 
         perfisInimigos.add(new PerfilInimigo(
-                "teste5",
-                "/assets/images/frames/framesEnemies/inimigo_6.png",
+                "Tona Repentona",
+                "/assets/images/frames/framesEnemies/inimigo_5.png",
                 9, 2, 90, 1500, false, null
         ));
         perfisInimigos.add(new PerfilInimigo(
-                "teste6",
-                "/assets/images/frames/framesEnemies/inimigo_7.png",
+                "Enrico CarroHomem",
+                "/assets/images/frames/framesEnemies/inimigo_6.png",
                 9, 2, 90, 1500, false, null
         ));
 
@@ -125,13 +125,13 @@
         ));
 
         perfisInimigos.add(new PerfilInimigo(
-                "teste7",
-                "/assets/images/frames/framesEnemies/inimigo_8.png",
+                "Senhor Vovô",
+                "/assets/images/frames/framesEnemies/inimigo_7.png",
                 9, 2, 90, 1500, false, null
         ));
         perfisInimigos.add(new PerfilInimigo(
-                "teste8",
-                "/assets/images/frames/framesEnemies/inimigo_9.png",
+                "Diba Madiba",
+                "/assets/images/frames/framesEnemies/inimigo_8.png",
                 9, 2, 90, 1500, false, null
         ));
 
@@ -148,12 +148,12 @@
         ));
         perfisInimigos.add(new PerfilInimigo(
                 "teste9",
-                "/assets/images/frames/framesEnemies/inimigo_10.png",
+                "/assets/images/frames/framesEnemies/inimigo_9.png",
                 9, 2, 90, 1500, false, null
         ));
         perfisInimigos.add(new PerfilInimigo(
                 "teste10",
-                "/assets/images/frames/framesEnemies/inimigo_11.png",
+                "/assets/images/frames/framesEnemies/inimigo_10.png",
                 9, 2, 90, 1500, false, null
         ));
 
