@@ -133,6 +133,7 @@ public class LojaGUI extends JPanel {
         BotoesLoja[2].getBotao().addActionListener(e -> {
             inventarioGUI.mostrarCoringas();
             inventarioGUI.setVisible(true);
+            mesa.setHoverEnabled(false);
         });
 
         // Botão 3 - Atualizar loja
@@ -150,6 +151,10 @@ public class LojaGUI extends JPanel {
         });
 
         setVisible(true);
+    }
+
+    public MesaLojaGUI getMesa() {
+        return mesa;
     }
 
     private void carregarImagem() {

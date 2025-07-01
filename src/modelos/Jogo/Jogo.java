@@ -517,9 +517,9 @@ public class Jogo {
     }
 
     public int getRoundState() {
-        if (inimigoNaFase == 0) return 0; // Primeiro inimigo (roundcounter_1)
-        if (inimigoNaFase == 1) return 1; // Segundo inimigo (roundcounter_2)
-        if (inimigo.getPerfil().isBoss()) return 2; // Boss (roundcounter_3)
+        if (inimigoNaFase == 1) return 0; // Primeiro inimigo (roundcounter_1)
+        if (inimigoNaFase == 2) return 1; // Segundo inimigo (roundcounter_2)
+        if (inimigo.getPerfil().isBoss()) return 3; // Boss (roundcounter_3)
         return 3; // Completo (roundcounter_4) - não deve ocorrer normalmente
     }
 

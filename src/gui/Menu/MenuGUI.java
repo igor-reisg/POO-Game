@@ -101,10 +101,36 @@ public class MenuGUI extends JPanel implements ActionListener {
         StaticBackgroundPanel painelOpcoes = new StaticBackgroundPanel(caminhoBackground, 1280, 720);
         painelOpcoes.setLayout(new BorderLayout());
 
+        // Painel central com slider
+        JPanel painelCentral = new JPanel();
+        painelCentral.setLayout(new BoxLayout(painelCentral, BoxLayout.Y_AXIS));
+        painelCentral.setOpaque(false);
+
+        JLabel labelVolume = new JLabel("Volume da música de fundo");
+        labelVolume.setAlignmentX(Component.CENTER_ALIGNMENT);
+        labelVolume.setForeground(Color.WHITE); // ou outra cor visível no fundo
+
+        JSlider sliderVolume = new JSlider(0, 100, 100); // volume de 0 a 100%
+        sliderVolume.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sliderVolume.setOpaque(false);
+        sliderVolume.setMaximumSize(new Dimension(300, 50));
+        sliderVolume.addChangeListener(e -> {
+            float volume = sliderVolume.getValue() / 100f; // converter para 0.0 a 1.0
+            app.setVolumeMusica(volume);
+        });
+
         JButton botaoVoltar = new JButton("Voltar");
+        botaoVoltar.setAlignmentX(Component.CENTER_ALIGNMENT);
         botaoVoltar.addActionListener(e -> app.getGlassPane().setVisible(false));
 
-        painelOpcoes.add(botaoVoltar, BorderLayout.SOUTH);
+        painelCentral.add(Box.createVerticalStrut(80));
+        painelCentral.add(labelVolume);
+        painelCentral.add(Box.createVerticalStrut(10));
+        painelCentral.add(sliderVolume);
+        painelCentral.add(Box.createVerticalStrut(30));
+        painelCentral.add(botaoVoltar);
+
+        painelOpcoes.add(painelCentral, BorderLayout.CENTER);
 
         TransparenteGUI transparente = new TransparenteGUI(painelOpcoes);
         app.setGlassPane(transparente);

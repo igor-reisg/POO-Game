@@ -1,7 +1,10 @@
 package gui;
 
 import javax.swing.*;
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.*;
+import java.net.URL;
 import java.util.*;
 
 public class BotoesGUI extends JPanel{
@@ -15,6 +18,7 @@ public class BotoesGUI extends JPanel{
     private JLabel fundo;
     private double escalaX;
     private double escalaY;
+    private String nomeAudioBotao = "/assets/sons/click_1";
 
     public BotoesGUI(String caminhoBase, int altura, int largura, int numeroBotao){
         escalaX = 1;
@@ -40,6 +44,9 @@ public class BotoesGUI extends JPanel{
         botao.setBorderPainted(false);
         botao.setContentAreaFilled(false);
         botao.setOpaque(false);
+
+        botao.addActionListener(e -> playButton());
+
         return botao;
     }
 
@@ -55,6 +62,13 @@ public class BotoesGUI extends JPanel{
         }
         return botao;
     }
+
+    public void playButton() {
+        URL url = getClass().getResource(nomeAudioBotao + ".wav");
+        AudioClip audio = Applet.newAudioClip(url);
+        audio.play();
+    }
+
     public void setBotao(JButton botao) {
         this.botao = botao;
     }

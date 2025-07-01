@@ -17,6 +17,7 @@ public class CoringasGUI extends JPanel {
     private String TextHolderImagem = "/assets/images/cartas/hover/hover0.png";
     private final String caminhoFonte = "/assets/fonts/RetroGaming.ttf";
     private Font fonte;
+    private boolean hoverEnabled = true;
 
     public CoringasGUI(Coringa coringa, int posX, int posY, int largura, int altura) {
         this.coringa = coringa;
@@ -55,41 +56,43 @@ public class CoringasGUI extends JPanel {
         }
 
         //Informações das características do coringa
-        JLabel infos = new JLabel("<html><b>Nome: </b>" + coringa.getNome() +
-                                       "<br><b>Descrição: </b>" + coringa.getDescricao() +
-                                       "<br><b>Raridade: </b>" + coringa.getRaridade() +
-                                       "<br><b>Preço: </b>" + coringa.getPreco() +
-                                       "<br><b>XP: </b>" + coringa.getXp() +
-                                       "<br><b>Level: </b>" + coringa.getLevel() + "</html>");
+        String htmlTexto = "<html>" +
+                "<table style='font-family:" + fonte.getFamily() + ";font-size:24pt;color:#282828;line-height:1.2'>" +
+                "<tr><td valign='top'><b>Nome:</b></td><td>" + coringa.getNome() + "</td></tr>" +
+                "<tr><td valign='top'><b>Descrição:</b></td><td>" + coringa.getDescricao() + "</td></tr>" +
+                "<tr><td valign='top'><b>Raridade:</b></td><td>" + coringa.getRaridade() + "</td></tr>" +
+                "<tr><td valign='top'><b>Preço:</b></td><td>" + coringa.getPreco() + "</td></tr>" +
+                "</table></html>";
 
-        infos.setForeground(new Color(40, 40, 40));
-        infos.setSize(infos.getPreferredSize());
-        infos.setFont(fonte);
+        JLabel infos = new JLabel(htmlTexto);
+        infos.setFont(fonte.deriveFont(24f));
         infos.setBounds(10, 10, (largura * 2) - 20, altura - 20);
         previewPanel.add(infos, JLayeredPane.PALETTE_LAYER);
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                Window window = SwingUtilities.getWindowAncestor(CoringasGUI.this);
-                if (window instanceof JFrame) {
-                    JLayeredPane layered = ((JFrame) window).getLayeredPane();
+                if (hoverEnabled) {
+                    Window window = SwingUtilities.getWindowAncestor(CoringasGUI.this);
+                    if (window instanceof JFrame) {
+                        JLayeredPane layered = ((JFrame) window).getLayeredPane();
 
-                    if (previewPanel.getParent() != layered) {
-                        layered.add(previewPanel, JLayeredPane.PALETTE_LAYER);
+                        if (previewPanel.getParent() != layered) {
+                            layered.add(previewPanel, JLayeredPane.PALETTE_LAYER);
+                        }
+
+                        previewPanel.setLocation(getX() + largura + 10, getY());
+                        previewPanel.setVisible(true);
+                        layered.repaint();
                     }
-
-                    previewPanel.setLocation(getX() + largura + 10, getY());
-                    previewPanel.setVisible(true);
-                    layered.repaint();
-                } else {
-                    System.out.println("Window ancestor is not JFrame or not found.");
                 }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                previewPanel.setVisible(false);
+                if (hoverEnabled) {
+                    previewPanel.setVisible(false);
+                }
             }
         });
     }
@@ -99,6 +102,13 @@ public class CoringasGUI extends JPanel {
         super.paintComponent(g);
         if (imgCoringa2 != null) {
             imgCoringa2.paintIcon(this, g, 0, 0);
+        }
+    }
+
+    public void setHoverEnabled(boolean enabled) {
+        this.hoverEnabled = enabled;
+        if (!enabled && previewPanel.isVisible()) {
+            previewPanel.setVisible(false);
         }
     }
 

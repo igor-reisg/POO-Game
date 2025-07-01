@@ -2,6 +2,7 @@ package gui.Jogo;
 
 import gui.BotoesGUI;
 import gui.Jogo.CoringasGUI;
+import gui.Loja.LojaGUI;
 import gui.StaticBackgroundPanel;
 import gui.TransparenteGUI;
 import modelos.Cartas.Coringa;
@@ -90,7 +91,17 @@ public class InventarioGUI extends JPanel {
 
         //Botão voltar do inventário
         fechar = new BotoesGUI("inventario/", 50, 50, 0);
-        fechar.getBotao().addActionListener(e -> setVisible(false));
+        fechar.getBotao().addActionListener(e -> {
+            setVisible(false);
+            Container parent = getParent();
+            while (parent != null) {
+                if (parent instanceof LojaGUI) {
+                    ((LojaGUI) parent).getMesa().setHoverEnabled(true);
+                    break;
+                }
+                parent = parent.getParent();
+            }
+        });
         fechar.getBotao().setBounds(largura - 150, altura - 100, 50, 50);
         fechar.getBotao().setFocusPainted(false);
         panelInventario.add(fechar.getBotao());
@@ -151,7 +162,7 @@ public class InventarioGUI extends JPanel {
         coringas = new CoringasGUI[inventario.listarCoringas().size()];
         for (int i = 0; i < inventario.listarCoringas().size(); i++) {
             Coringa coringa = inventario.listarCoringas().get(i);
-            coringas[i] = new CoringasGUI(coringa, 100 + i * 200, 100, 120, 180);
+            coringas[i] = new CoringasGUI(coringa, 50 + i * 300, 300, 212, 298);
 
             // Adiciona listener para vender
             coringas[i].addMouseListener(new MouseAdapter() {
