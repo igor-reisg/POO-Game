@@ -10,6 +10,7 @@ public class Inimigo {
     private Carta[] mao;
     private int blind;
     private PokerIA pokerIA;
+    private int ultimaAposta = 0;
 
     public Inimigo(PerfilInimigo perfil) {
         this.perfil = perfil;
@@ -34,34 +35,47 @@ public class Inimigo {
                 etapaRodada
         );
 
-        int valorAumento = 0;
-        int valorCall = 0;
-        if (this.jogada == 2) { // Raise
-            valorAumento = pokerIA.calcularValorAumento(vida.getVida(), pote.getQuantidade());
-            valorAumento = Math.min(vida.getVida(), valorAumento);
+        int valorParaCompletar = Math.max(0, pote.getUltimaApostaJogador() - pote.getUltimaApostaInimigo());
+        int valorApostadoNaRodada = 0;
+        int valorAumento;
 
-            vida.selecionarVida(pote.getUltimaApostaJogador() + valorAumento);
-            vida.setVida(vida.getVida() - valorAumento);
-            pote.adicionarApostaInimigo(valorAumento);
-            System.out.println("Inimigo deu raise: " + valorAumento);
+        switch (this.jogada) {
+            case 0: // Fold
+                System.out.println("[IA] Decisão: FOLD");
+                break;
+
+            case 1: // Call/Check
+                if (valorParaCompletar > 0) {
+                    // Indica quanto está sendo apostado agora
+                    vida.selecionarVida(valorParaCompletar);
+                    // Atualiza a vida real
+                    vida.setVida(vida.getVida() - valorParaCompletar);
+                    pote.adicionarApostaInimigo(valorParaCompletar);
+                    System.out.println("Inimigo deu call: " + valorParaCompletar);
+                } else {
+                    System.out.println("Inimigo deu check");
+                }
+                break;
+
+            case 2: // Raise
+                valorAumento = pokerIA.calcularValorAumento(vida.getVida(), pote.getQuantidade());
+                int totalAposta = valorParaCompletar + valorAumento;
+
+                // Indica o valor total sendo apostado nesta rodada
+                vida.selecionarVida(totalAposta);
+                // Atualiza a vida real
+                vida.setVida(vida.getVida() - totalAposta);
+
+                if (valorParaCompletar > 0) {
+                    pote.adicionarApostaInimigo(valorParaCompletar);
+                }
+                pote.adicionarApostaInimigo(valorAumento);
+
+                System.out.println("Inimigo deu raise: " + valorAumento +
+                        " (total: " + totalAposta + ")");
+                break;
         }
-        else if (this.jogada == 1) { // Call ou check
-            valorCall = Math.max(0, pote.getUltimaApostaJogador() - pote.getUltimaApostaInimigo());
-            valorCall = Math.min(valorCall, vida.getVida());
-            vida.selecionarVida(pote.getApostaInimigo() + valorCall);
-            vida.setVida(vida.getVida() - valorCall);
-            pote.adicionarApostaInimigo(valorCall);
-            if(valorCall == 0){
-                System.out.println("Inimigo deu check:");
-            } else{
-                System.out.println("Inimigo deu call: " + valorCall);
-            }
-            pote.adicionarApostaInimigo(0);
-        }
-        System.out.println("[IA] Decisão: " +
-                (jogada == 0 ? "FOLD" : jogada == 1 ? "CALL " + valorCall : "RAISE " + valorAumento));
     }
-
     public int calcularAposta(Pote pote, Mesa mesa, int etapaRodada) {
 
         int valor = pokerIA.calcularValorAumento(vida.getVida(), pote.getQuantidade());
@@ -109,6 +123,13 @@ public class Inimigo {
         this.blind = blind;
     }
 
+    public int getUltimaAposta() {
+        return ultimaAposta;
+    }
+
+    public void setUltimaAposta(int ultimaAposta){
+        this.ultimaAposta = ultimaAposta;
+    }
     public int getJogada() {
         return jogada;
     }

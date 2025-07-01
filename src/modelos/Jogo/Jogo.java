@@ -1,17 +1,20 @@
 
-package modelos.Jogo;
+    package modelos.Jogo;
 
-import java.util.*;
+    import java.util.*;
 
-import gui.Jogo.VidaGUI;
-import gui.Jogo.PoteGUI;
-import modelos.Cartas.*;
-import javax.swing.SwingUtilities;
+    import gui.Jogo.VidaGUI;
+    import gui.Jogo.PoteGUI;
+    import modelos.Cartas.*;
+    import javax.swing.SwingUtilities;
 
 
-public class Jogo {
+    public class Jogo {
     private List<PerfilInimigo> perfisInimigos;
     private int inimigoAtualIndex = 0;
+    private int apostaAcumuladaJogador = 0;
+    private int apostaAcumuladaInimigo = 0;
+    private int totalApostadoInimigoNoRound = 0;
     private Round rodada;
     private int etapaRodada = 0;
     private Baralho baralho;
@@ -45,7 +48,7 @@ public class Jogo {
         } else {
             inimigo = new Inimigo(perfisInimigos.get(0));
         }
-  // Primeiro inimigo
+    // Primeiro inimigo
         baralho = new Baralho();
         pote = new Pote();
     }
@@ -245,72 +248,110 @@ public class Jogo {
         }
     }
 
-    private void aplicarBlinds() {
-        int smallBlind = 100;
-        int bigBlind = 200;
+        private void aplicarBlinds() {
+            // Resetar acumuladores ao mudar os blinds
+            apostaAcumuladaJogador = 0;
+            apostaAcumuladaInimigo = 0;
 
-        if (jogador.getBlind() == 0) {
-            // Jogador é small blind
-            jogador.getVida().selecionarVida(smallBlind);
-            jogador.getVida().setVida(jogador.getVida().getVida() - smallBlind);
-            pote.adicionarApostaJogador(smallBlind);
+            int smallBlind = 100;
+            int bigBlind = 200;
 
-            // Inimigo é big blind
-            inimigo.getVida().selecionarVida(bigBlind);
-            inimigo.getVida().setVida(inimigo.getVida().getVida() - bigBlind);
-            pote.adicionarApostaInimigo(bigBlind);
-        } else {
-            // Jogador é big blind
-            jogador.getVida().selecionarVida(bigBlind);
-            jogador.getVida().setVida(jogador.getVida().getVida() - bigBlind);
-            pote.adicionarApostaJogador(bigBlind);
+            if (jogador.getBlind() == 0) {
+                // Jogador é small blind
+                apostaAcumuladaJogador = smallBlind;
+                jogador.getVida().selecionarVida(apostaAcumuladaJogador);
+                jogador.getVida().setVida(jogador.getVida().getVida() - smallBlind);
+                pote.adicionarApostaJogador(smallBlind);
 
-            // Inimigo é small blind
-            inimigo.getVida().selecionarVida(smallBlind);
-            inimigo.getVida().setVida(inimigo.getVida().getVida() - smallBlind);
-            pote.adicionarApostaInimigo(smallBlind);
-        }
+                // Inimigo é big blind
+                apostaAcumuladaInimigo = bigBlind;
+                inimigo.getVida().selecionarVida(apostaAcumuladaInimigo);
+                inimigo.getVida().setVida(inimigo.getVida().getVida() - bigBlind);
+                pote.adicionarApostaInimigo(bigBlind);
+            } else {
+                // Jogador é big blind
+                apostaAcumuladaJogador = bigBlind;
+                jogador.getVida().selecionarVida(apostaAcumuladaJogador);
+                jogador.getVida().setVida(jogador.getVida().getVida() - bigBlind);
+                pote.adicionarApostaJogador(bigBlind);
 
-        // Rotacionar blinds
-        jogador.setBlind(1 - jogador.getBlind());
-        inimigo.setBlind(1 - inimigo.getBlind());
-    }
+                // Inimigo é small blind
+                apostaAcumuladaInimigo = smallBlind;
+                inimigo.getVida().selecionarVida(apostaAcumuladaInimigo);
+                inimigo.getVida().setVida(inimigo.getVida().getVida() - smallBlind);
+                pote.adicionarApostaInimigo(smallBlind);
 
-    public void registrarEscolhaJogador(int escolha) {
-        // Se houver aposta no pote e jogador der check, trata como call
-        if (escolha == 1 ){ // Call
-            jogadaJogador = 1;
-            int valorCall = pote.getUltimaApostaInimigo() - pote.getUltimaApostaJogador();
-            jogador.getVida().selecionarVida(valorCall + pote.getApostaJogador());
-            pote.adicionarApostaJogador(valorCall);
-            pote.adicionarApostaJogador(0); // Indica que o valor nao aumentou por parte do jogador, mas apenas completou
-            jogador.getVida().setVida(jogador.getVida().getVida() - valorCall);
-            if(valorCall == 0){
-                System.out.println("Jogador deu check");
-            } else{
-                System.out.println("Jogador deu call: " + valorCall);
+                inimigo.decidirJogada(pote, mesa, etapaRodada);
             }
-        }
-        jogadorPronto = true;
-        registrarEscolhaInimigo();
-    }
-  public void registrarEscolhaJogador(int escolha, int valor) {
-        if (escolha == 2) { // Raise
-            jogador.getVida().selecionarVida( valor);
-            jogador.getVida().setVida(jogador.getVida().getVida() - valor);
-            pote.adicionarApostaJogador(valor);
-        }
-        jogadaJogador = escolha;
-        jogadorPronto = true;
-        registrarEscolhaInimigo();
-    }
 
-    private void registrarEscolhaInimigo() {
-        inimigo.decidirJogada(pote, mesa, etapaRodada);
-        jogadaInimigo = inimigo.getJogada();
-        inimigoPronto = true;
-        verificarEtapa();
-    }
+            // Rotacionar blinds
+            jogador.setBlind(1 - jogador.getBlind());
+            inimigo.setBlind(1 - inimigo.getBlind());
+        }
+
+        public void registrarEscolhaJogador(int escolha) {
+            if (escolha == 1) { // Call ou check
+                jogadaJogador = 1;
+                int valorParaCompletar = Math.max(0, pote.getUltimaApostaInimigo() - pote.getUltimaApostaJogador());
+
+                if (valorParaCompletar > 0) { // call
+                    apostaAcumuladaJogador += valorParaCompletar;
+                    jogador.getVida().selecionarVida(apostaAcumuladaJogador);
+                    jogador.getVida().setVida(jogador.getVida().getVida() - valorParaCompletar);
+                    pote.adicionarApostaJogador(valorParaCompletar);
+                    System.out.println("Jogador deu call: " + valorParaCompletar);
+                } else {
+                    System.out.println("Jogador deu check");
+                }
+            }
+            jogadorPronto = true;
+            registrarEscolhaInimigo();
+        }
+
+        public void registrarEscolhaJogador(int escolha, int valor) {
+            if (escolha == 2) { // Raise
+                int valorParaCompletar = Math.max(0, pote.getUltimaApostaInimigo() - pote.getUltimaApostaJogador());
+                int valorRaise = valor - pote.getUltimaApostaJogador() - valorParaCompletar;
+
+                if (valorRaise < 0) {
+                    valorRaise = 0;
+                }
+
+                int totalAposta = valorParaCompletar + valorRaise;
+                apostaAcumuladaJogador += totalAposta;
+
+                jogador.getVida().selecionarVida(apostaAcumuladaJogador);
+                jogador.getVida().setVida(jogador.getVida().getVida() - totalAposta);
+
+                if (valorParaCompletar > 0) {
+                    pote.adicionarApostaJogador(valorParaCompletar);
+                }
+                pote.adicionarApostaJogador(valorRaise);
+
+                System.out.println("Jogador deu raise: " + valorRaise + " (total acumulado: " + apostaAcumuladaJogador + ")");
+            }
+            jogadaJogador = escolha;
+            jogadorPronto = true;
+            registrarEscolhaInimigo();
+        }
+
+        private void registrarEscolhaInimigo() {
+            int apostaAnterior = pote.getUltimaApostaInimigo();
+
+            inimigo.decidirJogada(pote, mesa, etapaRodada);
+            jogadaInimigo = inimigo.getJogada();
+
+            int novaAposta = pote.getUltimaApostaInimigo() - apostaAnterior;
+            if (novaAposta > 0) {
+                totalApostadoInimigoNoRound += novaAposta;
+            }
+
+            // Sempre atualiza a visualização com o total acumulado
+            inimigo.getVida().selecionarVida(totalApostadoInimigoNoRound);
+
+            inimigoPronto = true;
+            verificarEtapa();
+        }
 
     private void verificarEtapa() {
 
@@ -410,37 +451,35 @@ public class Jogo {
         System.out.println("Inimigo: " + inimigo.getVida().getVida() + " HP");
         System.out.println("Pote: " + pote.getQuantidade());
 
-        switch(resultado) {
-            case JOGADOR_VENCE:
-                System.out.println("Vitória do Jogador!");
-                break;
-            case INIMIGO_VENCE:
-                System.out.println("Vitória do Inimigo!");
-                break;
-            case EMPATE:
-                System.out.println("Empate!");
-                break;
-        }
-
         switch (resultado) {
             case JOGADOR_VENCE:
                 jogador.getVida().setVida(jogador.getVida().getVida() + pote.getApostaJogador());
-                //pote.transferirParaVencedor(true);
+                // Atualiza visual após adicionar fichas
+                jogador.getVida().alterarVisualVida();
                 break;
 
             case INIMIGO_VENCE:
                 inimigo.getVida().setVida(inimigo.getVida().getVida() + pote.getApostaInimigo());
-                //pote.transferirParaVencedor(false);
+                // Atualiza visual após adicionar fichas
+                inimigo.getVida().alterarVisualVida();
                 break;
 
             case EMPATE:
                 jogador.getVida().setVida(jogador.getVida().getVida() + pote.getApostaJogador());
-                inimigo.getVida().setVida(inimigo.getVida().getVida() +  pote.getApostaInimigo());
+                inimigo.getVida().setVida(inimigo.getVida().getVida() + pote.getApostaInimigo());
+                // Atualiza visual para ambos
+                jogador.getVida().alterarVisualVida();
+                inimigo.getVida().alterarVisualVida();
                 break;
         }
+
+        // Garante que a vida não fique negativa
+        if (jogador.getVida().getVida() < 0) jogador.getVida().setVida(0);
+        if (inimigo.getVida().getVida() < 0) inimigo.getVida().setVida(0);
+
+        // Força atualização visual
         jogador.getVida().alterarVisualVida();
         inimigo.getVida().alterarVisualVida();
-
 
 
         // Verifica se o jogo acabou (vida do jogador ou todos oponentes derrotados)
@@ -469,6 +508,9 @@ public class Jogo {
 
         jogador.getVida().setVida(1500);
         inimigo.getVida().setVida(1500);
+        jogador.getVida().alterarVisualVida();
+        inimigo.getVida().alterarVisualVida();
+        pote.resetPote();
 
         if (inimigoNaFase > 3) { // Passou da fase (2 normais + 1 boss)
             faseAtual++;
@@ -502,9 +544,12 @@ public class Jogo {
 
         // Resetar HP do jogador para o valor inicial ou outro lógica que preferir
         jogador.getVida().setVida(1500);
-
-        novaRodada();
         inimigo.getVida().setVida(1500);
+        jogador.getVida().alterarVisualVida();
+        inimigo.getVida().alterarVisualVida();
+
+        // Atualização explícita
+        novaRodada();
     }
 
     private void finalizarJogo(boolean jogadorVenceu) {
@@ -536,4 +581,4 @@ public class Jogo {
     public int getinimigoNaFase() {
         return inimigoNaFase;
     }
-}
+    }

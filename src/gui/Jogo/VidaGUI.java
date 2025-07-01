@@ -78,26 +78,41 @@ public class VidaGUI extends JPanel implements VidaListener{
 
     // Refaz a vida com o valor selecionado toda a vez que chamarem um valor da vida
     @Override
-    public void vidaSelecionada(int quantidade) {
-        int chipsTotais = vida.getVida() + pote.getApostaJogador(); // Para jogador
-        if (tipoJogador == 2) {
-            chipsTotais = vida.getVida() + pote.getApostaInimigo(); // Para inimigo
-        }
+    public void vidaSelecionada(int quantidadeTotalApostada) {
+        int vidaAtual = vida.getVida();
+        int vidaPerdida = 1500 - vidaAtual;
+        int vidaDisponivel = vidaAtual;
 
-        int unidadesPreenchidas = chipsTotais / 100;
-        int unidadesTransparente = quantidade / 100;
+        int unidadesPerdidas = vidaPerdida / 100;
+        int unidadesApostadas = quantidadeTotalApostada / 100;
+        int unidadesDisponiveis = vidaDisponivel / 100;
+
+        System.out.println("[DEBUG] Renderização - " +
+                "Perdidas: " + unidadesPerdidas + " | " +
+                "Apostadas: " + unidadesApostadas + " | " +
+                "Disponíveis: " + unidadesDisponiveis);
 
         for (int i = 0; i < vidaTotal; i++) {
-            int idx = vidaTotal - 1 - i;
             String caminho = null;
 
-            if (i < unidadesPreenchidas - unidadesTransparente) {
-                caminho = (tipoJogador == 1) ? caminhoVidaJogador : caminhoVidaInimigo;
-            } else if (i < unidadesPreenchidas ) {
-                caminho = (tipoJogador == 1) ? caminhoVidaJogadorTransparente : caminhoVidaInimigoTransparente;
+            if (i < unidadesPerdidas) {
+                // Já perdidos (vazios) - primeiros índices
+                caminho = null;
+            }
+            else if (i < unidadesPerdidas + unidadesApostadas) {
+                // Selecionados (transparentes) - índices intermediários
+                caminho = (tipoJogador == 1) ?
+                        caminhoVidaJogadorTransparente :
+                        caminhoVidaInimigoTransparente;
+            }
+            else if (i < unidadesPerdidas + unidadesApostadas + unidadesDisponiveis) {
+                // Disponíveis (normais) - últimos índices
+                caminho = (tipoJogador == 1) ?
+                        caminhoVidaJogador :
+                        caminhoVidaInimigo;
             }
 
-            carregarImagem(vidaDiscreta[idx], caminho);
+            carregarImagem(vidaDiscreta[i], caminho);
         }
     }
     // Refaz a vida em final de round
