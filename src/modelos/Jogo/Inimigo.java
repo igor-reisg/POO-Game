@@ -2,7 +2,6 @@ package modelos.Jogo;
 
 import modelos.Cartas.Baralho;
 import modelos.Cartas.Carta;
-import modelos.Jogo.Mesa;
 
 public class Inimigo {
     public PerfilInimigo perfil;
@@ -36,25 +35,31 @@ public class Inimigo {
         );
 
         int valorAumento = 0;
+        int valorCall = 0;
         if (this.jogada == 2) { // Raise
             valorAumento = pokerIA.calcularValorAumento(vida.getVida(), pote.getQuantidade());
-            // Garantir que não aposta mais do que tem
-            valorAumento = Math.min(valorAumento, vida.getVida());
-            System.out.println("INIMIGO APOSTOU " + valorAumento);
-            vida.selecionarVida( valorAumento);
+            valorAumento = Math.min(vida.getVida(), valorAumento);
+
+            vida.selecionarVida(pote.getUltimaApostaJogador() + valorAumento);
             vida.setVida(vida.getVida() - valorAumento);
             pote.adicionarApostaInimigo(valorAumento);
-
-        } else if (this.jogada == 1 && pote.getQuantidade() > 0) { // Call
-            int valorCall = Math.min(pote.getUltimaApostaJogador(), vida.getVida());
-            System.out.println("INIMIGO DEU CALL " + valorCall);
-            vida.selecionarVida(valorCall);
+            System.out.println("Inimigo deu raise: " + valorAumento);
+        }
+        else if (this.jogada == 1) { // Call ou check
+            valorCall = Math.max(0, pote.getUltimaApostaJogador() - pote.getUltimaApostaInimigo());
+            valorCall = Math.min(valorCall, vida.getVida());
+            vida.selecionarVida(pote.getApostaInimigo() + valorCall);
             vida.setVida(vida.getVida() - valorCall);
             pote.adicionarApostaInimigo(valorCall);
+            if(valorCall == 0){
+                System.out.println("Inimigo deu check:");
+            } else{
+                System.out.println("Inimigo deu call: " + valorCall);
+            }
+            pote.adicionarApostaInimigo(0);
         }
-
         System.out.println("[IA] Decisão: " +
-                (jogada == 0 ? "FOLD" : jogada == 1 ? "CALL " + pote.getQuantidade() : "RAISE " + valorAumento));
+                (jogada == 0 ? "FOLD" : jogada == 1 ? "CALL " + valorCall : "RAISE " + valorAumento));
     }
 
     public int calcularAposta(Pote pote, Mesa mesa, int etapaRodada) {

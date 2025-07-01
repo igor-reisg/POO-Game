@@ -167,7 +167,7 @@ public class JogoGUI extends JPanel {
         check = new BotoesGUI("jogo/check", 84, 42, 0);
 
         check.setEscalaX(5);
-        check.setEscalaY(1.3);
+        check.setEscalaY(1.2);
         check.setBotao(check.getBotao());
         check.add(check.getBotao());
         check.setBounds(
@@ -180,15 +180,8 @@ public class JogoGUI extends JPanel {
         background.add(check);
 
         check.getBotao().addActionListener(e -> {
-            if (jogo.getPote().getQuantidade() > 0) {
-                // Se houver aposta, trata como call
-                    jogo.getJogador().escolhaDaJogada(1);
-                jogo.registrarEscolhaJogador(1);
-            } else {
-                // Se não houver aposta, trata como check
-                jogo.getJogador().escolhaDaJogada(1);
-                jogo.registrarEscolhaJogador(1);
-            }
+            jogo.getJogador().escolhaDaJogada(1);
+            jogo.registrarEscolhaJogador(1);
         });
 
 
@@ -197,7 +190,7 @@ public class JogoGUI extends JPanel {
         // Botão Fold
         fold = new BotoesGUI("jogo/fold", 84, 42, 0);
         fold.setEscalaX(5);
-        fold.setEscalaY(1.3);
+        fold.setEscalaY(1.2);
         fold.setBotao(fold.getBotao());
         fold.add(fold.getBotao());
         fold.setOpaque(false);
@@ -386,7 +379,6 @@ public class JogoGUI extends JPanel {
         // Atualiza elementos visuais
         atualizarRoundCounter();
         atualizarInimigoGUI();
-        atualizarBotoesAposta();
 
         // Remove as cartas antigas
         for (CartasPanel cartaPanel : cartasJogador) {

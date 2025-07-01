@@ -79,42 +79,27 @@ public class VidaGUI extends JPanel implements VidaListener{
     // Refaz a vida com o valor selecionado toda a vez que chamarem um valor da vida
     @Override
     public void vidaSelecionada(int quantidade) {
-        int unidadesPreenchidas;
-        int unidadesTransparente;
+        int chipsTotais = vida.getVida() + pote.getApostaJogador(); // Para jogador
+        if (tipoJogador == 2) {
+            chipsTotais = vida.getVida() + pote.getApostaInimigo(); // Para inimigo
+        }
+
+        int unidadesPreenchidas = chipsTotais / 100;
+        int unidadesTransparente = quantidade / 100;
 
         for (int i = 0; i < vidaTotal; i++) {
-            if (tipoJogador == 2) {
-                unidadesPreenchidas = (vida.getVida() - quantidade) / 100;
-                unidadesTransparente = quantidade / 100;
+            int idx = vidaTotal - 1 - i;
+            String caminho = null;
 
-                int idx = vidaTotal - 1 - i; // inverter a ordem do índice
-
-                if (i < unidadesPreenchidas) {
-                    carregarImagem(vidaDiscreta[idx], caminhoVidaInimigo);
-                } else if (i < unidadesPreenchidas + unidadesTransparente) {
-                    carregarImagem(vidaDiscreta[idx], caminhoVidaInimigoTransparente);
-                } else {
-                    carregarImagem(vidaDiscreta[idx], null);
-                }
-            } else {
-                if (tipoJogador == 1) {
-                    unidadesPreenchidas = (vida.getVida() - quantidade) / 100;
-                    unidadesTransparente = quantidade / 100;
-
-                    int idx = vidaTotal - 1 - i; // inverter a ordem do índice
-
-                    if (i < unidadesPreenchidas) {
-                        carregarImagem(vidaDiscreta[idx], caminhoVidaJogador);
-                    } else if (i < unidadesPreenchidas + unidadesTransparente) {
-                        carregarImagem(vidaDiscreta[idx], caminhoVidaJogadorTransparente);
-                    } else {
-                        carregarImagem(vidaDiscreta[idx], null);
-                    }
-                }
+            if (i < unidadesPreenchidas - unidadesTransparente) {
+                caminho = (tipoJogador == 1) ? caminhoVidaJogador : caminhoVidaInimigo;
+            } else if (i < unidadesPreenchidas ) {
+                caminho = (tipoJogador == 1) ? caminhoVidaJogadorTransparente : caminhoVidaInimigoTransparente;
             }
+
+            carregarImagem(vidaDiscreta[idx], caminho);
         }
     }
-
     // Refaz a vida em final de round
     @Override
     public void vidaAlterada() {
@@ -250,13 +235,10 @@ public class VidaGUI extends JPanel implements VidaListener{
             }
         }
 
-        confirmarAposta(unidades);
-    }
-
-    public void confirmarAposta(int unidades) {
-        //vida.setVida(vidaAtual * 100);
         resetSelecao();
     }
+
+
 
     private void resetSelecao() {
         vidaSelecionado = false;

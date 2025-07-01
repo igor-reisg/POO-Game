@@ -32,6 +32,7 @@ public class Pote {
         historicoApostaJogador.add(quantidade);
         this.apostaJogador += quantidade;
         this.quantidade += quantidade;
+        System.out.println("Adicionou do jogador: " + quantidade);
         for(PoteListener listener : listeners) {
             listener.adicionarPote(this.quantidade);
         }
@@ -41,6 +42,7 @@ public class Pote {
         historicoApostaInimigo.add(quantidade);
         this.apostaInimigo += quantidade;
         this.quantidade += quantidade;
+        System.out.println("Adicionou do inimigo: " + quantidade);
         for(PoteListener listener : listeners) {
             listener.adicionarPote(this.quantidade);
         }

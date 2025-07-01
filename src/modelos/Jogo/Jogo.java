@@ -192,10 +192,9 @@ public class Jogo {
         moeda = r.nextInt(2);
 
         // Definir blinds
-        //jogador.setBlind(moeda); // 0 = small blind, 1 = big blind
-        //inimigo.setBlind(1 - moeda);
-        jogador.setBlind(1);
-        jogador.setBlind(0);
+        jogador.setBlind(moeda); // 0 = small blind, 1 = big blind
+        inimigo.setBlind(1 - moeda);
+
         novaRodada();
     }
 
@@ -216,6 +215,8 @@ public class Jogo {
             mesa.resetCartas();
         }
 
+
+
         // 3. Limpar mãos
         jogador.limpaCartas();
         inimigo.limpaCartas();
@@ -230,9 +231,6 @@ public class Jogo {
 
         etapaRodada = 0;
         fimRodada = false;
-
-        // Removi a duplicação de código que estava aqui
-        // (as linhas que recriavam o baralho e redistribuíam cartas novamente)
 
         timer.schedule(new TimerTask() { public void run() { jogador.revelaCarta(0); }}, 500);
         timer.schedule(new TimerTask() { public void run() { jogador.revelaCarta(1); }}, 700);
@@ -271,6 +269,8 @@ public class Jogo {
             inimigo.getVida().selecionarVida(smallBlind);
             inimigo.getVida().setVida(inimigo.getVida().getVida() - smallBlind);
             pote.adicionarApostaInimigo(smallBlind);
+            inimigo.decidirJogada(pote, mesa, etapaRodada);
+
         }
 
         // Rotacionar blinds
@@ -280,17 +280,18 @@ public class Jogo {
 
     public void registrarEscolhaJogador(int escolha) {
         // Se houver aposta no pote e jogador der check, trata como call
-        if (escolha == 1 && pote.getQuantidade() > 0) {
-            jogadaJogador = 1;// Call
-            int valorCall = pote.getUltimaApostaInimigo();
-            if(pote.getHistoricoApostaJogador().size() == 1){
-                valorCall = pote.getUltimaApostaInimigo() - pote.getUltimaApostaJogador();
-            }
+        if (escolha == 1 ){ // Call
+            jogadaJogador = 1;
+            int valorCall = pote.getUltimaApostaInimigo() - pote.getUltimaApostaJogador();
+            jogador.getVida().selecionarVida(valorCall + pote.getApostaJogador());
             pote.adicionarApostaJogador(valorCall);
-            jogador.getVida().selecionarVida(valorCall);
+            pote.adicionarApostaJogador(0); // Indica que o valor nao aumentou por parte do jogador, mas apenas completou
             jogador.getVida().setVida(jogador.getVida().getVida() - valorCall);
-        } else {
-            jogadaJogador = escolha;
+            if(valorCall == 0){
+                System.out.println("Jogador deu check");
+            } else{
+                System.out.println("Jogador deu call: " + valorCall);
+            }
         }
         jogadorPronto = true;
         registrarEscolhaInimigo();
@@ -298,9 +299,13 @@ public class Jogo {
 
     public void registrarEscolhaJogador(int escolha, int valor) {
         if (escolha == 2) { // Raise
+            pote.adicionarApostaJogador(valor);
             jogador.getVida().selecionarVida( valor);
             jogador.getVida().setVida(jogador.getVida().getVida() - valor);
-            pote.adicionarApostaJogador(valor);
+
+            System.out.println("Jogador de raise");
+            System.out.println("Valor do raise: " + valor);
+
         }
         jogadaJogador = escolha;
         jogadorPronto = true;
@@ -501,8 +506,8 @@ public class Jogo {
         inimigo = new Inimigo(perfisInimigos.get(inimigoAtualIndex));
 
         // Resetar HP do jogador para o valor inicial ou outro lógica que preferir
-        jogador.getVida().setVida(1500);
-
+        jogador.getVida().resetVida();
+        inimigo.getVida().resetVida();
         novaRodada();
     }
 

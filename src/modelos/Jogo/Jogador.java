@@ -33,11 +33,8 @@ public class Jogador {
 
         if(escolha == 1){
             System.out.println("VOCE DEU CHECK");
-            check();
-
         } else if(escolha == 0){
             System.out.println("VOCE FOLDOU");
-            fold();
         } else if( escolha == 2){
             System.out.println("VOCE APOSTOU");
 
@@ -45,13 +42,6 @@ public class Jogador {
         }
     }
 
-    public void check(){
-
-    }
-
-    public void fold(){
-
-    }
 
     public void revelaCarta(int numeroDaCarta){
 
